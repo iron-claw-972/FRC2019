@@ -17,7 +17,7 @@ public class Arm extends Subsystem {
     public static double desiredArmAngle = 0;
     private static double currentArmAngle = 0;
     public static final double clicksToDegrees = 1;
-    private static Encoder pArmEncoder = new Encoder(Constants.mArmEncoderChannelA, Constants.mArmEncoderChannelB, false, Encoder.EncodingType.k4X);
+    //private static Encoder pArmEncoder = new Encoder(Constants.mArmEncoderChannelA, Constants.mArmEncoderChannelB, false, Encoder.EncodingType.k4X);
     private static final double[] angleArray = new double[] {20,30,40,50}; //different set heights
 
     //PID initializations
@@ -30,7 +30,7 @@ public class Arm extends Subsystem {
 
     public Arm (){
         zeroSensors();
-        pArmEncoder.setDistancePerPulse(clicksToDegrees);
+        //pArmEncoder.setDistancePerPulse(clicksToDegrees);
     }
 
     public double getCurrentArmAngle(){
@@ -46,7 +46,7 @@ public class Arm extends Subsystem {
     public void writePeriodicOutputs() {
 
         if (!everythingStopped){
-            currentArmAngle = pArmEncoder.get();
+            currentArmAngle = 0; //TODO: Implement Talon encoder sensor input.
             PIDControl.setDesired(desiredArmAngle);
             armTalon.set(ControlMode.PercentOutput, PIDControl.output(currentArmAngle));
         }
