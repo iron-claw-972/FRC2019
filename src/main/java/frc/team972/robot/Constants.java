@@ -1,5 +1,7 @@
 package frc.team972.robot;
 
+import frc.team972.robot.controls.MotionProfileConstraints;
+
 public class Constants {
 
     // CONTROLLER PORT IDS
@@ -22,5 +24,13 @@ public class Constants {
 
     public static final int kLongCANTimeoutMs = 100;
     public static final double kDriveVoltageRampRate = 0.0;
+
+    //STATE SPACE MAGICAL STUFF
+    public static final int kEncoderFaultTicksAllowed = 1024;
+    public static final double kEncoderFaultMinVoltage = 1.0;
+    public static final double kCalibrationVoltage = 2.0;
+
+    public static final MotionProfileConstraints kElevatorConstraints = new MotionProfileConstraints(254, 971);
+    public static final double kElevatorVoltageCap = 12.0;
 
 }

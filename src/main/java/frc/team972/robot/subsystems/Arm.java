@@ -70,7 +70,7 @@ public class Arm extends Subsystem {
     }
 
     public void zeroSensors() {
-        pArmEncoder.reset();
+
     }
 
     public void registerEnabledLoops(ILooper enabledLooper) {

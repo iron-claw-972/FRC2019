@@ -28,14 +28,14 @@ public class StateSpaceController {
 
     public DenseMatrix Update(DenseMatrix x) {
         DenseMatrix u = K_.mmul(r_.sub(x)).add(Kff_.mmul(r_.sub(A_.mmul(r_))));
-        u = MathUtils.CapMatrix(u, u_min_, u_max_);
+        u = ControlsMathUtil.CapMatrix(u, u_min_, u_max_);
         return u;
     }
 
     public DenseMatrix Update(DenseMatrix x, DenseMatrix r) {
         DenseMatrix u = K_.mmul(r_.sub(x)).add(Kff_.mmul(r.sub(A_.mmul(r_))));
         r_ = r;
-        u = MathUtils.CapMatrix(u, u_min_, u_max_);
+        u = ControlsMathUtil.CapMatrix(u, u_min_, u_max_);
         return u;
     }
 

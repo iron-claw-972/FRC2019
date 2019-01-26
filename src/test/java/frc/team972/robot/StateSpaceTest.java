@@ -1,6 +1,6 @@
 package frc.team972.robot;
 
-import frc.team972.robot.controls.MathUtils;
+import frc.team972.robot.controls.ControlsMathUtil;
 import frc.team972.robot.controls.StateSpaceController;
 import frc.team972.robot.controls.StateSpaceObserver;
 import frc.team972.robot.controls.StateSpacePlant;
@@ -97,7 +97,7 @@ public class StateSpaceTest {
 
         StateSpaceController controller = new StateSpaceController(1, 2, 1);
         controller.K_ = new DenseMatrix("10.0 1.0");
-        controller.A_ = MathUtils.CloneMatrix(plant.A_);
+        controller.A_ = ControlsMathUtil.CloneMatrix(plant.A_);
         controller.Kff_ = (plant.B_.t().mmul(plant.B_)).recpr().mmul(plant.B_.t());
         controller.r_ = r;
 
@@ -135,7 +135,7 @@ public class StateSpaceTest {
 
         StateSpaceController controller = new StateSpaceController(1, 2, 1);
         controller.K_ = new DenseMatrix("10.0 1.0");
-        controller.A_ = MathUtils.CloneMatrix(plant.A_);
+        controller.A_ = ControlsMathUtil.CloneMatrix(plant.A_);
         controller.Kff_ = (plant.B_.t().mmul(plant.B_)).recpr().mmul(plant.B_.t());
         controller.r_ = new DenseMatrix("3.0; 0.0");
 
@@ -162,7 +162,7 @@ public class StateSpaceTest {
 
         StateSpaceController controller = new StateSpaceController(1, 2, 1);
         controller.K_ = new DenseMatrix("10.0 1.0");
-        controller.A_ = MathUtils.CloneMatrix(plant.A_);
+        controller.A_ = ControlsMathUtil.CloneMatrix(plant.A_);
         controller.Kff_ = (plant.B_.t().mmul(plant.B_)).recpr().mmul(plant.B_.t());
         controller.r_ = new DenseMatrix("1.0; 0.0");
 
@@ -192,7 +192,7 @@ public class StateSpaceTest {
 
         StateSpaceController controller = new StateSpaceController(1, 2, 1);
         controller.K_ = new DenseMatrix("0.0 0.0"); //Zero gains so feedback is eliminated
-        controller.A_ = MathUtils.CloneMatrix(plant.A_);
+        controller.A_ = ControlsMathUtil.CloneMatrix(plant.A_);
         controller.Kff_ = (plant.B_.t().mmul(plant.B_)).recpr().mmul(plant.B_.t());
         controller.r_ = new DenseMatrix("0.0; 0.0");
 
@@ -225,7 +225,7 @@ public class StateSpaceTest {
 
         StateSpaceController controller = new StateSpaceController(1, 2, 1);
         controller.K_ = new DenseMatrix("0.0 0.0");
-        controller.A_ = MathUtils.CloneMatrix(plant.A_);
+        controller.A_ = ControlsMathUtil.CloneMatrix(plant.A_);
         controller.Kff_ = (plant.B_.t().mmul(plant.B_)).recpr().mmul(plant.B_.t());
         controller.r_ = new DenseMatrix("0.0; 0.0");
 
@@ -257,7 +257,7 @@ public class StateSpaceTest {
 
         StateSpaceController controller = new StateSpaceController(1, 2, 1);
         controller.K_ = new DenseMatrix("0.0 0.0");
-        controller.A_ = MathUtils.CloneMatrix(plant.A_);
+        controller.A_ = ControlsMathUtil.CloneMatrix(plant.A_);
         controller.Kff_ = (plant.B_.t().mmul(plant.B_)).recpr().mmul(plant.B_.t());
         controller.r_ = new DenseMatrix("0.0; 0.0");
 
@@ -289,7 +289,7 @@ public class StateSpaceTest {
 
         StateSpaceController controller = new StateSpaceController(1, 2, 1);
         controller.K_ = new DenseMatrix("0.0 0.0");
-        controller.A_ = MathUtils.CloneMatrix(plant.A_);
+        controller.A_ = ControlsMathUtil.CloneMatrix(plant.A_);
         controller.Kff_ = (plant.B_.t().mmul(plant.B_)).recpr().mmul(plant.B_.t());
         controller.r_ = new DenseMatrix("0.0; 0.0");
 

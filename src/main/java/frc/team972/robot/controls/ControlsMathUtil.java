@@ -2,7 +2,7 @@ package frc.team972.robot.controls;
 
 import jeigen.DenseMatrix;
 
-public class MathUtils {
+public class ControlsMathUtil {
 
     public static double Cap(double val, double min, double max) {
         double ret = val;

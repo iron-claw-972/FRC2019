@@ -30,7 +30,7 @@ public class Drive extends Subsystem {
     private static Drive mInstance = null;
 
     public Drive() {
-        mLeftFront = TalonSRXFactory.createDefaultTalon(Constants.mLeftFrontId);
+        mLeftFront = TalonSRXFactory.createDefaultTalon(Constants.kLeftFrontId);
         configureMaster(mLeftFront, true);
 
         mLeftBack = TalonSRXFactory.createDefaultTalon(Constants.kLeftBackId);
