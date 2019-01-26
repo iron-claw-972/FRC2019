@@ -33,13 +33,13 @@ public class Drive extends Subsystem {
         mLeftFront = TalonSRXFactory.createDefaultTalon(Constants.mLeftFrontId);
         configureMaster(mLeftFront, true);
 
-        mLeftBack = TalonSRXFactory.createDefaultTalon(Constants.mLeftBackId);
+        mLeftBack = TalonSRXFactory.createDefaultTalon(Constants.kLeftBackId);
         configureMaster(mLeftBack, true);
 
-        mRightFront = TalonSRXFactory.createDefaultTalon(Constants.mRightFrontId);
+        mRightFront = TalonSRXFactory.createDefaultTalon(Constants.kRightFrontId);
         configureMaster(mRightFront, false);
 
-        mRightBack = TalonSRXFactory.createDefaultTalon(Constants.mRightBackId);
+        mRightBack = TalonSRXFactory.createDefaultTalon(Constants.kRightBackId);
         configureMaster(mRightBack, false);
 
         mIsBrakeMode = true;
