@@ -13,6 +13,8 @@ import frc.team972.robot.loops.ILooper;
 public class ElevatorSubsystem extends Subsystem {
     private static ElevatorSubsystem mInstance = new ElevatorSubsystem();
 
+    private static final double maxSpeed = 1; //Feet per Second;
+
     private TalonSRX mElevatorTalon;
     private Encoder mElevatorEncoder;
 
@@ -24,7 +26,9 @@ public class ElevatorSubsystem extends Subsystem {
 
     public ElevatorSubsystem() {
         mElevatorTalon = TalonSRXFactory.createDefaultTalon(Constants.kElevatorMotorId);
+        mElevatorEncoder = new Encoder(-1, -2); //TODO Find channels
         autoMoving = false;
+        zeroSensors();
         voltage = 0;
     }
 
@@ -45,7 +49,7 @@ public class ElevatorSubsystem extends Subsystem {
 
     public void writePeriodicOutputs() {
         if(autoMoving) {
-
+            voltage = 0.0;
         } else {
             voltage = handleDeadband(axisValue * 0.2, 0.05);
         }
@@ -64,6 +68,7 @@ public class ElevatorSubsystem extends Subsystem {
     }
 
     public void zeroSensors() {
+        mElevatorEncoder.reset();
     }
 
     public void registerEnabledLoops(ILooper enabledLooper) {
