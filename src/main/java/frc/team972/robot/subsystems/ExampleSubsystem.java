@@ -44,6 +44,7 @@ public class ExampleSubsystem extends Subsystem {
     }
 
     public void outputTelemetry() {
+        System.out.println("The current example motor voltage is " + getExampleMotorVoltage());
     }
 
     public void stop() {
@@ -73,7 +74,6 @@ class ExampleMotor {
 
     double voltage_ = 0;
     public void set(double voltage) {
-        System.out.println("Example Motor Voltage set to = " + voltage);
         voltage_ = voltage;
     }
 
