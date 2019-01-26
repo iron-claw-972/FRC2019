@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import frc.team972.robot.Constants;
+import frc.team972.robot.RobotState;
 import frc.team972.robot.controls.*;
 import frc.team972.robot.driver_utils.TalonSRXFactory;
 import frc.team972.robot.loops.ILooper;
@@ -29,7 +30,6 @@ public class ElevatorSubsystem extends Subsystem {
         this(false);
     }
 
-    // bad practice.
     public ElevatorSubsystem(boolean test_mode) {
         if (test_mode == false) {
             mElevatorTalon = TalonSRXFactory.createDefaultTalon(Constants.kElevatorMotorId);
@@ -44,7 +44,10 @@ public class ElevatorSubsystem extends Subsystem {
     }
 
     public void fastPeriodic() {
-        mElevatorTalon.set(ControlMode.PercentOutput, 0);
+        elevatorController.Update(this);
+        double u = elevatorController.getElevator_u();
+        u = u * (1.0/Constants.kElevatorVoltageCap);
+        mElevatorTalon.set(ControlMode.PercentOutput, u);
     }
 
     public boolean checkSystem() {
@@ -52,6 +55,7 @@ public class ElevatorSubsystem extends Subsystem {
     }
 
     public void outputTelemetry() {
+        outputs_enabled_ = RobotState.getInstance().outputs_enabled;
     }
 
     public void stop() {

@@ -102,7 +102,7 @@ public class ElevatorTest {
 
     @Test
     public void elevatorMoveHeight() {
-        //DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
         //CalibrateDisabled();
         elevatorSubsystem.getHall_calibration_().is_calibrated = true;
@@ -113,15 +113,12 @@ public class ElevatorTest {
         elevator_.SetGoal(0.6);
         elevator_.SetWeights(false);
 
-        double last_pos = 0;
-
         for (int i = 0; i < 1000; i++) {
             elevatorSubsystem.setEncoder(plant_.y().get(0, 0) + generateRandomNoise(0.005));
 
             Update();
             Assert.assertEquals(elevator_.getElevator_u(), 0, 12);
 
-            /*
             dataset.addValue(elevatorSubsystem.getEncoder(), "encoder", Integer.toString(i));
             dataset.addValue(plant_.y().get(0,0), "plant_y", Integer.toString(i));
             dataset.addValue(plant_.x_.get(1,0), "plant_x[1]", Integer.toString(i));
@@ -129,16 +126,12 @@ public class ElevatorTest {
             dataset.addValue(elevator_.observer_.plant_.y().get(0,0), "observer_y", Integer.toString(i));
             dataset.addValue(elevator_.observer_.plant_.x_.get(1,0), "observer_x[1]", Integer.toString(i));
             dataset.addValue(elevator_.getElevator_u() * (1.0/12.0), "u", Integer.toString(i));
-            */
-
-            last_pos = elevatorSubsystem.getEncoder();
         }
 
         Assert.assertEquals(elevatorSubsystem.getEncoder(), 0.6, 0.01);
         Assert.assertEquals(elevator_.observer_.plant_.y().get(0, 0), 0.6, 0.01);
         Assert.assertEquals(elevator_.unprofiled_goal_.position, 0.6, 0.01);
         Assert.assertEquals(elevator_.profiled_goal_.position, 0.6, 0.01);
-
 
         /*
         Graphing graphing = new Graphing("state_space", "elevatorMoveHeight", dataset);

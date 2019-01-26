@@ -18,8 +18,12 @@ public class Robot extends TimedRobot {
 			Arrays.asList(Drive.getInstance()
 	));
 
+	private RobotState robotState;
+
 	@Override
 	public void robotInit() {
+		mSubsystemManager.registerEnabledLoops(mLooper);
+		mLooper.start();
 	}
 
 	@Override
@@ -28,17 +32,16 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
+		robotState.outputs_enabled = true;
 	}
 
 	@Override
 	public void teleopInit() {
-		Drive.getInstance().zeroSensors();
-
-		mSubsystemManager.registerEnabledLoops(mLooper);
-		mLooper.start();
+		robotState.outputs_enabled = true;
 	}
 
 	@Override public void teleopPeriodic() {
+		robotState.outputs_enabled = true;
 		teleopManager.update();
 		mSubsystemManager.outputToSmartDashboard();
 	}
@@ -50,11 +53,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledInit() {
-		try {
-			mLooper.stop();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		robotState.outputs_enabled = false;
 	}
 
 }

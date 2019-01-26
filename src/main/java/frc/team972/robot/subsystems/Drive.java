@@ -9,6 +9,8 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import frc.team972.robot.Constants;
+import frc.team972.robot.Robot;
+import frc.team972.robot.RobotState;
 import frc.team972.robot.driver_utils.TalonSRXFactory;
 import frc.team972.robot.teleop.ControlBoard;
 import frc.team972.robot.util.CoordinateDriveSignal;
@@ -125,6 +127,11 @@ public class Drive extends Subsystem {
 
     @Override
     public synchronized void fastPeriodic() {
+        if(RobotState.getInstance().outputs_enabled == false) {
+            setOpenLoop(new DriveSignal(0,0,0,0));
+            return;
+        }
+
         if (mDriveControlState == DriveControlState.OPEN_LOOP) {
             setMotorsOpenValue();
         } else if((mDriveControlState == DriveControlState.OPEN_LOOP_MECANUM) && (mecanumDriveSignalDesired != null)) {
