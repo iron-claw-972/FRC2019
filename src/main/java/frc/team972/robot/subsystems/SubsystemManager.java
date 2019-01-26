@@ -40,13 +40,10 @@ public class SubsystemManager implements ILooper {
         @Override
         public void onLoop(double timestamp) {
             for (Subsystem s : mAllSubsystems) {
-                s.readPeriodicInputs();
+                s.fastPeriodic();
             }
             for (Loop l : mLoops) {
                 l.onLoop(timestamp);
-            }
-            for (Subsystem s : mAllSubsystems) {
-                s.writePeriodicOutputs();
             }
         }
 
@@ -68,10 +65,7 @@ public class SubsystemManager implements ILooper {
         @Override
         public void onLoop(double timestamp) {
             for (Subsystem s : mAllSubsystems) {
-                s.readPeriodicInputs();
-            }
-            for (Subsystem s : mAllSubsystems) {
-                s.writePeriodicOutputs();
+                s.fastPeriodic();
             }
         }
 

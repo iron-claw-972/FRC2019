@@ -1,5 +1,8 @@
-package frc.team972.robot.controls;
+package frc.team972.robot;
 
+import frc.team972.robot.controls.MotionProfileConstraints;
+import frc.team972.robot.controls.MotionProfilePosition;
+import frc.team972.robot.controls.TrapezodialMotionProfile;
 import org.junit.Assert;
 import org.junit.Test;
 

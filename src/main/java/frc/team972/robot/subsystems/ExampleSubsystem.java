@@ -5,12 +5,16 @@ import frc.team972.robot.loops.ILooper;
 public class ExampleSubsystem extends Subsystem {
     private static ExampleSubsystem mInstance = new ExampleSubsystem();
 
-    private ExampleSensor exampleSensor;
-    private ExampleMotor exampleMotor;
+    private ExampleSensor exampleSensor = new ExampleSensor();
+    private ExampleMotor exampleMotor = new ExampleMotor();
 
     private double desiredVoltage = 0.0; //Initialize to sane values
 
     public void writeToLog() {
+    }
+
+    public double getExampleMotorVoltage() {
+        return exampleMotor.voltage_;
     }
 
     public void fastPeriodic() {
@@ -63,7 +67,14 @@ class ExampleSensor {
 }
 
 class ExampleMotor {
+    public double getVoltage_() {
+        return voltage_;
+    }
+
+    double voltage_ = 0;
     public void set(double voltage) {
         System.out.println("Example Motor Voltage set to = " + voltage);
+        voltage_ = voltage;
     }
+
 }

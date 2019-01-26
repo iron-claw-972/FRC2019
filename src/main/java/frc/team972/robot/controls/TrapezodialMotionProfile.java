@@ -143,12 +143,12 @@ public class TrapezodialMotionProfile {
         double accel_time =
                 (-velocity +
                         Math.sqrt(Math.abs(velocity * velocity + 2 * acceleration * accel_dist))) /
-        acceleration;
+                        acceleration;
 
         double deccel_time =
                 (-deccel_velocity + Math.sqrt(Math.abs(deccel_velocity * deccel_velocity +
-                2 * decceleration * deccel_dist))) /
-        decceleration;
+                        2 * decceleration * deccel_dist))) /
+                        decceleration;
 
         double full_speed_time =
                 full_speed_dist / constraints_.max_velocity;
@@ -172,24 +172,4 @@ public class TrapezodialMotionProfile {
         return result;
     }
 
-}
-
-class MotionProfileConstraints {
-    public double max_velocity;
-    public double max_acceleration;
-
-    public MotionProfileConstraints(double max_velocity, double max_acceleration) {
-        this.max_velocity = max_velocity;
-        this.max_acceleration = max_acceleration;
-    }
-}
-
-class MotionProfilePosition {
-    public double position;
-    public double velocity;
-
-    public MotionProfilePosition(double position, double velocity) {
-        this.position = position;
-        this.velocity = velocity;
-    }
 }
