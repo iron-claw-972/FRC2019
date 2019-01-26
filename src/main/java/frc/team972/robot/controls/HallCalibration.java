@@ -10,6 +10,6 @@ public class HallCalibration {
 
     //TODO: Implement
     public double Update(double main_sensor_value, boolean hall_value) {
-        return 0.0;
+        return main_sensor_value;
     }
 }

@@ -17,11 +17,28 @@ public class ElevatorController {
 
     private double elevator_u = 0.0;
 
-    MotionProfilePosition unprofiled_goal_ = new MotionProfilePosition(0 ,0);
-    MotionProfilePosition profiled_goal_ = new MotionProfilePosition(0 ,0);
+    public MotionProfilePosition unprofiled_goal_ = new MotionProfilePosition(0 ,0);
+    public MotionProfilePosition profiled_goal_ = new MotionProfilePosition(0 ,0);
 
     public void SetWeights(boolean second_stage) {
         //TODO: Switch out controller gains
+        plant_.A_ = new DenseMatrix("1.0 0.004791236347425109 5.181376400930422e-05; 0.0 0.917673229771176 0.020432962307718957; 0.0 0.0 1.0");
+        plant_.B_ = new DenseMatrix("5.181376400930422e-05; 0.020432962307718957; 0.0");
+        plant_.C_ = new DenseMatrix("1.0 0.0 0.0");
+        plant_.D_ = new DenseMatrix("0.0");
+
+        controller_.K_ = new DenseMatrix("16.41399515492959 -0.04285978261048596 1.0");
+        controller_.Kff_ = new DenseMatrix("0.0 48.94052976460639 0.0");
+        controller_.A_ = ControlsMathUtil.CloneMatrix(plant_.A_);
+
+        //properly initialize plant via matrix copy and L matrix
+        observer_.plant_.A_ = ControlsMathUtil.CloneMatrix(plant_.A_);
+        observer_.plant_.B_ = ControlsMathUtil.CloneMatrix(plant_.B_);
+        observer_.plant_.C_ = ControlsMathUtil.CloneMatrix(plant_.C_);
+        observer_.plant_.D_ = ControlsMathUtil.CloneMatrix(plant_.D_);
+        //preserve observer x matrix
+
+        observer_.L_ = new DenseMatrix("0.46742789528315815; 14.840398277521956; 104.89633760328563");
     }
 
     public MotionProfilePosition UpdateProfiledGoal(boolean outputs_enabled) {
