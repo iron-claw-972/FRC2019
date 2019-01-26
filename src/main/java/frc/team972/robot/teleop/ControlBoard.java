@@ -35,4 +35,7 @@ public class ControlBoard {
     }
 
     public double getElevatorAxis() { return mElevatorControlBoard.getElevatorAxis(); }
+  
+    public double getExampleJoystickValue() { return 0.254; };
+
 }
