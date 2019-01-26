@@ -34,7 +34,7 @@ ___
 
 
 ### Code Help
-##### Joysticks
+#### Joysticks:
 
 In your subsystem:
 ```
@@ -53,4 +53,11 @@ Inside GamepadDriveControlBoard:
 public double getTranslateY() {
   return -mJoystick.getRawAxis(1);
 }
+```
+#### Talons and sensors:
+
+```
+talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 100);
+talon.getSensorCollection().getQuadraturePosition();
+talon.getSensorCollection().getQuadratureVelocity();
 ```
