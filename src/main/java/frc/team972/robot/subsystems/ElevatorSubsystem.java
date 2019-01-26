@@ -21,6 +21,9 @@ public class ElevatorSubsystem extends Subsystem {
     public double old_pos_;
     public int num_encoder_fault_ticks_ = 0;
 
+    private int encoder_ticks;
+    private boolean hall_status;
+
     public ElevatorSubsystem() {
         mElevatorTalon = TalonSRXFactory.createDefaultTalon(Constants.kElevatorMotorId);
         zeroSensors();
@@ -67,15 +70,19 @@ public class ElevatorSubsystem extends Subsystem {
     }
 
     public double getEncoder() {
-        return 0.0; //TODO: Implement
+        return encoder_ticks;
     }
 
     public boolean getHall() {
-        return false; //TODO: Implement
+        return hall_status;
     }
 
-    public boolean getEncoderFault() {
-        return false; //TODO: Implement
+    public void setEncoder(int encoder_ticks) {
+        this.encoder_ticks = encoder_ticks;
+    }
+
+    public void setHall(boolean hall_status) {
+        this.hall_status = hall_status;
     }
 }
 
@@ -143,7 +150,7 @@ class ElevatorController {
             elevator_u = ControlsMathUtil.Cap(elevator_u, -Constants.kElevatorVoltageCap, Constants.kElevatorVoltageCap);
         } else if (!hall_calibration.is_calibrated()) {
             elevator_u = Constants.kCalibrationVoltage;
-        } else if (elevatorSubsystem.getEncoderFault()) {
+        } else if (elevatorSubsystem.encoder_fault_detected_) {
             elevator_u = 2.0;
         } else if (profiled_goal_.position <= 1e-5) {
             elevator_u = 0.0;
@@ -170,7 +177,7 @@ class ElevatorController {
         plant_.Update(elevator_u_mat);
 
 
-        if(elevatorSubsystem.isOutputs_enabled_()) {
+        if (elevatorSubsystem.isOutputs_enabled_()) {
             return elevator_u;
         } else {
             return 0.0;
