@@ -47,25 +47,6 @@ public class ElevatorTest{
         }
     }
 
-    /*
-    // For Unit Testing only!!!
-    // Use this to create new objects without constructor instantiation!
-    // Ideally (on a real codebase....) you would use a mocking lib or objenesis to do this
-    // as they probably do the bytecode manipulation a lot better and safer than this, but this is FRC so yeah
-    public ElevatorSubsystem getElevatorInstance() {
-        ElevatorSubsystem elevatorSubsystem = null;
-        try {
-            Field unsafeField = Unsafe.class.getDeclaredField("theUnsafe");
-            unsafeField.setAccessible(true);
-            Unsafe unsafe = (Unsafe) unsafeField.get(null);
-            return (ElevatorSubsystem) unsafe.allocateInstance(ElevatorSubsystem.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return elevatorSubsystem;
-    }
-    */
-
     @Test
     public void testNotEnabled() {
         SetGoal(1);
