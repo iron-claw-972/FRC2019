@@ -30,7 +30,7 @@ public class Constants {
     public static final double kEncoderFaultMinVoltage = 1.0;
     public static final double kCalibrationVoltage = 2.0;
 
-    public static final MotionProfileConstraints kElevatorConstraints = new MotionProfileConstraints(254, 971);
+    public static final MotionProfileConstraints kElevatorConstraints = new MotionProfileConstraints(3.0, 3.0);
     public static final double kElevatorMaxHeight = 2.0;
     public static final double kElevatorVoltageCap = 12.0;
     public static final double kHallEffectHeight = 0.0;
