@@ -31,4 +31,6 @@ public class ControlBoard {
     public boolean getNoFieldOrient() {
         return mDriveControlBoard.getNoFieldOrient();
     }
+
+    public double getExampleJoystickValue() { return 0.254; };
 }
