@@ -34,6 +34,7 @@ public class Constants {
     public static final double kElevatorMaxHeight = 2.0;
     public static final double kElevatorVoltageCap = 12.0;
     public static final double kHallEffectHeight = 0.0;
+    public static final double kElevatorHallEffectPosition = 0.0;
 
 
 }

@@ -16,7 +16,7 @@ public class ElevatorSubsystem extends Subsystem {
 
     private TalonSRX mElevatorTalon;
 
-    private HallCalibration hall_calibration_ = new HallCalibration();
+    private HallCalibration hall_calibration_ = new HallCalibration(Constants.kElevatorHallEffectPosition);
     private boolean outputs_enabled_;
 
     public boolean encoder_fault_detected_;
