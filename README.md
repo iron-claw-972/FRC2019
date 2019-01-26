@@ -24,16 +24,22 @@ ___
 
 ### Code Help
 ##### Joysticks
+
 In your subsystem:
-'''ControlBoard.getThrottle();
-'''
+```
+ControlBoard.getThrottle();
+```
+
 Inside ControlBoard:
-'''public double getThrottle() {
+```
+public double getThrottle() {
   return mDriveControlBoard.getTranslateY();
 }
-'''
+```
+
 Inside GamepadDriveControlBoard:
-'''public double getTranslateY() {
+```
+public double getTranslateY() {
   return -mJoystick.getRawAxis(1);
 }
-'''
+```
