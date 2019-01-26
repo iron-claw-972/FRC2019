@@ -31,23 +31,23 @@ public class Drive extends Subsystem {
 
     public Drive() {
         /*
-        mLeftFront = new VictorSPX(Constants.mLeftFrontId);
-        mLeftBack = new VictorSPX(Constants.mLeftBackId);
-        mRightFront = new VictorSPX(Constants.mRightFrontId);
-        mRightBack = new VictorSPX(Constants.mRightBackId);
+        kLeftFront = new VictorSPX(Constants.kLeftFrontId);
+        kLeftBack = new VictorSPX(Constants.kLeftBackId);
+        kRightFront = new VictorSPX(Constants.kRightFrontId);
+        kRightBack = new VictorSPX(Constants.kRightBackId);
         */
 
 
-        mLeftFront = TalonSRXFactory.createDefaultTalon(Constants.mLeftFrontId);
+        mLeftFront = TalonSRXFactory.createDefaultTalon(Constants.kLeftFrontId);
         configureMaster(mLeftFront, true);
 
-        mLeftBack = TalonSRXFactory.createDefaultTalon(Constants.mLeftBackId);
+        mLeftBack = TalonSRXFactory.createDefaultTalon(Constants.kLeftBackId);
         configureMaster(mLeftBack, true);
 
-        mRightFront = TalonSRXFactory.createDefaultTalon(Constants.mRightFrontId);
+        mRightFront = TalonSRXFactory.createDefaultTalon(Constants.kRightFrontId);
         configureMaster(mRightFront, false);
 
-        mRightBack = TalonSRXFactory.createDefaultTalon(Constants.mRightBackId);
+        mRightBack = TalonSRXFactory.createDefaultTalon(Constants.kRightBackId);
         configureMaster(mRightBack, false);
 
         mIsBrakeMode = true;

@@ -11,9 +11,11 @@ public class ControlBoard {
     }
 
     private GamepadDriveControlBoard mDriveControlBoard;
+    private ElevatorJoystickControlBoard mElevatorControlBoard;
 
     private ControlBoard() {
         mDriveControlBoard = GamepadDriveControlBoard.getInstance();
+        mElevatorControlBoard = ElevatorJoystickControlBoard.getInstance();
     }
 
     public double getTranslateX() {
@@ -31,4 +33,6 @@ public class ControlBoard {
     public boolean getNoFieldOrient() {
         return mDriveControlBoard.getNoFieldOrient();
     }
+
+    public double getElevatorAxis() { return mElevatorControlBoard.getElevatorAxis(); }
 }
