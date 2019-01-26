@@ -25,9 +25,11 @@ public class ElevatorSubsystem extends Subsystem {
 
     private double encoder_value;
     private boolean hall_status;
+    private double elevator_goal_pos = 0;
 
     public ElevatorSubsystem() {
         this(false);
+        elevatorController.SetWeights(false);
     }
 
     public ElevatorSubsystem(boolean test_mode) {
@@ -44,6 +46,8 @@ public class ElevatorSubsystem extends Subsystem {
     }
 
     public void fastPeriodic() {
+        elevatorController.SetGoal(elevator_goal_pos);
+
         elevatorController.Update(this);
         double u = elevatorController.getElevator_u();
         u = u * (1.0/Constants.kElevatorVoltageCap);
@@ -109,5 +113,14 @@ public class ElevatorSubsystem extends Subsystem {
     public ElevatorController getElevatorController() {
         return elevatorController;
     }
+
+    public double getElevator_goal_pos() {
+        return elevator_goal_pos;
+    }
+
+    public void setElevator_goal_pos(double elevator_goal_pos) {
+        this.elevator_goal_pos = elevator_goal_pos;
+    }
+
 
 }
