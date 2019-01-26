@@ -15,7 +15,7 @@ public class Robot extends TimedRobot {
 	private Looper mLooper = new Looper();
 
 	private final SubsystemManager mSubsystemManager = new SubsystemManager(
-			Arrays.asList(ExampleSubsystem.getInstance(), Drive.getInstance()
+			Arrays.asList(Drive.getInstance()
 	));
 
 	@Override
