@@ -27,9 +27,11 @@ public class TeleopManager {
                 MecanumHelper.mecanumDrive(-controlBoard.getTranslateX(), controlBoard.getTranslateY(), controlBoard.getRotate(), controlBoard.getNoFieldOrient())
         );
 
+        /*
         mElevator.readControllerInputs(
                 controlBoard.getElevatorAxis()
         );
+        */
       
         mExample.setDesiredVoltage(controlBoard.getExampleJoystickValue());
     }

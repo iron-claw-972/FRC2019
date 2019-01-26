@@ -10,7 +10,7 @@ import frc.team972.robot.loops.ILooper;
 import frc.team972.robot.subsystems.controller.ElevatorController;
 
 public class ElevatorSubsystem extends Subsystem {
-    private static ElevatorSubsystem mInstance = new ElevatorSubsystem();
+    private static ElevatorSubsystem mInstance;
     private ElevatorController elevatorController = new ElevatorController();
 
     private TalonSRX mElevatorTalon;
@@ -22,11 +22,20 @@ public class ElevatorSubsystem extends Subsystem {
     public double old_pos_;
     public int num_encoder_fault_ticks_ = 0;
 
-    private int encoder_ticks;
+    private double encoder_value;
     private boolean hall_status;
 
     public ElevatorSubsystem() {
-        mElevatorTalon = TalonSRXFactory.createDefaultTalon(Constants.kElevatorMotorId);
+        this(false);
+    }
+
+    // bad practice.
+    public ElevatorSubsystem(boolean test_mode) {
+        if (test_mode == false) {
+            mElevatorTalon = TalonSRXFactory.createDefaultTalon(Constants.kElevatorMotorId);
+        } else {
+            System.out.println("ElevatorSubsystem created in Test Mode");
+        }
         zeroSensors();
     }
 
@@ -59,6 +68,9 @@ public class ElevatorSubsystem extends Subsystem {
     }
 
     public static ElevatorSubsystem getInstance() {
+        if (mInstance == null) {
+            mInstance = new ElevatorSubsystem();
+        }
         return mInstance;
     }
 
@@ -70,16 +82,20 @@ public class ElevatorSubsystem extends Subsystem {
         return outputs_enabled_;
     }
 
+    public void setOutputs_enabled_(boolean outputs_enabled_) {
+        this.outputs_enabled_ = outputs_enabled_;
+    }
+
     public double getEncoder() {
-        return encoder_ticks;
+        return encoder_value;
     }
 
     public boolean getHall() {
         return hall_status;
     }
 
-    public void setEncoder(int encoder_ticks) {
-        this.encoder_ticks = encoder_ticks;
+    public void setEncoder(double encoder_value) {
+        this.encoder_value = encoder_value;
     }
 
     public void setHall(boolean hall_status) {

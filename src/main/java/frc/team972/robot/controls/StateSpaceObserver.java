@@ -12,6 +12,7 @@ public class StateSpaceObserver {
     }
 
     public StateSpaceObserver(int kNumInputs, int kNumStates, int kNumOutputs) {
+        plant_ = new StateSpacePlant(kNumInputs, kNumStates, kNumOutputs);
         L_ = DenseMatrix.zeros(kNumStates, kNumOutputs);
     }
 

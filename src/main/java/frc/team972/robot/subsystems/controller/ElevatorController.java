@@ -8,6 +8,7 @@ import jeigen.DenseMatrix;
 public class ElevatorController {
     public StateSpacePlant plant_ = new StateSpacePlant(1, 3, 1);
     public StateSpaceController controller_ = new StateSpaceController(1, 3, 1);
+
     public StateSpaceObserver observer_ = new StateSpaceObserver(1, 3, 1);
 
     public double getElevator_u() {
@@ -16,8 +17,8 @@ public class ElevatorController {
 
     private double elevator_u = 0.0;
 
-    MotionProfilePosition unprofiled_goal_;
-    MotionProfilePosition profiled_goal_;
+    MotionProfilePosition unprofiled_goal_ = new MotionProfilePosition(0 ,0);
+    MotionProfilePosition profiled_goal_ = new MotionProfilePosition(0 ,0);
 
     public void SetWeights(boolean second_stage) {
         //TODO: Switch out controller gains
@@ -35,12 +36,17 @@ public class ElevatorController {
         return profiled_goal_;
     }
 
+    public void SetGoal(double goal) {
+        unprofiled_goal_.position = ControlsMathUtil.Cap(goal, 0, Constants.kElevatorMaxHeight);
+        unprofiled_goal_.velocity = 0;
+    }
+
     public double Update(ElevatorSubsystem elevatorSubsystem) {
         HallCalibration hall_calibration = elevatorSubsystem.getHall_calibration_();
         boolean was_calibrated = hall_calibration.is_calibrated();
 
         DenseMatrix y = new DenseMatrix(1, 1);
-        y.set(1, 1, hall_calibration.Update(elevatorSubsystem.getEncoder(), elevatorSubsystem.getHall()));
+        y.set(0, 0, hall_calibration.Update(elevatorSubsystem.getEncoder(), elevatorSubsystem.getHall()));
 
         if (elevatorSubsystem.getHall_calibration_().is_calibrated) {
             SetWeights(observer_.plant_.x_.get(0, 0) >= 1.0);
@@ -54,7 +60,7 @@ public class ElevatorController {
 
         if (hall_calibration.is_calibrated() && !was_calibrated) {
             DenseMatrix x_add = new DenseMatrix(1, 1);
-            x_add.set(1, 1, hall_calibration.offset);
+            x_add.set(0, 0, hall_calibration.offset);
             observer_.plant_.x_ = (observer_.plant_.x_.add(x_add));
 
             profiled_goal_ = new MotionProfilePosition(observer_.plant_.x_.get(0, 0), observer_.plant_.x_.get(0, 1));
