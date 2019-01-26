@@ -32,5 +32,7 @@ public class Constants {
 
     public static final MotionProfileConstraints kElevatorConstraints = new MotionProfileConstraints(254, 971);
     public static final double kElevatorVoltageCap = 12.0;
+    public static final double kHallEffectHeight = 0.0;
+
 
 }
