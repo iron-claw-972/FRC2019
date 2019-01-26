@@ -7,28 +7,34 @@ import frc.team972.robot.loops.ILooper;
 import frc.team972.robot.util.CoordinateDriveSignal;
 import frc.team972.robot.Constants;
 
-public class PistonClimb_Cheblokov extends Subsystem
+public class Piston_Climb extends Subsystem
 {
-    private final double HAB_LEVEL_ONE_LEVEL_TWO_DIFF_INCHES = Constants.HabLevelOneElevationInches - Constants.HabLevelOneElevationInches;
-
+    private final double HAB_LEVEL_ONE_LEVEL_TWO_DIFF_INCHES = Constants.HabLevelTwoElevationInches - Constants.HabLevelOneElevationInches;
+    
+    private boolean takingTime = false;
     private Timer waitTimer = new Timer();
     private double time = 0;
-
+    
+    private boolean takingRange = false;
     private Ultrasonic RangeSensor = new Ultrasonic(1, 1);
     private double range = 0;
 
     private DoubleSolenoid frontPistons;
     private DoubleSolenoid backPistons;
 
-    private static PistonClimb_Cheblokov mInstance = new PistonClimb_Cheblokov();
+    private static Piston_Climb mInstance = new Piston_Climb();
     private Drive driveControl = new Drive();
 
     private boolean isClimbing = false;
 
     public double[] StageClimbTimings = new double[6];
-
+    
+    public enum currentStage {
+    	STAGE_1, STAGE_2, STAGE_3, STAGE_4, STAGE_5, STAGE_6, ABORT;
+    }
+    
     public void setStageClimbTimings(double stage1Delay, double stage2Delay, double stage3Delay, double stage4Delay, double stage5Delay, double stage6Delay)
-    { // use this in the robot code to state the climb timings, you can read how each stage uses these timings in each respetive function
+    { // use this in the robot code to state the climb timings, you can read how each stage uses these timings in each respective function
         StageClimbTimings[0] = stage1Delay;
         StageClimbTimings[1] = stage2Delay;
         StageClimbTimings[2] = stage3Delay;
@@ -51,8 +57,69 @@ public class PistonClimb_Cheblokov extends Subsystem
         waitTimer.start();
     }
 
-    public void ActivateClimbing()
+    public void ClimbingManager(boolean isClimbing, int currentStage)
     {
+		if (isClimbing) {
+			switch (currentStage) {
+			case 1:
+				if (climbStage1(StageClimbTimings[0]) == true) {
+					ClimbingManager(true, 2);
+				} else
+					ClimbingManager(false, 0);
+					//This should never occur, but if it does, there's an error
+				}
+					break;
+			case 2:
+				if (climbStage2(StageClimbTimings[1]) == true) {
+					ClimbingManager(true, 3);
+				} else
+					ClimbingManager(false, 0);
+					//This should never occur, but if it does, there's an error
+				}
+				break;
+			case 3:
+				if (climbStage3(StageClimbTimings[2]) == true) {
+					ClimbingManager(true, 4);
+				} else
+					ClimbingManager(false, 0);
+					//This should never occur, but if it does, there's an error
+				}
+				break;
+			case 4:
+				if (climbStage4(StageClimbTimings[3]) == true) {
+					ClimbingManager(true, 5);
+				} else
+					ClimbingManager(false, 0);
+					//This should never occur, but if it does, there's an error
+				}
+				break;
+			case 5:
+				if (climbStage1(StageClimbTimings[4]) == true) {
+					ClimbingManager(true, 6);
+				} else
+					ClimbingManager(false, 0);
+					//This should never occur, but if it does, there's an error
+				}
+				break;
+			case 6:
+				if (climbStage1(StageClimbTimings[0]) == true) {
+					ClimbingManager(true, 2);
+				} else
+					ClimbingManager(false, 0);
+					//This should never occur, but if it does, there's an error
+				}
+				break;
+			case 7:
+				if (climbStage1(StageClimbTimings[0]) == true) {
+					ClimbingManager(true, 2);
+				} else
+					ClimbingManager(false, 0);
+					//This should never occur, but if it does, there's an error
+				}
+				break;
+			}
+		}
+    	/*
         isClimbing = true;
         waitTimer.start();
         if(climbStage1(StageClimbTimings[0]) == true)
@@ -75,6 +142,7 @@ public class PistonClimb_Cheblokov extends Subsystem
                 }
             }
         }
+        */
     }
 
     public boolean climbStage1(double waitTime)// raising the front pistons
@@ -225,7 +293,7 @@ public class PistonClimb_Cheblokov extends Subsystem
 
     }
 
-    public static PistonClimb_Cheblokov getInstance()
+    public static Piston_Climb getInstance()
     {
         return mInstance;
     }

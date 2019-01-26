@@ -18,5 +18,7 @@ public class Constants {
     public static final int kLongCANTimeoutMs = 100;
 
     public static final double kDriveVoltageRampRate = 0.0;
-
+    
+    public static final int HabLevelOneElevationInches = 3;
+    public static final int HabLevelTwoElevationInches = 9;
 }
