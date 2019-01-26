@@ -16,6 +16,16 @@ ___
 - [ ] Add overlay to the feed from the camera (Maciej)
 - [ ] Robot localization
 
+### Subsystems TODO
+- [ ] Elevator (Daniel, Alan)
+- [ ] Arm (Ethan, Pranav)
+- [ ] Piston Climb (Maxim, Nikita)
+- [ ] Mecanum Cargo Intake (Julian, Hope)
+- [ ] Hatch Intake (Alexis, Vincent)
+- [ ] Vision Localization (Maciej)
+- [ ] State Space (Jody, Val)
+
+
 ### Set-Up Environment
 - If you don't have JDK11, install from u.nu/claw
 - JDK in folder `C:\Program Files\Java\jdk-11.0.1`

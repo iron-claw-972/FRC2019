@@ -15,11 +15,12 @@ public class Constants {
     public static final int kRightBackId = 4;
 
     //ELEVATOR MOTOR IDS
-
     public static final int kElevatorMotorId = 999;
+  
+    //ARM MOTOR IDS
+    public static final int mArmTalonId = -1;
 
     public static final int kLongCANTimeoutMs = 100;
-
     public static final double kDriveVoltageRampRate = 0.0;
 
 }
