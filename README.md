@@ -31,3 +31,26 @@ ___
 - JDK in folder `C:\Program Files\Java\jdk-11.0.1`
 - Open gitbash. Run `git init`, `git clone https://github.com/iron-claw-972/FRC2019.git`
 - Open intellij, select the stuff you downloaded. Go to build and run it, select jdk11 from program files if neccesary.
+
+
+### Code Help
+##### Joysticks
+
+In your subsystem:
+```
+ControlBoard.getThrottle();
+```
+
+Inside ControlBoard:
+```
+public double getThrottle() {
+  return mDriveControlBoard.getTranslateY();
+}
+```
+
+Inside GamepadDriveControlBoard:
+```
+public double getTranslateY() {
+  return -mJoystick.getRawAxis(1);
+}
+```
