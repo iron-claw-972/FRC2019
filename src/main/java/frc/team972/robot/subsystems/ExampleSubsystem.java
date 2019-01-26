@@ -8,11 +8,7 @@ public class ExampleSubsystem extends Subsystem {
     public void writeToLog() {
     }
 
-    public void readPeriodicInputs() {
-    }
-
-    public void writePeriodicOutputs() {
-        //System.out.println("Test");
+    public void fastPeriodic() {
     }
 
     public boolean checkSystem() {

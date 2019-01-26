@@ -39,6 +39,7 @@ public class Robot extends TimedRobot {
 
 	@Override public void teleopPeriodic() {
 		teleopManager.update();
+		mSubsystemManager.outputToSmartDashboard();
 	}
 
 	@Override

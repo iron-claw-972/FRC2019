@@ -30,14 +30,6 @@ public class Drive extends Subsystem {
     private static Drive mInstance = null;
 
     public Drive() {
-        /*
-        mLeftFront = new VictorSPX(Constants.mLeftFrontId);
-        mLeftBack = new VictorSPX(Constants.mLeftBackId);
-        mRightFront = new VictorSPX(Constants.mRightFrontId);
-        mRightBack = new VictorSPX(Constants.mRightBackId);
-        */
-
-
         mLeftFront = TalonSRXFactory.createDefaultTalon(Constants.mLeftFrontId);
         configureMaster(mLeftFront, true);
 
@@ -86,7 +78,6 @@ public class Drive extends Subsystem {
         if(mDriveControlState != DriveControlState.OPEN_LOOP_MECANUM) {
             setBrakeMode(true);
 
-            //System.out.println("Switching to mecanum open loop");
             mDriveControlState = DriveControlState.OPEN_LOOP_MECANUM;
         }
     }
@@ -95,7 +86,6 @@ public class Drive extends Subsystem {
         if (mDriveControlState != DriveControlState.OPEN_LOOP) {
             setBrakeMode(true);
 
-            //System.out.println("Switching to open loop");
             mDriveControlState = DriveControlState.OPEN_LOOP;
         }
 
@@ -134,7 +124,7 @@ public class Drive extends Subsystem {
     }
 
     @Override
-    public synchronized void writePeriodicOutputs() {
+    public synchronized void fastPeriodic() {
         if (mDriveControlState == DriveControlState.OPEN_LOOP) {
             setMotorsOpenValue();
         } else if((mDriveControlState == DriveControlState.OPEN_LOOP_MECANUM) && (mecanumDriveSignalDesired != null)) {
@@ -174,9 +164,6 @@ public class Drive extends Subsystem {
     }
 
     public void setMotorsOpenValue() {
-
-        //System.out.println(mPeriodicIO);
-
         mRightFront.set(ControlMode.PercentOutput, mPeriodicIO.right_front_demand, DemandType.ArbitraryFeedForward, 0.0);
         mLeftFront.set(ControlMode.PercentOutput, mPeriodicIO.left_front_demand, DemandType.ArbitraryFeedForward, 0.0);
         mRightBack.set(ControlMode.PercentOutput, mPeriodicIO.right_back_demand, DemandType.ArbitraryFeedForward, 0.0);
