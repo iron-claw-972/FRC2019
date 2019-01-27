@@ -5,8 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/FRC2019.iml" filepath="$PROJECT_DIR$/FRC2019.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/FRC2019.main.iml" filepath="$PROJECT_DIR$/.idea/modules/FRC2019.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/FRC2019.test.iml" filepath="$PROJECT_DIR$/.idea/modules/FRC2019.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FRC2019_main.iml" filepath="$PROJECT_DIR$/.idea/modules/FRC2019_main.iml" group="FRC2019" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FRC2019_test.iml" filepath="$PROJECT_DIR$/.idea/modules/FRC2019_test.iml" group="FRC2019" />
     </modules>
   </component>
 </project>
