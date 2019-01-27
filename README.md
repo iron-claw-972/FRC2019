@@ -1,12 +1,11 @@
 # FRC2019
 ___
 ### TODO
-- [ ] Fix code building
+- [x] Fix code building
 - [ ] Refactor Code Structure
 - [x] Add teleop logic for mecanum drive (Jody)
 - [ ] Add teleop logic for arcade drive (Val)
 - [ ] Detect alignment lines
-- [ ] Test IR vision with alignment line
 - [ ] Use alignment line to calculate relative position
 - [ ] Setup DriverStation logging
 - [ ] Send metrics to ShuffleBoard
