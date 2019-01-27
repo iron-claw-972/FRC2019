@@ -45,18 +45,9 @@ public class Robot extends TimedRobot {
 	}
 
 	@Override public void teleopPeriodic() {
-		String userDirectory = System.getProperty("user.home");
-		String nativeDirectory = userDirectory + File.separator + ".jeigen" + File.separator + "native2";
-		System.out.println(nativeDirectory);
-		/*
 		robotState.outputs_enabled = true;
 		teleopManager.update();
 		mSubsystemManager.outputToSmartDashboard();
-		*/
-
-		System.out.println(System.getProperty("os.arch"));
-		System.out.println(new DenseMatrix("1").mmul(new DenseMatrix("2")));
-
 	}
 
 	@Override
