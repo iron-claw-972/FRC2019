@@ -1,17 +1,12 @@
 package frc.team972.robot;
 
-import java.io.File;
 import java.util.Arrays;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.team972.robot.loops.Looper;
-import frc.team972.robot.subsystems.Drive;
-import frc.team972.robot.subsystems.ExampleSubsystem;
 import frc.team972.robot.subsystems.SubsystemManager;
 import frc.team972.robot.subsystems.WristSubsystem;
 import frc.team972.robot.teleop.TeleopManager;
-import jeigen.DenseMatrix;
-
 
 public class Robot extends TimedRobot {
 
