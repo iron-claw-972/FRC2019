@@ -21,6 +21,7 @@ public class Constants {
   
     //ARM MOTOR IDS
     public static final int mArmTalonId = -1;
+    public static final int kWristMotorId = 2;
 
     public static final int kLongCANTimeoutMs = 100;
     public static final double kDriveVoltageRampRate = 0.0;
@@ -35,6 +36,12 @@ public class Constants {
     public static final double kElevatorVoltageCap = 12.0;
     public static final double kHallEffectHeight = 0.0;
     public static final double kElevatorHallEffectPosition = 0.0;
+
+    public static final MotionProfileConstraints kWristConstraints = new MotionProfileConstraints(3.0, 3.0);
+    public static final double kWristMaxAngle = 180.0;
+    public static final double kWristVoltageCap = 12.0;
+    public static final double kWristHallEffectPosition = 0.0;
+
 
 
 }

@@ -33,7 +33,7 @@ public class ElevatorTest {
         elevator_.Update(elevatorSubsystem);
         SetWeights(plant_.x_.get(0, 0) > 1.0);
         DenseMatrix u_mat = new DenseMatrix(1, 1);
-        u_mat.set(0, 0, elevator_.getElevator_u() * 0.91);
+        u_mat.set(0, 0, elevator_.getElevator_u());
 
         plant_.Update(new DenseMatrix(u_mat));
     }
@@ -114,8 +114,10 @@ public class ElevatorTest {
         elevator_.SetGoal(0.6);
         elevator_.SetWeights(false);
 
+        double last_pos = 0;
+
         for (int i = 0; i < 1000; i++) {
-            elevatorSubsystem.setEncoder(plant_.y().get(0, 0) - offset + generateRandomNoise(0.005));
+            elevatorSubsystem.setEncoder(plant_.y().get(0, 0) - offset + generateRandomNoise(0.0005));
 
             Update();
             Assert.assertEquals(elevator_.getElevator_u(), 0, 12);
@@ -126,6 +128,10 @@ public class ElevatorTest {
             dataset.addValue(elevator_.observer_.plant_.y().get(0,0), "observer_y", Integer.toString(i));
             dataset.addValue(elevator_.observer_.plant_.x_.get(1,0), "observer_x[1]", Integer.toString(i));
             dataset.addValue(elevator_.getElevator_u() * (1.0/12.0), "u", Integer.toString(i));
+            //dataset.addValue((elevatorSubsystem.getEncoder() - last_pos) * 1000, "d from pid", Integer.toString(i));
+
+
+            last_pos = elevatorSubsystem.getEncoder();
         }
 
         Assert.assertEquals(plant_.y().get(0,0), 0.6, 0.01);
@@ -133,10 +139,11 @@ public class ElevatorTest {
         Assert.assertEquals(elevator_.unprofiled_goal_.position, 0.6, 0.01);
         Assert.assertEquals(elevator_.profiled_goal_.position, 0.6, 0.01);
 
-        Graphing graphing = new Graphing("state_space", "elevatorMoveHeight", dataset);
-        graphing.display();
+        //Graphing graphing = new Graphing("state_space", "elevatorMoveHeight", dataset);
+        //graphing.display();
+
         try {
-            Thread.sleep(1000 * 60);
+            Thread.sleep(1000 * 600);
         } catch (Exception e) {
             e.printStackTrace();
         }
