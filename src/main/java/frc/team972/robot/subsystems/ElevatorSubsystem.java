@@ -2,10 +2,9 @@ package frc.team972.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
 import frc.team972.robot.Constants;
 import frc.team972.robot.RobotState;
-import frc.team972.robot.controls.*;
+import frc.team972.robot.controls.HallCalibration;
 import frc.team972.robot.driver_utils.TalonSRXFactory;
 import frc.team972.robot.loops.ILooper;
 import frc.team972.robot.subsystems.controller.ElevatorController;
@@ -45,6 +44,7 @@ public class ElevatorSubsystem extends Subsystem {
 
     }
 
+    @Override
     public void fastPeriodic() {
         elevatorController.SetGoal(elevator_goal_pos);
 
@@ -54,12 +54,17 @@ public class ElevatorSubsystem extends Subsystem {
         mElevatorTalon.set(ControlMode.PercentOutput, u);
     }
 
+    @Override
+    public void slowPeriodic() {
+        outputs_enabled_ = RobotState.getInstance().outputs_enabled;
+    }
+
     public boolean checkSystem() {
         return true;
     }
 
     public void outputTelemetry() {
-        outputs_enabled_ = RobotState.getInstance().outputs_enabled;
+
     }
 
     public void stop() {

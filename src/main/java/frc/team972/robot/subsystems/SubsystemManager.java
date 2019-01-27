@@ -1,11 +1,11 @@
 package frc.team972.robot.subsystems;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import frc.team972.robot.loops.ILooper;
 import frc.team972.robot.loops.Loop;
 import frc.team972.robot.loops.Looper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SubsystemManager implements ILooper {
 
@@ -18,6 +18,10 @@ public class SubsystemManager implements ILooper {
 
     public void outputToSmartDashboard() {
         mAllSubsystems.forEach((s) -> s.outputTelemetry());
+    }
+
+    public void slowPeriodic() {
+        mAllSubsystems.forEach((s) -> s.slowPeriodic());
     }
 
     public void writeToLog() {

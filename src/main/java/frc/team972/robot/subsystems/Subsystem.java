@@ -6,6 +6,9 @@ public abstract class Subsystem {
     public void writeToLog() {
     }
 
+    public void slowPeriodic() {
+    }
+
     public void fastPeriodic() {
     }
 

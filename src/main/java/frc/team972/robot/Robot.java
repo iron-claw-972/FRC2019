@@ -1,12 +1,12 @@
 package frc.team972.robot;
 
-import java.util.Arrays;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.team972.robot.loops.Looper;
 import frc.team972.robot.subsystems.SubsystemManager;
 import frc.team972.robot.subsystems.WristSubsystem;
 import frc.team972.robot.teleop.TeleopManager;
+
+import java.util.Arrays;
 
 public class Robot extends TimedRobot {
 
@@ -42,6 +42,7 @@ public class Robot extends TimedRobot {
 	@Override public void teleopPeriodic() {
 		robotState.outputs_enabled = true;
 		teleopManager.update();
+		mSubsystemManager.slowPeriodic();
 		mSubsystemManager.outputToSmartDashboard();
 	}
 
