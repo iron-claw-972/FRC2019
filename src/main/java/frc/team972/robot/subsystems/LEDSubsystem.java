@@ -18,9 +18,9 @@ public class LEDSubsystem extends Subsystem {
             public void run() {
                 while(true) {
                     mLED.set(true);
-                    sleep(1);
+                    sleep(1000);
                     mLED.set(false);
-                    sleep(1);
+                    sleep(1000);
                 }
             }
 
