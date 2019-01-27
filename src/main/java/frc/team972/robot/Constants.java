@@ -28,7 +28,7 @@ public class Constants {
     //STATE SPACE MAGICAL STUFF
     public static final int kEncoderFaultTicksAllowed = 1024;
     public static final double kEncoderFaultMinVoltage = 1.0;
-    public static final double kCalibrationVoltage = 2.0;
+    public static final double kCalibrationVoltage = -2.0; // Calibrate downwards
 
     public static final MotionProfileConstraints kElevatorConstraints = new MotionProfileConstraints(3.0, 3.0);
     public static final double kElevatorMaxHeight = 2.0;

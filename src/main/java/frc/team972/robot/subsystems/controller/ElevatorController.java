@@ -87,11 +87,8 @@ public class ElevatorController {
         }
 
         if (hall_calibration.is_calibrated() && !was_calibrated) {
-            DenseMatrix x_add = new DenseMatrix(1, 1);
-            x_add.set(0, 0, hall_calibration.offset);
-            observer_.plant_.x_ = (observer_.plant_.x_.add(x_add));
-
-            profiled_goal_ = new MotionProfilePosition(observer_.plant_.x_.get(0, 0), observer_.plant_.x_.get(0, 1));
+            observer_.plant_.x_.set(0,0, observer_.plant_.x_.get(0,0) + hall_calibration.offset);
+            profiled_goal_ = new MotionProfilePosition(observer_.plant_.x_.get(0, 0), observer_.plant_.x_.get(1, 0));
         }
 
         UpdateProfiledGoal(elevatorSubsystem.isOutputs_enabled_());
@@ -133,7 +130,7 @@ public class ElevatorController {
         DenseMatrix elevator_u_mat = new DenseMatrix(1, 1);
         elevator_u_mat.set(0, 0, elevator_u);
         observer_.Update(elevator_u_mat, y);
-        plant_.Update(elevator_u_mat);
+        //plant_.Update(elevator_u_mat); // we do not need to update our plant, we just use the input/output matrix
 
         if (elevatorSubsystem.isOutputs_enabled_()) {
             return elevator_u;

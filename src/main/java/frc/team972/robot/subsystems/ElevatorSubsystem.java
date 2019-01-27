@@ -122,5 +122,8 @@ public class ElevatorSubsystem extends Subsystem {
         this.elevator_goal_pos = elevator_goal_pos;
     }
 
+    public boolean isCalibrated() {
+        return hall_calibration_.is_calibrated;
+    }
 
 }
