@@ -10,6 +10,8 @@ import frc.team972.robot.Constants;
 public class Piston_Climb extends Subsystem
 {
     private final double HAB_LEVEL_ONE_LEVEL_TWO_DIFF_INCHES = Constants.HabLevelTwoElevationInches - Constants.HabLevelOneElevationInches;
+    private final double speed = 0.5;
+    private final double alignmentDelay = 1.5;
     
     private boolean takingTime = false;
     private Timer waitTimer = new Timer();
@@ -29,8 +31,8 @@ public class Piston_Climb extends Subsystem
 
     public double[] StageClimbTimings = new double[6];
     
-    public enum currentStage {
-    	STAGE_1, STAGE_2, STAGE_3, STAGE_4, STAGE_5, STAGE_6, ABORT;
+    public enum stage {
+    	STAGE_1, STAGE_2, STAGE_3, STAGE_4, STAGE_5, STAGE_6, ABORT, END;
     }
     
     public void setStageClimbTimings(double stage1Delay, double stage2Delay, double stage3Delay, double stage4Delay, double stage5Delay, double stage6Delay)
@@ -49,74 +51,75 @@ public class Piston_Climb extends Subsystem
         backPistons = new DoubleSolenoid(3, 4);
     }
 
-    private void RestartTimer()
-    {
+    private void restartTimer() {
         waitTimer.stop();
         time = 0;
         waitTimer.reset();
         waitTimer.start();
     }
 
-    public void ClimbingManager(boolean isClimbing, int currentStage)
+    public void startClimbing() {
+        ClimbingManager(STAGE_1);
+    }
+
+    private void ClimbingManager(stage currentStage)
     {
-		if (isClimbing) {
-			switch (currentStage) {
-			case 1:
+        switch (currentStage) {
+			case STAGE_1:
 				if (climbStage1(StageClimbTimings[0]) == true) {
-					ClimbingManager(true, 2);
-				} else
-					ClimbingManager(false, 0);
+					ClimbingManager(true, STAGE_2);
+				} else {
+					ClimbingManager(false, ABORT);
 					//This should never occur, but if it does, there's an error
 				}
 					break;
-			case 2:
-				if (climbStage2(StageClimbTimings[1]) == true) {
-					ClimbingManager(true, 3);
-				} else
-					ClimbingManager(false, 0);
+			case STAGE_2:
+				if (climbStage2(StageClimbTimings[1], true) == true) {
+					ClimbingManager(true, STAGE_3);
+				} else {
+					ClimbingManager(false, ABORT);
 					//This should never occur, but if it does, there's an error
 				}
 				break;
-			case 3:
+			case STAGE_3:
 				if (climbStage3(StageClimbTimings[2]) == true) {
-					ClimbingManager(true, 4);
-				} else
-					ClimbingManager(false, 0);
+					ClimbingManager(true, STAGE_4);
+				} else {
+					ClimbingManager(false, ABORT);
 					//This should never occur, but if it does, there's an error
 				}
 				break;
-			case 4:
+			case STAGE_4:
 				if (climbStage4(StageClimbTimings[3]) == true) {
-					ClimbingManager(true, 5);
-				} else
-					ClimbingManager(false, 0);
+					ClimbingManager(true, STAGE_5);
+				} else {
+					ClimbingManager(false, ABORT);
 					//This should never occur, but if it does, there's an error
 				}
 				break;
-			case 5:
-				if (climbStage1(StageClimbTimings[4]) == true) {
-					ClimbingManager(true, 6);
-				} else
-					ClimbingManager(false, 0);
+			case STAGE_5:
+				if (climbStage5(StageClimbTimings[4]) == true) {
+					ClimbingManager(true, STAGE_6);
+				} else {
+					ClimbingManager(false, ABORT);
 					//This should never occur, but if it does, there's an error
 				}
 				break;
-			case 6:
-				if (climbStage1(StageClimbTimings[0]) == true) {
-					ClimbingManager(true, 2);
-				} else
-					ClimbingManager(false, 0);
+			case STAGE_6:
+				if (climbStage6(StageClimbTimings[5]) == true) {
+					ClimbingManager(false, END);
+					//TODO: Output "done" to driver station
+				} else {
+					ClimbingManager(false, ABORT);
 					//This should never occur, but if it does, there's an error
 				}
 				break;
-			case 7:
-				if (climbStage1(StageClimbTimings[0]) == true) {
-					ClimbingManager(true, 2);
-				} else
-					ClimbingManager(false, 0);
-					//This should never occur, but if it does, there's an error
-				}
+			case ABORT:
+			    abortClimb();
+			    ClimbingManager(true, END);
 				break;
+			case END:
+                break;
 			}
 		}
     	/*
@@ -143,20 +146,20 @@ public class Piston_Climb extends Subsystem
             }
         }
         */
-    }
 
     public boolean climbStage1(double waitTime)// raising the front pistons
     {
-        RestartTimer(); // restart the timer so that it is representing the time spent on this stage
+        restartTimer(); // restart the timer so that it is representing the time spent on this stage
         setFrontPistonsState(true);
         while(time <= waitTime);
+        takingTime = false;
         return true;
     }
 
     public boolean climbStage2(double waitTime, boolean safety) // safety is recommended while the numbers have not been calibrated as desired
     { // move forward until the stage is detected and waitTime driven forward since detection
-        RestartTimer(); // restart the timer so that it is representing the time spent on this stage
-        CoordinateDriveSignal forward = new CoordinateDriveSignal(1.0, 0.0, 0.0, false);
+        restartTimer();
+        CoordinateDriveSignal forward = new CoordinateDriveSignal(speed, 0.0, 0.0, false);
         driveControl.setOpenLoopMecanum(forward); // drive forward
         double detectionTime = 0;
         boolean abortion = false;
@@ -165,13 +168,13 @@ public class Piston_Climb extends Subsystem
             if(range <= HAB_LEVEL_ONE_LEVEL_TWO_DIFF_INCHES) // check for UltraSonic sensor to be over the stage platform
             {
                 detectionTime = waitTimer.get();
-                if(time >= detectionTime + waitTime) // drive forward for waitTime and then stop
+                if(time >= detectionTime + alignmentDelay && time >= waitTime) // drive forward for waitTime and then stop
                 {
                     driveControl.setOpenLoopMecanum(new CoordinateDriveSignal(0,0,0, false)); // stop after "waitTime"
                     break;
                 }
             }
-            if(time >= waitTime + 7.5 && safety == true && detectionTime == 0) // abort the climbing if it was trying for more than 7.5 seconds
+            if(time >= waitTime && safety == true && detectionTime == 0) // abort the climbing if it was trying for more than 7.5 seconds
             {
                 driveControl.setOpenLoopMecanum(new CoordinateDriveSignal(0,0,0, false));
                 // TODO: OUTPUT ABORT MESSAGE TO THE FRC DRIVE STATION CONSOLE
@@ -191,7 +194,7 @@ public class Piston_Climb extends Subsystem
 
     public boolean climbStage3(double waitTime) // retract the front pistons to lower the front wheels, over the platform
     {
-        RestartTimer();
+        restartTimer();
         setFrontPistonsState(false);
         while(time <= waitTime);
         return true;
@@ -199,30 +202,36 @@ public class Piston_Climb extends Subsystem
 
     public boolean climbStage4(double waitTime) // raise the back pistons
     {
-        RestartTimer(); // restart the timer so that it is representing the time spent on this stage
+        restartTimer(); // restart the timer so that it is representing the time spent on this stage
         setBackPistonsState(true);
         while(time <= waitTime);
         return true;
     }
 
-    public boolean climbStage5(double waitTime) // be careful when using the waitTime on this as it may move the robot over the platform
+    public boolean climbStage5(double waitTime) // be careful when using the waitTime on this
     { // move forward until the stage is detected and waitTime driven forward since detection
-        RestartTimer(); // restart the timer so that it is representing the time spent on this stage
-        CoordinateDriveSignal forward = new CoordinateDriveSignal(1.0, 0.0, 0.0, false);
+        restartTimer(); // restart the timer so that it is representing the time spent on this stage
+        CoordinateDriveSignal forward = new CoordinateDriveSignal(speed, 0.0, 0.0, false);
         driveControl.setOpenLoopMecanum(forward); // drive forward
-        while(time <= waitTime)
-        {
-            driveControl.setOpenLoopMecanum(new CoordinateDriveSignal(0,0,0, false));
-        }
+        while(time <= waitTime);
         return true;
     }
 
     public boolean climbStage6(double waitTime) // retract the back pistons to close the climbing loop
     {
-        RestartTimer(); // restart the timer so that it is representing the time spent on this stage
+        restartTimer(); // restart the timer so that it is representing the time spent on this stage
         setBackPistonsState(false);
         while(time <= waitTime);
         return true;
+    }
+
+    public void abortClimb() {
+        driveControl.mecanumDriveSignalDesired(new coordinateDriveSignal(0, 0, 0, false));
+        frontPistonsState(false);
+        backPistonsState(false);
+        waitTimer.stop();
+        time = 0;
+        waitTimer.reset();
     }
 
     public void writeToLog()
@@ -239,8 +248,13 @@ public class Piston_Climb extends Subsystem
     {
         if(isClimbing)
         {
-            time = waitTimer.get();
-            range = RangeSensor.getRangeInches();
+            if(takingTime) {
+                time = waitTimer.get();
+            }
+
+            if(takingRange) {
+                range = RangeSensor.getRangeInches();
+            }
         }
     }
 
