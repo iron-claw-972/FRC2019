@@ -49,14 +49,12 @@ public class WristSubsystem extends Subsystem {
     }
 
     public void fastPeriodic() {
-        /*
         wristController.SetGoal(wrist_goal_pos);
 
         wristController.Update(this);
         u = wristController.getWrist_u();
         u = u * (1.0/Constants.kWristVoltageCap);
         mWristTalon.set(ControlMode.PercentOutput, u);
-        */
     }
 
     public boolean checkSystem() {
@@ -65,9 +63,6 @@ public class WristSubsystem extends Subsystem {
 
     public void outputTelemetry() {
         outputs_enabled_ = RobotState.getInstance().outputs_enabled;
-        wristController.SetGoal(0.0);
-        DenseMatrix test = new DenseMatrix("2");
-        System.out.println(new DenseMatrix("3").mmul(test) + " hmm");
     }
 
     public void stop() {
