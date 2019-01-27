@@ -14,12 +14,7 @@ import static org.junit.Assert.assertEquals;
 
 public class DriveTest {
 
-    @Mock
-    TalonSRX srxMock;
-
-    @InjectMocks
-    Drive driveMock;
-
+    //TODO: write proper unit test
     @Test
     public void testMecanum() {
 //        DriveSignal signal = MecanumHelper.cartesianCalculate(

@@ -6,12 +6,10 @@ public abstract class Subsystem {
     public void writeToLog() {
     }
 
-    // Optional design pattern for caching periodic reads to avoid hammering the HAL/CAN.
-    public void readPeriodicInputs() {
+    public void slowPeriodic() {
     }
 
-    // Optional design pattern for caching periodic writes to avoid hammering the HAL/CAN.
-    public void writePeriodicOutputs() {
+    public void fastPeriodic() {
     }
 
     public abstract boolean checkSystem();

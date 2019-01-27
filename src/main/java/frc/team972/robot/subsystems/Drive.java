@@ -9,6 +9,8 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import frc.team972.robot.Constants;
+import frc.team972.robot.Robot;
+import frc.team972.robot.RobotState;
 import frc.team972.robot.driver_utils.TalonSRXFactory;
 import frc.team972.robot.teleop.ControlBoard;
 import frc.team972.robot.util.CoordinateDriveSignal;
@@ -30,24 +32,16 @@ public class Drive extends Subsystem {
     private static Drive mInstance = null;
 
     public Drive() {
-        /*
-        mLeftFront = new VictorSPX(Constants.mLeftFrontId);
-        mLeftBack = new VictorSPX(Constants.mLeftBackId);
-        mRightFront = new VictorSPX(Constants.mRightFrontId);
-        mRightBack = new VictorSPX(Constants.mRightBackId);
-        */
-
-
-        mLeftFront = TalonSRXFactory.createDefaultTalon(Constants.mLeftFrontId);
+        mLeftFront = TalonSRXFactory.createDefaultTalon(Constants.kLeftFrontId);
         configureMaster(mLeftFront, true);
 
-        mLeftBack = TalonSRXFactory.createDefaultTalon(Constants.mLeftBackId);
+        mLeftBack = TalonSRXFactory.createDefaultTalon(Constants.kLeftBackId);
         configureMaster(mLeftBack, true);
 
-        mRightFront = TalonSRXFactory.createDefaultTalon(Constants.mRightFrontId);
+        mRightFront = TalonSRXFactory.createDefaultTalon(Constants.kRightFrontId);
         configureMaster(mRightFront, false);
 
-        mRightBack = TalonSRXFactory.createDefaultTalon(Constants.mRightBackId);
+        mRightBack = TalonSRXFactory.createDefaultTalon(Constants.kRightBackId);
         configureMaster(mRightBack, false);
 
         mIsBrakeMode = true;
@@ -86,7 +80,6 @@ public class Drive extends Subsystem {
         if(mDriveControlState != DriveControlState.OPEN_LOOP_MECANUM) {
             setBrakeMode(true);
 
-            //System.out.println("Switching to mecanum open loop");
             mDriveControlState = DriveControlState.OPEN_LOOP_MECANUM;
         }
     }
@@ -95,7 +88,6 @@ public class Drive extends Subsystem {
         if (mDriveControlState != DriveControlState.OPEN_LOOP) {
             setBrakeMode(true);
 
-            //System.out.println("Switching to open loop");
             mDriveControlState = DriveControlState.OPEN_LOOP;
         }
 
@@ -134,7 +126,12 @@ public class Drive extends Subsystem {
     }
 
     @Override
-    public synchronized void writePeriodicOutputs() {
+    public synchronized void fastPeriodic() {
+        if(RobotState.getInstance().outputs_enabled == false) {
+            setOpenLoop(new DriveSignal(0,0,0,0));
+            return;
+        }
+
         if (mDriveControlState == DriveControlState.OPEN_LOOP) {
             setMotorsOpenValue();
         } else if((mDriveControlState == DriveControlState.OPEN_LOOP_MECANUM) && (mecanumDriveSignalDesired != null)) {
@@ -174,9 +171,6 @@ public class Drive extends Subsystem {
     }
 
     public void setMotorsOpenValue() {
-
-        //System.out.println(mPeriodicIO);
-
         mRightFront.set(ControlMode.PercentOutput, mPeriodicIO.right_front_demand, DemandType.ArbitraryFeedForward, 0.0);
         mLeftFront.set(ControlMode.PercentOutput, mPeriodicIO.left_front_demand, DemandType.ArbitraryFeedForward, 0.0);
         mRightBack.set(ControlMode.PercentOutput, mPeriodicIO.right_back_demand, DemandType.ArbitraryFeedForward, 0.0);

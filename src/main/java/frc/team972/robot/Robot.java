@@ -1,13 +1,12 @@
 package frc.team972.robot;
 
-import java.util.Arrays;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.team972.robot.loops.Looper;
-import frc.team972.robot.subsystems.Drive;
-import frc.team972.robot.subsystems.ExampleSubsystem;
 import frc.team972.robot.subsystems.SubsystemManager;
+import frc.team972.robot.subsystems.WristSubsystem;
 import frc.team972.robot.teleop.TeleopManager;
+
+import java.util.Arrays;
 
 public class Robot extends TimedRobot {
 
@@ -15,11 +14,15 @@ public class Robot extends TimedRobot {
 	private Looper mLooper = new Looper();
 
 	private final SubsystemManager mSubsystemManager = new SubsystemManager(
-			Arrays.asList(ExampleSubsystem.getInstance(), Drive.getInstance()
+			Arrays.asList(WristSubsystem.getInstance()
 	));
+
+	private RobotState robotState = RobotState.getInstance();
 
 	@Override
 	public void robotInit() {
+		mSubsystemManager.registerEnabledLoops(mLooper);
+		mLooper.start();
 	}
 
 	@Override
@@ -28,17 +31,19 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
+		robotState.outputs_enabled = true;
 	}
 
 	@Override
 	public void teleopInit() {
-		Drive.getInstance().zeroSensors();
-		mSubsystemManager.registerEnabledLoops(mLooper);
-		mLooper.start();
+		robotState.outputs_enabled = true;
 	}
 
 	@Override public void teleopPeriodic() {
+		robotState.outputs_enabled = true;
 		teleopManager.update();
+		mSubsystemManager.slowPeriodic();
+		mSubsystemManager.outputToSmartDashboard();
 	}
 
 	@Override
@@ -48,11 +53,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledInit() {
-		try {
-			mLooper.stop();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		robotState.outputs_enabled = false;
 	}
 
 }
