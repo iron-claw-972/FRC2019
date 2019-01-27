@@ -42,6 +42,5 @@ public class Constants {
     public static final double kWristHallEffectPosition = Math.toRadians(10);
     public static final int kWristEncoderCountPerRev = 1024;
 
-
-
+    public static final int kLEDId = -2;
 }
