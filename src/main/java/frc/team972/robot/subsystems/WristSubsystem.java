@@ -29,7 +29,7 @@ public class WristSubsystem extends Subsystem {
 
     public WristSubsystem() {
         this(false);
-        wristController.SetWeights(false);
+        wristController.SetWeights();
         mWristTalon = TalonSRXFactory.createDefaultTalon(Constants.kWristMotorId);
     }
 

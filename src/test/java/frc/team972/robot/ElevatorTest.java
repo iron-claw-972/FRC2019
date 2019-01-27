@@ -34,7 +34,6 @@ public class ElevatorTest {
     }
 
     public void Calibrate(double offset) {
-        elevatorSubsystem.setEncoder(0);
         elevatorSubsystem.setHall(false);
         elevatorSubsystem.setOutputs_enabled_(true);
 
@@ -43,6 +42,24 @@ public class ElevatorTest {
         SetGoal(0); //Bottom out
 
         for (int i = 0; i < 1000; i++) {
+            elevatorSubsystem.setEncoder(plant_.y().get(0, 0) - offset);
+            Update();
+            Assert.assertEquals(elevator_.getElevator_u(), 0, 12);
+        }
+
+        Assert.assertEquals(elevator_.unprofiled_goal_.position, 0, 0.001);
+        Assert.assertEquals(elevator_.profiled_goal_.position, 0, 0.001);
+        Assert.assertTrue(elevatorSubsystem.isCalibrated());
+    }
+
+    public void CalibrateDisabled(double offset) {
+        elevatorSubsystem.setHall(false);
+        elevatorSubsystem.setOutputs_enabled_(false);
+
+        plant_.x_.set(0,0, offset);
+
+        for (int i = 0; i < 1000; i++) {
+            plant_.x_.set(0,0, offset - ((double)i/1000.0) * offset);
             elevatorSubsystem.setEncoder(plant_.y().get(0, 0) - offset);
             Update();
             Assert.assertEquals(elevator_.getElevator_u(), 0, 12);
@@ -68,13 +85,26 @@ public class ElevatorTest {
 
     @Test
     public void testCalibration() {
-        elevatorSubsystem.setEncoder(0);
-        elevatorSubsystem.setHall(false);
         elevatorSubsystem.setOutputs_enabled_(true);
 
         double offset = 0.5;
 
+        SetGoal(0); //Bottom out
+
         Calibrate(offset);
+
+        Assert.assertEquals(elevator_.unprofiled_goal_.position, 0, 0.001);
+        Assert.assertEquals(elevator_.profiled_goal_.position, 0, 0.001);
+        Assert.assertTrue(elevatorSubsystem.isCalibrated());
+    }
+
+    @Test
+    public void testCalibrationDisabled() {
+        elevatorSubsystem.setOutputs_enabled_(false);
+
+        double offset = 0.5;
+
+        CalibrateDisabled(offset);
 
         Assert.assertEquals(elevator_.unprofiled_goal_.position, 0, 0.001);
         Assert.assertEquals(elevator_.profiled_goal_.position, 0, 0.001);
@@ -108,7 +138,6 @@ public class ElevatorTest {
             dataset.addValue(elevator_.observer_.plant_.x_.get(1,0), "observer_x[1]", Integer.toString(i));
             dataset.addValue(elevator_.getElevator_u() * (1.0/12.0), "u", Integer.toString(i));
             //dataset.addValue((elevatorSubsystem.getEncoder() - last_pos) * 1000, "d from pid", Integer.toString(i));
-
 
             last_pos = elevatorSubsystem.getEncoder();
         }

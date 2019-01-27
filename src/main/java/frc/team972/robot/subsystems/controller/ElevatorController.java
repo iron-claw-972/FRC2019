@@ -97,15 +97,13 @@ public class ElevatorController {
 
         elevator_u = controller_.Update(observer_.plant_.x_, controller_.r_).get(0, 0); //yay!
 
-        if (!elevatorSubsystem.isOutputs_enabled_()) {
-            elevator_u = ControlsMathUtil.Cap(elevator_u, -Constants.kElevatorVoltageCap, Constants.kElevatorVoltageCap);
-        } else if (!hall_calibration.is_calibrated()) {
+        if (!hall_calibration.is_calibrated()) {
             elevator_u = Constants.kCalibrationVoltage;
         } else if (elevatorSubsystem.encoder_fault_detected_) {
             elevator_u = 2.0;
-        } else if (profiled_goal_.position <= 1e-5) {
-            elevator_u = 0.0;
         }
+
+        elevator_u = ControlsMathUtil.Cap(elevator_u, -Constants.kElevatorVoltageCap, Constants.kElevatorVoltageCap);
 
         if (elevatorSubsystem.old_pos_ == elevatorSubsystem.getEncoder() &&
                 Math.abs(elevator_u) >= Constants.kEncoderFaultMinVoltage) {
@@ -126,11 +124,11 @@ public class ElevatorController {
         elevator_u_mat.set(0, 0, elevator_u);
         observer_.Update(elevator_u_mat, y);
 
-        if (elevatorSubsystem.isOutputs_enabled_()) {
-            return elevator_u;
-        } else {
-            return 0.0;
+        if (!elevatorSubsystem.isOutputs_enabled_()) {
+            elevator_u = 0.0;
         }
+
+        return elevator_u;
     }
 
 }

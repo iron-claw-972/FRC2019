@@ -31,7 +31,7 @@ public class WristController {
     public MotionProfilePosition unprofiled_goal_ = new MotionProfilePosition(0 ,0);
     public MotionProfilePosition profiled_goal_ = new MotionProfilePosition(0 ,0);
 
-    public void SetWeights(boolean second_stage) {
+    public void SetWeights() {
         plant_.A_ = ControlsMathUtil.CloneMatrix(WristGains.A());
         plant_.B_ = ControlsMathUtil.CloneMatrix(WristGains.B());
         plant_.C_ = ControlsMathUtil.CloneMatrix(WristGains.C());
@@ -76,7 +76,7 @@ public class WristController {
         y.set(0, 0, hall_calibration.Update(wristSubsystem.getEncoder(), wristSubsystem.getHall()));
 
         //Gain Schedule
-        SetWeights(false);
+        SetWeights();
 
         if (!wristSubsystem.isOutputs_enabled_()) {
             profiled_goal_ = new MotionProfilePosition(observer_.plant_.x_.get(0, 0), observer_.plant_.x_.get(1, 0));
@@ -98,9 +98,7 @@ public class WristController {
 
         wrist_u = controller_.Update(observer_.plant_.x_, controller_.r_).get(0, 0);
 
-        if (!wristSubsystem.isOutputs_enabled_()) {
-            wrist_u = ControlsMathUtil.Cap(wrist_u, -Constants.kWristVoltageCap, Constants.kWristVoltageCap);
-        } else if (!hall_calibration.is_calibrated()) {
+        if (!hall_calibration.is_calibrated()) {
             wrist_u = Constants.kCalibrationVoltage;
         } else if (profiled_goal_.position <= 1e-5) {
             wrist_u = 0.0;
@@ -114,11 +112,11 @@ public class WristController {
         wrist_u_mat.set(0, 0, wrist_u);
         observer_.Update(wrist_u_mat, y);
 
-        if (wristSubsystem.isOutputs_enabled_()) {
-            return wrist_u;
-        } else {
-            return 0.0;
+        if (!wristSubsystem.isOutputs_enabled_()) {
+            wrist_u = 0.0;
         }
+
+        return wrist_u;
     }
 
 }
