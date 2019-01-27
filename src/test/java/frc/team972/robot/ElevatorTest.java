@@ -139,8 +139,8 @@ public class ElevatorTest {
         Assert.assertEquals(elevator_.unprofiled_goal_.position, 0.6, 0.01);
         Assert.assertEquals(elevator_.profiled_goal_.position, 0.6, 0.01);
 
-        //Graphing graphing = new Graphing("state_space", "elevatorMoveHeight", dataset);
-        //graphing.display();
+        Graphing graphing = new Graphing("state_space", "elevatorMoveHeight", dataset);
+        graphing.display();
 
         try {
             Thread.sleep(1000 * 600);

@@ -12,6 +12,7 @@ import frc.team972.robot.subsystems.WristSubsystem;
 import frc.team972.robot.teleop.TeleopManager;
 import jeigen.DenseMatrix;
 
+
 public class Robot extends TimedRobot {
 
 	private TeleopManager teleopManager = TeleopManager.getInstance();
