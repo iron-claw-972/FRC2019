@@ -1,6 +1,8 @@
 package frc.team972.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import frc.team972.robot.Constants;
@@ -16,6 +18,7 @@ public class WristSubsystem extends Subsystem {
     private WristController wristController = new WristController();
 
     private TalonSRX mWristTalon;
+    private SensorCollection mSensorCollection;
 
     private HallCalibration hall_calibration_ = new HallCalibration(Constants.kWristHallEffectPosition);
     private boolean outputs_enabled_;
@@ -30,7 +33,10 @@ public class WristSubsystem extends Subsystem {
     public WristSubsystem() {
         this(false);
         wristController.SetWeights();
+
         mWristTalon = TalonSRXFactory.createDefaultTalon(Constants.kWristMotorId);
+        mWristTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 100);
+        mSensorCollection = mWristTalon.getSensorCollection();
     }
 
     public WristSubsystem(boolean test_mode) {
@@ -46,13 +52,24 @@ public class WristSubsystem extends Subsystem {
 
     }
 
+    @Override
     public void fastPeriodic() {
+        double sensor_pos_native_units = mSensorCollection.getQuadraturePosition();
+        double sensor_pos_rad = (sensor_pos_native_units/Constants.kWristEncoderCountPerRev) * Math.PI * 2;
+
+        this.setEncoder(sensor_pos_rad); // Update our sensor count so the wrist controller can read the current sensor output
+
         wristController.SetGoal(wrist_goal_pos);
 
         wristController.Update(this);
         u = wristController.getWrist_u();
-        u = u * (1.0/Constants.kWristVoltageCap);
+        u = u * (1.0 / Constants.kWristVoltageCap);
         mWristTalon.set(ControlMode.PercentOutput, u);
+    }
+
+    @Override
+    public void slowPeriodic() {
+        outputs_enabled_ = RobotState.getInstance().outputs_enabled;
     }
 
     public boolean checkSystem() {
@@ -60,7 +77,6 @@ public class WristSubsystem extends Subsystem {
     }
 
     public void outputTelemetry() {
-        outputs_enabled_ = RobotState.getInstance().outputs_enabled;
     }
 
     public void stop() {
