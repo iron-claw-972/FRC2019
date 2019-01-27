@@ -39,8 +39,6 @@ deploy {
 // Also defines JUnit 4.
 dependencies {
     compile files('lib/hamcrest-core-1.3.jar')
-    //compile files('lib/Jeigen-onefat.jar')
-    compile files('lib/jna-4.1.0.jar')
 
     compile wpi.deps.wpilib()
     compile wpi.deps.vendor.java()

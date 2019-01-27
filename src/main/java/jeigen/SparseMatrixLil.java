@@ -306,67 +306,6 @@ public class SparseMatrixLil {
             }
         }
     }
-    static int allocateSparseMatrix(SparseMatrixLil mat ) {
-        //        Collections.sort(mat.entries);
-        mat.validateEntries();
-        return JeigenJna.Jeigen.allocateSparseMatrix(mat.size, mat.rows, mat.cols, 
-                mat.rowIdx, mat.colIdx, mat.values);        
-    }
-    static SparseMatrixLil getSparseMatrixFromHandle(int handle ) {
-        int[] stats = new int[3];
-        JeigenJna.Jeigen.getSparseMatrixStats(handle, stats);
-        int rows = stats[0];
-        int cols = stats[1];
-        int numEntries = stats[2];
-//        int[] rowarray = new int[numEntries];
-//        int[] colarray = new int[numEntries];
-//        double[] valuearray = new double[numEntries];
-        SparseMatrixLil result = new SparseMatrixLil(rows,cols);
-        result.reserve(numEntries);
-        JeigenJna.Jeigen.getSparseMatrix(handle, result.rowIdx, result.colIdx, result.values);
-        result.size = numEntries;
-//        for( int i = 0; i < numEntries; i++ ) {
-//            result.append(rowarray[i], colarray[i], valuearray[i]);
-//        }
-        return result;
-    }
-    public SparseMatrixLil mmul( SparseMatrixLil second ) {
-        if( this.cols != second.rows ) {
-            throw new RuntimeException("matrix size mismatch " + shape() + " vs " + second.shape());
-        }
-        int onehandle = allocateSparseMatrix(this);
-        int twohandle = allocateSparseMatrix(second);
-        int resulthandle = JeigenJna.Jeigen.sparse_multiply(rows, cols, second.cols, onehandle, twohandle);
-        JeigenJna.Jeigen.freeSparseMatrix(onehandle);
-        JeigenJna.Jeigen.freeSparseMatrix(twohandle);
-        SparseMatrixLil result = getSparseMatrixFromHandle(resulthandle); 
-        JeigenJna.Jeigen.freeSparseMatrix(resulthandle);
-        return result;
-    }
-    public SparseMatrixLil dummy_mmul( SparseMatrixLil second, int numFilledResultColumns ) {
-        if( this.cols != second.rows ) {
-            throw new RuntimeException("matrix size mismatch " + shape() + " vs " + second.shape());
-        }
-        int onehandle = allocateSparseMatrix(this);
-        int twohandle = allocateSparseMatrix(second);
-        int resulthandle = JeigenJna.Jeigen.sparse_dummy_op2(rows, cols, second.cols, onehandle, twohandle, numFilledResultColumns);
-        JeigenJna.Jeigen.freeSparseMatrix(onehandle);
-        JeigenJna.Jeigen.freeSparseMatrix(twohandle);
-        SparseMatrixLil result = getSparseMatrixFromHandle(resulthandle); 
-        JeigenJna.Jeigen.freeSparseMatrix(resulthandle);
-        return result;
-    }
-    public DenseMatrix mmul( DenseMatrix second ) {
-        if( this.cols != second.rows ) {
-            throw new RuntimeException("matrix size mismatch " + shape() + " vs " + second.shape());
-        }
-        int onehandle = allocateSparseMatrix(this);
-        DenseMatrix result = new DenseMatrix(this.rows, second.cols);
-        JeigenJna.Jeigen.sparse_dense_multiply(rows, cols, second.cols,
-                onehandle, second.values, result.values );
-        JeigenJna.Jeigen.freeSparseMatrix(onehandle);
-        return result;
-    }
     public DenseMatrix eq( DenseMatrix second ) {
         return this.toDense().eq(second);
     }

@@ -1041,30 +1041,15 @@ public class DenseMatrix {
     }
 
     /**
-     * Tests latency of multiplication: does everything except call the Eigen multiplication routine
-     */
-    public DenseMatrix dummy_mmul( DenseMatrix second ) { // just to test latency
-        if( this.cols != second.rows ) {
-            throw new RuntimeException("matrix size mismatch " + shape() + " vs " + second.shape());
-        }
-        DenseMatrix result = new DenseMatrix(this.rows, second.cols);
-        JeigenJna.Jeigen.dense_dummy_op2(this.rows, this.cols, second.cols, this.values, second.values, result.values );
-        return result;
-    }
-    /**
      * matrix multiplication of this by second
      */
     public DenseMatrix mmul( DenseMatrix second ) {
         if( this.cols != second.rows ) {
             throw new RuntimeException("matrix size mismatch " + shape() + " vs " + second.shape());
         }
-        DenseMatrix result = new DenseMatrix(this.rows, second.cols);
-
-        //JeigenJna.Jeigen.dense_multiply(this.rows, this.cols, second.cols, this.values, second.values, result.values );
 
         int aRows = this.rows;
         int aColumns = this.cols;
-        int bRows = second.rows;
         int bColumns = second.cols;
 
         Double[][] C = new Double[aRows][bColumns];
@@ -1082,22 +1067,7 @@ public class DenseMatrix {
             }
         }
 
-
         return new DenseMatrix(C);
-    }
-    /**
-     * matrix multiplication of this by second
-     */
-    public DenseMatrix mmul( SparseMatrixLil second ) {
-        if( this.cols != second.rows ) {
-            throw new RuntimeException("matrix size mismatch " + shape() + " vs " + second.shape());
-        }
-        int twohandle = SparseMatrixLil.allocateSparseMatrix(second);
-        DenseMatrix result = new DenseMatrix(this.rows, second.cols);
-        JeigenJna.Jeigen.dense_sparse_multiply(rows, cols, second.cols,
-                values, twohandle, result.values );
-        JeigenJna.Jeigen.freeSparseMatrix(twohandle);
-        return result;
     }
     /**
      * returns matrix with number of rows and columns of this
@@ -1140,32 +1110,6 @@ public class DenseMatrix {
         stringBuilder.append("\n");
         return stringBuilder.toString();
     }
-    /**
-     * Solves this * result = b, and returns result
-     * ldlt is fast, needs this to be positive or negative definite
-     */
-    public DenseMatrix ldltSolve(DenseMatrix b ) {
-        if( this.rows != b.rows ) {
-            throw new RuntimeException("ldltsolve matrix size mismatch " + shape() + " vs " + b.shape());
-        }
-        DenseMatrix result = new DenseMatrix(this.cols, b.cols);
-        JeigenJna.Jeigen.ldlt_solve(rows, cols, b.cols,
-                values, b.values, result.values );
-        return result;
-    }
-    /**
-     * Solves this * result = b, and returns result
-     * Relatively slow, but accurate, and no conditions on this
-     */
-    public DenseMatrix fullPivHouseholderQRSolve(DenseMatrix b ) {
-        if( this.rows != b.rows ) {
-            throw new RuntimeException("ldltsolve matrix size mismatch " + shape() + " vs " + b.shape());
-        }
-        DenseMatrix result = new DenseMatrix(this.cols, b.cols);
-        JeigenJna.Jeigen.fullpivhouseholderqr_solve(rows, cols, b.cols,
-                values, b.values, result.values );
-        return result;
-    }
     public static class EigenResult {
         public DenseMatrixComplex values; // will be n * 1 matrix, where n * n 
                                           // is size of the vectors matrix
@@ -1175,19 +1119,6 @@ public class DenseMatrix {
             this.vectors = vectors;
         }
     }
-    public EigenResult eig() {
-        if( this.cols != this.rows ) {
-            throw new RuntimeException("eig matrix size error: must be square matrix");
-        }
-        DenseMatrix eigenValuesReal = new DenseMatrix(this.rows, 1 );
-        DenseMatrix eigenValuesImag = new DenseMatrix(this.rows, 1 );
-        DenseMatrix eigenVectorsReal = new DenseMatrix(this.cols,this.cols);
-        DenseMatrix eigenVectorsImag = new DenseMatrix(this.cols,this.cols);
-        JeigenJna.Jeigen.jeigen_eig( rows, values, eigenValuesReal.values, eigenValuesImag.values,
-             eigenVectorsReal.values, eigenVectorsImag.values );
-        return new EigenResult( new DenseMatrixComplex( eigenValuesReal, eigenValuesImag ),
-           new DenseMatrixComplex( eigenVectorsReal, eigenVectorsImag ) );
-    }
     public static class PseudoEigenResult {
         public DenseMatrix values;
         public DenseMatrix vectors;
@@ -1195,31 +1126,6 @@ public class DenseMatrix {
             this.values = eigenValues;
             this.vectors = eigenVectors;
         }
-    }
-    public PseudoEigenResult peig() {
-        if( this.cols != this.rows ) {
-            throw new RuntimeException("eig matrix size error: must be square matrix");
-        }
-        DenseMatrix eigenValues = new DenseMatrix(this.rows, this.cols );
-        DenseMatrix eigenVectors = new DenseMatrix(this.cols,this.cols);
-        JeigenJna.Jeigen.jeigen_peig( rows, values, eigenValues.values, eigenVectors.values );
-        return new PseudoEigenResult( eigenValues, eigenVectors );
-    }
-    public DenseMatrix mexp() {
-        if( this.cols != this.rows ) {
-            throw new RuntimeException("exp matrix size error: must be square matrix");
-        }
-        DenseMatrix result = new DenseMatrix(this.cols,this.cols);
-        JeigenJna.Jeigen.jeigen_exp(rows,values,result.values);
-        return result;
-    }
-    public DenseMatrix mlog() {
-        if( this.cols != this.rows ) {
-            throw new RuntimeException("log matrix size error: must be square matrix");
-        }
-        DenseMatrix result = new DenseMatrix(this.cols,this.cols);
-        JeigenJna.Jeigen.jeigen_log(rows,values,result.values);
-        return result;
     }
     /**
      * Stores result of singular value decomposition
@@ -1255,22 +1161,7 @@ public class DenseMatrix {
     public DenseMatrix meanOverRows(DenseMatrix keyColumns ) {
         return DenseAggregator.meanOverRows(this, keyColumns);
     }
-    /**
-     * Calculates singular value decomposition on this
-     * returns SvdResult containing U,S,V
-     * uses Jacobi, which is accurate, and good for small matrices
-     */
-    public SvdResult svd() { // returns the thin U and V (Note:  I have no objection to extending this to make
-        // the thinness of U and V optional)
-        int n = rows;
-        int p = cols;
-        int m = Math.min(n,p);
-        DenseMatrix U = zeros(n,m);
-        DenseMatrix S = zeros(m,1);
-        DenseMatrix V = zeros(p,m);
-        JeigenJna.Jeigen.svd_dense(rows, cols, values, U.values, S.values, V.values);
-        return new SvdResult(U, S, V);
-    }
+
     /**
      * converts this matrix to sparse lil format
      */
