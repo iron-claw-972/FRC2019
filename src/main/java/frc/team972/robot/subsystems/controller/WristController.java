@@ -32,23 +32,21 @@ public class WristController {
     public MotionProfilePosition profiled_goal_ = new MotionProfilePosition(0 ,0);
 
     public void SetWeights(boolean second_stage) {
-        //TODO: Switch out controller gains
-        plant_.A_ = ControlsMathUtil.CloneMatrix(WristGains.first_stage_gain_A);
-        plant_.B_ = ControlsMathUtil.CloneMatrix(WristGains.first_stage_gain_B);
-        plant_.C_ = ControlsMathUtil.CloneMatrix(WristGains.first_stage_gain_C);
-        plant_.D_ = ControlsMathUtil.CloneMatrix(WristGains.first_stage_gain_D);
+        plant_.A_ = ControlsMathUtil.CloneMatrix(WristGains.A());
+        plant_.B_ = ControlsMathUtil.CloneMatrix(WristGains.B());
+        plant_.C_ = ControlsMathUtil.CloneMatrix(WristGains.C());
+        plant_.D_ = ControlsMathUtil.CloneMatrix(WristGains.D());
 
-        controller_.K_ = ControlsMathUtil.CloneMatrix(WristGains.first_stage_gain_K_);
-        controller_.Kff_ = ControlsMathUtil.CloneMatrix(WristGains.first_stage_gain_Kff_);
-        controller_.A_ = ControlsMathUtil.CloneMatrix(WristGains.first_stage_gain_A);
+        controller_.K_ = ControlsMathUtil.CloneMatrix(WristGains.K());
+        controller_.Kff_ = ControlsMathUtil.CloneMatrix(WristGains.Kff());
+        controller_.A_ = ControlsMathUtil.CloneMatrix(WristGains.A());
 
-        observer_.L_ =  ControlsMathUtil.CloneMatrix(WristGains.first_stage_gain_L);
+        observer_.L_ =  ControlsMathUtil.CloneMatrix(WristGains.L());
 
-        //properly initialize plant via matrix copy and L matrix
-        observer_.plant_.A_ = ControlsMathUtil.CloneMatrix(plant_.A_);
-        observer_.plant_.B_ = ControlsMathUtil.CloneMatrix(plant_.B_);
-        observer_.plant_.C_ = ControlsMathUtil.CloneMatrix(plant_.C_);
-        observer_.plant_.D_ = ControlsMathUtil.CloneMatrix(plant_.D_);
+        observer_.plant_.A_ = ControlsMathUtil.CloneMatrix(WristGains.A());
+        observer_.plant_.B_ = ControlsMathUtil.CloneMatrix(WristGains.B());
+        observer_.plant_.C_ = ControlsMathUtil.CloneMatrix(WristGains.C());
+        observer_.plant_.D_ = ControlsMathUtil.CloneMatrix(WristGains.D());
         //preserve observer x matrix
     }
 
@@ -58,7 +56,7 @@ public class WristController {
         if (outputs_enabled) {
             profiled_goal_ = profile.Calculate(5.0 * 0.001); // 5 ms
         } else {
-            profiled_goal_ = profile.Calculate(0.0); //deded robot
+            profiled_goal_ = profile.Calculate(0.0);
         }
 
         return profiled_goal_;
@@ -69,6 +67,7 @@ public class WristController {
         unprofiled_goal_.velocity = 0;
     }
 
+    @SuppressWarnings("Duplicates")
     public double Update(WristSubsystem wristSubsystem) {
         HallCalibration hall_calibration = wristSubsystem.getHall_calibration_();
         boolean was_calibrated = hall_calibration.is_calibrated();
@@ -76,11 +75,8 @@ public class WristController {
         DenseMatrix y = new DenseMatrix(1, 1);
         y.set(0, 0, hall_calibration.Update(wristSubsystem.getEncoder(), wristSubsystem.getHall()));
 
-        if (wristSubsystem.getHall_calibration_().is_calibrated) {
-            SetWeights(observer_.plant_.x_.get(0, 0) >= 1.0);
-        } else {
-            SetWeights(false);
-        }
+        //Gain Schedule
+        SetWeights(false);
 
         if (!wristSubsystem.isOutputs_enabled_()) {
             profiled_goal_ = new MotionProfilePosition(observer_.plant_.x_.get(0, 0), observer_.plant_.x_.get(1, 0));
@@ -100,37 +96,23 @@ public class WristController {
 
         controller_.r_ = r;
 
-        wrist_u = controller_.Update(observer_.plant_.x_, controller_.r_).get(0, 0); //yay!
+        wrist_u = controller_.Update(observer_.plant_.x_, controller_.r_).get(0, 0);
 
         if (!wristSubsystem.isOutputs_enabled_()) {
             wrist_u = ControlsMathUtil.Cap(wrist_u, -Constants.kWristVoltageCap, Constants.kWristVoltageCap);
         } else if (!hall_calibration.is_calibrated()) {
             wrist_u = Constants.kCalibrationVoltage;
-        } else if (wristSubsystem.encoder_fault_detected_) {
-            wrist_u = 2.0;
         } else if (profiled_goal_.position <= 1e-5) {
             wrist_u = 0.0;
         }
 
-        if (wristSubsystem.old_pos_ == wristSubsystem.getEncoder() &&
-                Math.abs(wrist_u) >= Constants.kEncoderFaultMinVoltage) {
-            wristSubsystem.num_encoder_fault_ticks_++;
-            if (wristSubsystem.num_encoder_fault_ticks_ > Constants.kEncoderFaultTicksAllowed) {
-                wristSubsystem.encoder_fault_detected_ = true;
-            }
-        } else if (wristSubsystem.old_pos_ != wristSubsystem.getEncoder()) {
-            wristSubsystem.num_encoder_fault_ticks_ = 0;
-            wristSubsystem.encoder_fault_detected_ = false;
-        }
-
-        wrist_u = ControlsMathUtil.Cap(wrist_u, -Constants.kWristVoltageCap, Constants.kWristVoltageCap); //Cap... again?
+        wrist_u = ControlsMathUtil.Cap(wrist_u, -Constants.kWristVoltageCap, Constants.kWristVoltageCap);
 
         wristSubsystem.old_pos_ = wristSubsystem.getEncoder();
 
         DenseMatrix wrist_u_mat = new DenseMatrix(1, 1);
         wrist_u_mat.set(0, 0, wrist_u);
         observer_.Update(wrist_u_mat, y);
-        //plant_.Update(wrist_u_mat); // we do not need to update our plant, we just use the input/output matrix
 
         if (wristSubsystem.isOutputs_enabled_()) {
             return wrist_u;

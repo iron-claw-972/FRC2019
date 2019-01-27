@@ -32,24 +32,21 @@ public class ElevatorController {
     public MotionProfilePosition profiled_goal_ = new MotionProfilePosition(0 ,0);
 
     public void SetWeights(boolean second_stage) {
-        //TODO: Switch out controller gains
-        plant_.A_ = ControlsMathUtil.CloneMatrix(ElevatorGains.first_stage_gain_A);
-        plant_.B_ = ControlsMathUtil.CloneMatrix(ElevatorGains.first_stage_gain_B);
-        plant_.C_ = ControlsMathUtil.CloneMatrix(ElevatorGains.first_stage_gain_C);
-        plant_.D_ = ControlsMathUtil.CloneMatrix(ElevatorGains.first_stage_gain_D);
+        plant_.A_ = ControlsMathUtil.CloneMatrix(ElevatorGains.A());
+        plant_.B_ = ControlsMathUtil.CloneMatrix(ElevatorGains.B());
+        plant_.C_ = ControlsMathUtil.CloneMatrix(ElevatorGains.C());
+        plant_.D_ = ControlsMathUtil.CloneMatrix(ElevatorGains.D());
 
-        controller_.K_ = ControlsMathUtil.CloneMatrix(ElevatorGains.first_stage_gain_K_);
-        controller_.Kff_ = ControlsMathUtil.CloneMatrix(ElevatorGains.first_stage_gain_Kff_);
-        controller_.A_ = ControlsMathUtil.CloneMatrix(ElevatorGains.first_stage_gain_A);
+        controller_.K_ = ControlsMathUtil.CloneMatrix(ElevatorGains.K());
+        controller_.Kff_ = ControlsMathUtil.CloneMatrix(ElevatorGains.Kff());
+        controller_.A_ = ControlsMathUtil.CloneMatrix(ElevatorGains.A());
 
-        observer_.L_ =  ControlsMathUtil.CloneMatrix(ElevatorGains.first_stage_gain_L);
+        observer_.L_ =  ControlsMathUtil.CloneMatrix(ElevatorGains.L());
 
-        //properly initialize plant via matrix copy and L matrix
-        observer_.plant_.A_ = ControlsMathUtil.CloneMatrix(plant_.A_);
-        observer_.plant_.B_ = ControlsMathUtil.CloneMatrix(plant_.B_);
-        observer_.plant_.C_ = ControlsMathUtil.CloneMatrix(plant_.C_);
-        observer_.plant_.D_ = ControlsMathUtil.CloneMatrix(plant_.D_);
-        //preserve observer x matrix
+        observer_.plant_.A_ = ControlsMathUtil.CloneMatrix(ElevatorGains.A());
+        observer_.plant_.B_ = ControlsMathUtil.CloneMatrix(ElevatorGains.B());
+        observer_.plant_.C_ = ControlsMathUtil.CloneMatrix(ElevatorGains.C());
+        observer_.plant_.D_ = ControlsMathUtil.CloneMatrix(ElevatorGains.D());
     }
 
     public MotionProfilePosition UpdateProfiledGoal(boolean outputs_enabled) {
@@ -69,6 +66,7 @@ public class ElevatorController {
         unprofiled_goal_.velocity = 0;
     }
 
+    @SuppressWarnings("Duplicates")
     public double Update(ElevatorSubsystem elevatorSubsystem) {
         HallCalibration hall_calibration = elevatorSubsystem.getHall_calibration_();
         boolean was_calibrated = hall_calibration.is_calibrated();
@@ -76,11 +74,8 @@ public class ElevatorController {
         DenseMatrix y = new DenseMatrix(1, 1);
         y.set(0, 0, hall_calibration.Update(elevatorSubsystem.getEncoder(), elevatorSubsystem.getHall()));
 
-        if (elevatorSubsystem.getHall_calibration_().is_calibrated) {
-            SetWeights(observer_.plant_.x_.get(0, 0) >= 1.0);
-        } else {
-            SetWeights(false);
-        }
+        //Gain Schedule
+        SetWeights(false);
 
         if (!elevatorSubsystem.isOutputs_enabled_()) {
             profiled_goal_ = new MotionProfilePosition(observer_.plant_.x_.get(0, 0), observer_.plant_.x_.get(1, 0));
@@ -130,7 +125,6 @@ public class ElevatorController {
         DenseMatrix elevator_u_mat = new DenseMatrix(1, 1);
         elevator_u_mat.set(0, 0, elevator_u);
         observer_.Update(elevator_u_mat, y);
-        //plant_.Update(elevator_u_mat); // we do not need to update our plant, we just use the input/output matrix
 
         if (elevatorSubsystem.isOutputs_enabled_()) {
             return elevator_u;

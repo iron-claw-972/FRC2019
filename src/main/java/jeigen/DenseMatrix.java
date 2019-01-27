@@ -1055,7 +1055,7 @@ public class DenseMatrix {
         Double[][] C = new Double[aRows][bColumns];
         for (int i = 0; i < aRows; i++) {
             for (int j = 0; j < bColumns; j++) {
-                C[i][j] = 0.00000;
+                C[i][j] = 0.0;
             }
         }
 

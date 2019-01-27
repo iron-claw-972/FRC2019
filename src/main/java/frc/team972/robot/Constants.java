@@ -34,8 +34,7 @@ public class Constants {
     public static final MotionProfileConstraints kElevatorConstraints = new MotionProfileConstraints(3.0, 3.0);
     public static final double kElevatorMaxHeight = 2.0;
     public static final double kElevatorVoltageCap = 12.0;
-    public static final double kHallEffectHeight = 0.0;
-    public static final double kElevatorHallEffectPosition = 0.0;
+    public static final double kElevatorHallEffectPosition = 0.1;
 
     public static final MotionProfileConstraints kWristConstraints = new MotionProfileConstraints(3.0, 3.0);
     public static final double kWristMaxAngle = 180.0;

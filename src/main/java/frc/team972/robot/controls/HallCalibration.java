@@ -19,6 +19,10 @@ public class HallCalibration {
         return is_calibrated;
     }
 
+    public double getCorrectedValue(double main_sensor_value) {
+        return main_sensor_value + offset;
+    }
+
     public double Update(double main_sensor_value, boolean hall_value) {
         if (hall_value) {
             // Update the max and min values for when the hall sensor is triggered. Set

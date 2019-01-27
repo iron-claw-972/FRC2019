@@ -20,9 +20,7 @@ public class WristSubsystem extends Subsystem {
     private HallCalibration hall_calibration_ = new HallCalibration(Constants.kWristHallEffectPosition);
     private boolean outputs_enabled_;
 
-    public boolean encoder_fault_detected_;
     public double old_pos_;
-    public int num_encoder_fault_ticks_ = 0;
 
     private double encoder_value;
     private boolean hall_status;
@@ -72,10 +70,6 @@ public class WristSubsystem extends Subsystem {
     }
 
     public void registerEnabledLoops(ILooper enabledLooper) {
-    }
-
-    private double handleDeadband(double value, double deadband) {
-        return Math.abs(value) > deadband ? value : 0.0;
     }
 
     public static WristSubsystem getInstance() {
