@@ -4,7 +4,7 @@
 !.gradle/*
 bin/
 out/
-*.gitignore
+!.gitignore
 
 
 
