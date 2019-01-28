@@ -28,6 +28,7 @@ public class ExampleSubsystem extends Subsystem {
         if(exampleSensor.motorStop()) {
             real_voltage = 0.0;
         }
+        System.out.print(""); // We have to do this to keep the unit test thread alive because JUnit likes to kill spawned threads....
 
         //Output control-loop calculated values to hardware
         exampleMotor.set(real_voltage);

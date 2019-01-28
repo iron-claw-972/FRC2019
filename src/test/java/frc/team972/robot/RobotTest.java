@@ -28,6 +28,14 @@ public class RobotTest {
         };
     }
 
+    private Callable<Boolean> exampleVoltageZero() {
+        return new Callable<Boolean>() {
+            public Boolean call() throws Exception {
+                return ExampleSubsystem.getInstance().getExampleMotorVoltage() == 0.0;
+            }
+        };
+    }
+
 	@Test
 	public void testExampleArch() {
 		ExampleSubsystem exampleSubsystem = new ExampleSubsystem(); //A new sub-system is created
@@ -44,8 +52,25 @@ public class RobotTest {
         mLooper.start();
 
         ExampleSubsystem.getInstance().setDesiredVoltage(12.0);
-
         await().atMost(1, TimeUnit.SECONDS).until(exampleVoltageMaxed());
     }
 
+    @Test
+    public void testExampleArchThreadsStopStart() {
+        SubsystemManager mSubsystemManager = new SubsystemManager(Arrays.asList(ExampleSubsystem.getInstance()));
+        Looper mLooper = new Looper();
+        mSubsystemManager.registerLoops(mLooper);
+        mLooper.start();
+
+        ExampleSubsystem.getInstance().setDesiredVoltage(12.0);
+        await().atMost(1, TimeUnit.SECONDS).until(exampleVoltageMaxed());
+
+        ExampleSubsystem.getInstance().setDesiredVoltage(0.0);
+        await().atMost(1, TimeUnit.SECONDS).until(exampleVoltageZero());
+
+        mLooper.stop(); // Stop the loop
+        ExampleSubsystem.getInstance().setDesiredVoltage(12.0); // Set a new desired
+        await().atMost(1, TimeUnit.SECONDS).until(exampleVoltageZero()); // We should not reach the desired because we killed the loop
+
+    }
 }

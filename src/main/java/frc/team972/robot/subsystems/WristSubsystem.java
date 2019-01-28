@@ -57,7 +57,7 @@ public class WristSubsystem extends Subsystem {
         outputs_enabled_ = RobotState.getInstance().outputs_enabled;
 
         double sensor_pos_native_units = mSensorCollection.getQuadraturePosition();
-        double sensor_pos_rad = (sensor_pos_native_units/Constants.kWristEncoderCountPerRev) * Math.PI * 2.0 * (1.0/4.0);
+        double sensor_pos_rad = (sensor_pos_native_units / Constants.kWristEncoderCountPerRev) * Math.PI * 2.0 * (1.0 / 4.0);
 
         this.setEncoder(sensor_pos_rad); // Update our sensor count so the wrist controller can read the current sensor output
         this.setHall(false); //cheat
@@ -83,14 +83,16 @@ public class WristSubsystem extends Subsystem {
     }
 
     public void outputTelemetry() {
-        System.out.println(u + " " + wrist_goal_pos + " " + this.getEncoder() + " " + wristController.observer_.plant_.y().get(0,0));
+        System.out.println(u + " " + wrist_goal_pos + " " + this.getEncoder() + " " + wristController.observer_.plant_.y().get(0, 0));
     }
 
     public void stop() {
     }
 
     public void zeroSensors() {
-        mWristTalon.getSensorCollection().setQuadraturePosition(0, 100);
+        if (mWristTalon != null) {
+            mWristTalon.getSensorCollection().setQuadraturePosition(0, 100);
+        }
     }
 
     public static WristSubsystem getInstance() {
