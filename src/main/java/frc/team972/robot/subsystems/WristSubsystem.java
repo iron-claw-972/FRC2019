@@ -4,14 +4,11 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
 import frc.team972.robot.Constants;
 import frc.team972.robot.RobotState;
-import frc.team972.robot.controls.*;
+import frc.team972.robot.controls.HallCalibration;
 import frc.team972.robot.driver_utils.TalonSRXFactory;
-import frc.team972.robot.loops.ILooper;
 import frc.team972.robot.subsystems.controller.WristController;
-import jeigen.DenseMatrix;
 
 public class WristSubsystem extends Subsystem {
     private static WristSubsystem mInstance;
@@ -94,9 +91,6 @@ public class WristSubsystem extends Subsystem {
 
     public void zeroSensors() {
         mWristTalon.getSensorCollection().setQuadraturePosition(0, 100);
-    }
-
-    public void registerEnabledLoops(ILooper enabledLooper) {
     }
 
     public static WristSubsystem getInstance() {

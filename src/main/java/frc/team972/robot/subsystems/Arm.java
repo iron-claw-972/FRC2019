@@ -1,12 +1,10 @@
 package frc.team972.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import frc.team972.robot.loops.ILooper;
-import frc.team972.robot.driver_utils.TalonSRXFactory;
-import frc.team972.robot.util.PIDHandler;
-import edu.wpi.first.wpilibj.Encoder;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import frc.team972.robot.Constants;
+import frc.team972.robot.driver_utils.TalonSRXFactory;
+import frc.team972.robot.util.PIDHandler;
 
 public class Arm extends Subsystem {
     //General initializations
@@ -71,9 +69,6 @@ public class Arm extends Subsystem {
 
     public void zeroSensors() {
 
-    }
-
-    public void registerEnabledLoops(ILooper enabledLooper) {
     }
 
     public void setDesiredArmAngle(double angle){

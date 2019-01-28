@@ -6,7 +6,6 @@ import frc.team972.robot.Constants;
 import frc.team972.robot.RobotState;
 import frc.team972.robot.controls.HallCalibration;
 import frc.team972.robot.driver_utils.TalonSRXFactory;
-import frc.team972.robot.loops.ILooper;
 import frc.team972.robot.subsystems.controller.ElevatorController;
 
 public class ElevatorSubsystem extends Subsystem {
@@ -73,13 +72,6 @@ public class ElevatorSubsystem extends Subsystem {
     }
 
     public void zeroSensors() {
-    }
-
-    public void registerEnabledLoops(ILooper enabledLooper) {
-    }
-
-    private double handleDeadband(double value, double deadband) {
-        return Math.abs(value) > deadband ? value : 0.0;
     }
 
     public static ElevatorSubsystem getInstance() {

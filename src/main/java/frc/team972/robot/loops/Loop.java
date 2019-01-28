@@ -1,10 +1,11 @@
 package frc.team972.robot.loops;
 
 public interface Loop {
+    void onStart(double timestamp);
 
-    public void onStart(double timestamp);
+    void onLoop(double timestamp);
 
-    public void onLoop(double timestamp);
+    void onStop(double timestamp);
 
-    public void onStop(double timestamp);
+    String getName();
 }

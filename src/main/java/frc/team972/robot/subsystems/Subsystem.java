@@ -1,7 +1,5 @@
 package frc.team972.robot.subsystems;
 
-import frc.team972.robot.loops.ILooper;
-
 public abstract class Subsystem {
     public void writeToLog() {
     }
@@ -19,8 +17,5 @@ public abstract class Subsystem {
     public abstract void stop();
 
     public void zeroSensors() {
-    }
-
-    public void registerEnabledLoops(ILooper enabledLooper) {
     }
 }

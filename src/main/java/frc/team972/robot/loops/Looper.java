@@ -12,7 +12,6 @@ public class Looper implements ILooper {
 
     private boolean running_;
 
-    private final Scheduler scheduler_;
     private final List<Loop> loops_;
     private final Object taskRunningLock_ = new Object();
     private double timestamp_ = 0;
@@ -23,21 +22,27 @@ public class Looper implements ILooper {
         public void runCrashTracked() {
             synchronized (taskRunningLock_) {
                 if (running_) {
-                    double now = System.currentTimeMillis();
-
+                    //SPAWN NEW THREAD
                     for (Loop loop : loops_) {
-                        loop.onLoop(now);
+                        Thread thread = new Thread() {
+                            public void run() {
+                                while (running_) {
+                                    double now = System.currentTimeMillis();
+                                    loop.onLoop(now);
+                                    dt_ = now - timestamp_;
+                                    timestamp_ = now;
+                                }
+                            }
+                        };
+                        System.out.println("Spawning new Thread: " + loop.getName());
+                        thread.start();
                     }
-
-                    dt_ = now - timestamp_;
-                    timestamp_ = now;
                 }
             }
         }
     };
 
     public Looper() {
-        scheduler_ = new Scheduler(runnable_);
         running_ = false;
         loops_ = new ArrayList<>();
     }
@@ -59,17 +64,16 @@ public class Looper implements ILooper {
                 }
                 running_ = true;
             }
-            scheduler_.startPeriodic(kPeriod);
+            runnable_.run();
         }
     }
 
     public synchronized void stop() {
         if (running_) {
-            scheduler_.stop();
             System.out.println("Stopping loops");
             synchronized (taskRunningLock_) {
                 running_ = false;
-                timestamp_ =  System.currentTimeMillis();
+                timestamp_ = System.currentTimeMillis();
                 for (Loop loop : loops_) {
                     System.out.println("Stopping " + loop);
                     loop.onStop(timestamp_);

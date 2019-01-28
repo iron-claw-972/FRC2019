@@ -1,7 +1,5 @@
 package frc.team972.robot.subsystems;
 
-import frc.team972.robot.loops.ILooper;
-
 public class ExampleSubsystem extends Subsystem {
     private static ExampleSubsystem mInstance = new ExampleSubsystem();
 
@@ -51,9 +49,6 @@ public class ExampleSubsystem extends Subsystem {
     }
 
     public void zeroSensors() {
-    }
-
-    public void registerEnabledLoops(ILooper enabledLooper) {
     }
 
     public static ExampleSubsystem getInstance() {

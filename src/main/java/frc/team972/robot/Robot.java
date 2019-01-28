@@ -21,7 +21,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
-		mSubsystemManager.registerEnabledLoops(mLooper);
+		mSubsystemManager.registerLoops(mLooper); // This loop runs FOREVER!
 		mLooper.start();
 	}
 

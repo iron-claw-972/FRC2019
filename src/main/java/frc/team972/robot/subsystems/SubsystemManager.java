@@ -1,19 +1,23 @@
 package frc.team972.robot.subsystems;
 
-import frc.team972.robot.loops.ILooper;
 import frc.team972.robot.loops.Loop;
 import frc.team972.robot.loops.Looper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SubsystemManager implements ILooper {
+public class SubsystemManager {
 
     private final List<Subsystem> mAllSubsystems;
     private List<Loop> mLoops = new ArrayList<>();
 
     public SubsystemManager(List<Subsystem> allSubsystems) {
         mAllSubsystems = allSubsystems;
+        for (Subsystem subsystem : allSubsystems) {
+            SubsystemLoop subsystemLoop = new SubsystemLoop(subsystem, subsystem.getClass().getName());
+            subsystemLoop.name = subsystem.toString();
+            mLoops.add(subsystemLoop);
+        }
     }
 
     public void outputToSmartDashboard() {
@@ -32,34 +36,14 @@ public class SubsystemManager implements ILooper {
         mAllSubsystems.forEach((s) -> s.stop());
     }
 
-    private class EnabledLoop implements Loop {
+    private class SubsystemLoop implements Loop {
+        Subsystem subsystem;
+        String name = "";
 
-        @Override
-        public void onStart(double timestamp) {
-            for (Loop l : mLoops) {
-                l.onStart(timestamp);
-            }
+        public SubsystemLoop(Subsystem subsystem, String name) {
+            this.subsystem = subsystem;
+            this.name = name;
         }
-
-        @Override
-        public void onLoop(double timestamp) {
-            for (Subsystem s : mAllSubsystems) {
-                s.fastPeriodic();
-            }
-            for (Loop l : mLoops) {
-                l.onLoop(timestamp);
-            }
-        }
-
-        @Override
-        public void onStop(double timestamp) {
-            for (Loop l : mLoops) {
-                l.onStop(timestamp);
-            }
-        }
-    }
-
-    private class DisabledLoop implements Loop {
 
         @Override
         public void onStart(double timestamp) {
@@ -68,28 +52,23 @@ public class SubsystemManager implements ILooper {
 
         @Override
         public void onLoop(double timestamp) {
-            for (Subsystem s : mAllSubsystems) {
-                s.fastPeriodic();
-            }
+            subsystem.fastPeriodic();
         }
 
         @Override
         public void onStop(double timestamp) {
+            subsystem.stop();
+        }
 
+        @Override
+        public String getName() {
+            return name;
         }
     }
 
-    public void registerEnabledLoops(Looper enabledLooper) {
-        mAllSubsystems.forEach((s) -> s.registerEnabledLoops(this));
-        enabledLooper.register(new EnabledLoop());
-    }
-
-    public void registerDisabledLoops(Looper disabledLooper) {
-        disabledLooper.register(new DisabledLoop());
-    }
-
-    @Override
-    public void register(Loop loop) {
-        mLoops.add(loop);
+    public void registerLoops(Looper mLooper) {
+        for (Loop subsystemLoop : mLoops) {
+            mLooper.register(subsystemLoop);
+        }
     }
 }
