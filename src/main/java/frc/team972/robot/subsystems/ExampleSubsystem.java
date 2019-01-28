@@ -12,7 +12,7 @@ public class ExampleSubsystem extends Subsystem {
     }
 
     public double getExampleMotorVoltage() {
-        return exampleMotor.voltage_;
+        return exampleMotor.getVoltage_();
     }
 
     public void fastPeriodic() {

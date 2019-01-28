@@ -6,7 +6,10 @@ import frc.team972.robot.subsystems.SubsystemManager;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -16,6 +19,14 @@ public class RobotTest {
 	public void test() {
 		assertTrue("test", true);
 	}
+
+    private Callable<Boolean> exampleVoltageMaxed() {
+        return new Callable<Boolean>() {
+            public Boolean call() throws Exception {
+                return ExampleSubsystem.getInstance().getExampleMotorVoltage() == 6.0;
+            }
+        };
+    }
 
 	@Test
 	public void testExampleArch() {
@@ -31,6 +42,10 @@ public class RobotTest {
         Looper mLooper = new Looper();
         mSubsystemManager.registerLoops(mLooper);
         mLooper.start();
+
+        ExampleSubsystem.getInstance().setDesiredVoltage(12.0);
+
+        await().atMost(1, TimeUnit.SECONDS).until(exampleVoltageMaxed());
     }
 
 }
