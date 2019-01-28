@@ -37,6 +37,9 @@ public class WristSubsystem extends Subsystem {
         mWristTalon = TalonSRXFactory.createDefaultTalon(Constants.kWristMotorId);
         mWristTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 100);
         mSensorCollection = mWristTalon.getSensorCollection();
+
+        hall_calibration_.is_calibrated = true;
+        hall_calibration_.offset = 0;
     }
 
     public WristSubsystem(boolean test_mode) {
@@ -54,22 +57,28 @@ public class WristSubsystem extends Subsystem {
 
     @Override
     public void fastPeriodic() {
+        outputs_enabled_ = RobotState.getInstance().outputs_enabled;
+
         double sensor_pos_native_units = mSensorCollection.getQuadraturePosition();
-        double sensor_pos_rad = (sensor_pos_native_units/Constants.kWristEncoderCountPerRev) * Math.PI * 2;
+        double sensor_pos_rad = (sensor_pos_native_units/Constants.kWristEncoderCountPerRev) * Math.PI * 2.0 * (1.0/4.0);
 
         this.setEncoder(sensor_pos_rad); // Update our sensor count so the wrist controller can read the current sensor output
+        this.setHall(false); //cheat
 
         wristController.SetGoal(wrist_goal_pos);
 
         wristController.Update(this);
         u = wristController.getWrist_u();
-        u = u * (1.0 / Constants.kWristVoltageCap);
+        u = u * (1.0 / 12.0);
+        u = u * -1.0;
+
+        //System.out.println(u + " " + wrist_goal_pos + " " + this.getEncoder() + " " + wristController.observer_.plant_.y().get(0,0));
+
         mWristTalon.set(ControlMode.PercentOutput, u);
     }
 
     @Override
     public void slowPeriodic() {
-        outputs_enabled_ = RobotState.getInstance().outputs_enabled;
     }
 
     public boolean checkSystem() {
@@ -77,12 +86,14 @@ public class WristSubsystem extends Subsystem {
     }
 
     public void outputTelemetry() {
+        System.out.println(u + " " + wrist_goal_pos + " " + this.getEncoder() + " " + wristController.observer_.plant_.y().get(0,0));
     }
 
     public void stop() {
     }
 
     public void zeroSensors() {
+        mWristTalon.getSensorCollection().setQuadraturePosition(0, 100);
     }
 
     public void registerEnabledLoops(ILooper enabledLooper) {

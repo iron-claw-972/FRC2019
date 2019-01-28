@@ -27,6 +27,9 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotPeriodic() {
+		if(this.isDisabled()) {
+			robotState.outputs_enabled = false;
+		}
 	}
 
 	@Override
@@ -37,10 +40,10 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		robotState.outputs_enabled = true;
+		WristSubsystem.getInstance().zeroSensors();
 	}
 
 	@Override public void teleopPeriodic() {
-		robotState.outputs_enabled = true;
 		teleopManager.update();
 		mSubsystemManager.slowPeriodic();
 		mSubsystemManager.outputToSmartDashboard();

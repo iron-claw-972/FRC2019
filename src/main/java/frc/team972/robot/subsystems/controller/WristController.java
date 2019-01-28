@@ -100,8 +100,9 @@ public class WristController {
 
         if (!hall_calibration.is_calibrated()) {
             wrist_u = Constants.kCalibrationVoltage;
-        } else if (profiled_goal_.position <= 1e-5) {
-            wrist_u = 0.0;
+        } else if (Math.abs(profiled_goal_.position) <= 0.01) {
+            //wrist_u = 0.0;
+            //Ignore for now.
         }
 
         wrist_u = ControlsMathUtil.Cap(wrist_u, -Constants.kWristVoltageCap, Constants.kWristVoltageCap);

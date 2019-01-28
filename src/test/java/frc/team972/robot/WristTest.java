@@ -45,7 +45,6 @@ public class WristTest {
             Update();
             Assert.assertEquals(wrist_.getWrist_u(), 0, 12);
 
-            System.out.println(plant_.x_.get(0,0) + " " + wristSubsystem.getHall_calibration_().getCorrectedValue(wristSubsystem.getEncoder()));
         }
 
         Assert.assertEquals(wrist_.unprofiled_goal_.position, 0, 0.001);

@@ -46,6 +46,8 @@ public class ElevatorSubsystem extends Subsystem {
 
     @Override
     public void fastPeriodic() {
+        outputs_enabled_ = RobotState.getInstance().outputs_enabled;
+
         elevatorController.SetGoal(elevator_goal_pos);
 
         elevatorController.Update(this);
@@ -56,7 +58,7 @@ public class ElevatorSubsystem extends Subsystem {
 
     @Override
     public void slowPeriodic() {
-        outputs_enabled_ = RobotState.getInstance().outputs_enabled;
+
     }
 
     public boolean checkSystem() {
