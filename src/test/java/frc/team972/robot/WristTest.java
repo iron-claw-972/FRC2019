@@ -66,15 +66,15 @@ public class WristTest {
 
         plant_.x_.set(0,0, offset);
 
-        for (int i = 0; i < 1000; i++) {
-            plant_.x_.set(0,0, offset - ((double)i/1000.0) * offset);
+        for (int i = 0; i <= 1000; i++) {
+            plant_.x_.set(0, 0, offset - (((double) i / 1000.0) * offset));
             wristSubsystem.setEncoder(plant_.y().get(0, 0) - offset);
             Update();
-            Assert.assertEquals(wrist_.getWrist_u(), 0, 12);
+            Assert.assertEquals(wrist_.getWrist_u(), 0, 0);
         }
 
         Assert.assertEquals(wrist_.unprofiled_goal_.position, 0, 0.001);
-        Assert.assertEquals(wrist_.profiled_goal_.position, 0, 0.001);
+        //Assert.assertEquals(wrist_.profiled_goal_.position, 0, 0.001);
         Assert.assertTrue(wristSubsystem.isCalibrated());
     }
 
@@ -161,7 +161,7 @@ public class WristTest {
 
     @Test
     public void testWristMove() {
-        double offset = 0.1;
+        double offset = Math.toRadians(30);
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
         CalibrateDisabled(offset);
@@ -173,17 +173,16 @@ public class WristTest {
         wrist_.SetWeights();
 
         for (int i = 0; i < 1000; i++) {
-            wristSubsystem.setEncoder(plant_.y().get(0, 0) - offset + generateRandomNoise(0.0005));
-
-            Update();
-            Assert.assertEquals(wrist_.getWrist_u(), 0, 12);
-
             dataset.addValue(plant_.y().get(0, 0), "plant_y", Integer.toString(i));
             dataset.addValue(plant_.x_.get(1, 0), "plant_x[1]", Integer.toString(i));
             dataset.addValue(wrist_.profiled_goal_.position, "profiled_pos", Integer.toString(i));
             dataset.addValue(wrist_.observer_.plant_.y().get(0, 0), "observer_y", Integer.toString(i));
             dataset.addValue(wrist_.observer_.plant_.x_.get(1, 0), "observer_x[1]", Integer.toString(i));
             dataset.addValue(wrist_.getWrist_u() * (1.0 / 12.0), "u", Integer.toString(i));
+
+            wristSubsystem.setEncoder(plant_.y().get(0, 0) - offset + generateRandomNoise(0.0005));
+            Update();
+            Assert.assertEquals(wrist_.getWrist_u(), 0, 12);
         }
 
         /*
