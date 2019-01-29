@@ -123,23 +123,19 @@ public class ElevatorTest {
         elevator_.SetGoal(0.6);
         elevator_.SetWeights(false);
 
-        double last_pos = 0;
-
         for (int i = 0; i < 1000; i++) {
+            dataset.addValue(plant_.y().get(0, 0), "plant_y", Integer.toString(i));
+            dataset.addValue(plant_.x_.get(1, 0), "plant_x[1]", Integer.toString(i));
+            dataset.addValue(elevator_.profiled_goal_.position, "profiled_pos", Integer.toString(i));
+            dataset.addValue(elevator_.observer_.plant_.y().get(0, 0), "observer_y", Integer.toString(i));
+            dataset.addValue(elevator_.observer_.plant_.x_.get(1, 0), "observer_x[1]", Integer.toString(i));
+            dataset.addValue(elevator_.getElevator_u() * (1.0 / 12.0), "u", Integer.toString(i));
+            //dataset.addValue((elevatorSubsystem.getEncoder() - last_pos) * 1000, "d from pid", Integer.toString(i));
+
             elevatorSubsystem.setEncoder(plant_.y().get(0, 0) - offset + generateRandomNoise(0.0005));
 
             Update();
             Assert.assertEquals(elevator_.getElevator_u(), 0, 12);
-
-            dataset.addValue(plant_.y().get(0,0), "plant_y", Integer.toString(i));
-            dataset.addValue(plant_.x_.get(1,0), "plant_x[1]", Integer.toString(i));
-            dataset.addValue(elevator_.profiled_goal_.position, "profiled_pos", Integer.toString(i));
-            dataset.addValue(elevator_.observer_.plant_.y().get(0,0), "observer_y", Integer.toString(i));
-            dataset.addValue(elevator_.observer_.plant_.x_.get(1,0), "observer_x[1]", Integer.toString(i));
-            dataset.addValue(elevator_.getElevator_u() * (1.0/12.0), "u", Integer.toString(i));
-            //dataset.addValue((elevatorSubsystem.getEncoder() - last_pos) * 1000, "d from pid", Integer.toString(i));
-
-            last_pos = elevatorSubsystem.getEncoder();
         }
 
         Assert.assertEquals(plant_.y().get(0,0), 0.6, 0.01);
