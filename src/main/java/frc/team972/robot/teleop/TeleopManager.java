@@ -1,17 +1,16 @@
 package frc.team972.robot.teleop;
 
 import edu.wpi.first.wpilibj.Joystick;
-import frc.team972.robot.subsystems.Drive;
+import frc.team972.robot.subsystems.DriveSubsystem;
 import frc.team972.robot.subsystems.ElevatorSubsystem;
 import frc.team972.robot.subsystems.ExampleSubsystem;
 
 import frc.team972.robot.subsystems.WristSubsystem;
-import frc.team972.robot.util.MecanumHelper;
 
 public class TeleopManager {
     private static TeleopManager mInstance = null;
 
-    private Drive mDrive = Drive.getInstance();
+    private DriveSubsystem mDrive = DriveSubsystem.getInstance();
     private ElevatorSubsystem mElevator = ElevatorSubsystem.getInstance();
     private ExampleSubsystem mExample = ExampleSubsystem.getInstance();
   

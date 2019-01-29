@@ -31,11 +31,11 @@ public class WristGains {
     }
 
     public static DenseMatrix R() {
-        return new DenseMatrix("0.01 ;");
+        return new DenseMatrix("0.0001 ;");
     }
 
     public static DenseMatrix K() {
-        return new DenseMatrix("0.4472135954999559 0.032696106993670676 1.0 ;");
+        return new DenseMatrix("1.8708286933869727 0.4248823624875067 1.0 ;");
     }
 
     public static DenseMatrix Kff() {
@@ -43,8 +43,6 @@ public class WristGains {
     }
 
     public static DenseMatrix L() {
-        return new DenseMatrix("0.1172739763721758 ;0.38561346325768 ;0.13075092107545971 ;");
+        return new DenseMatrix("1.4118205468248775 ;0.5729121241471241 ;0.1934494884816226 ;");
     }
 }
-
-
