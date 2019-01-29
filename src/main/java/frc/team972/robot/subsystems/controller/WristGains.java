@@ -5,11 +5,10 @@ import frc.team972.robot.controls.*;
 import frc.team972.robot.subsystems.WristSubsystem;
 import jeigen.DenseMatrix;
 
-
 public class WristGains {
 
     public static DenseMatrix A() {
-        return new DenseMatrix("1.0 0.00645202582674306 0.01049331603841954 ;0.0 0.38626812630144647 1.815143571819886 ;0.0 0.0 1.0 ;");
+        return new DenseMatrix("1.0 0.00814271692721444 0.005981277752620018 ;0.0 0.6531004695110808 1.117170814999006 ;0.0 0.0 1.0 ;");
     }
 
     public static DenseMatrix Q() {
@@ -21,7 +20,7 @@ public class WristGains {
     }
 
     public static DenseMatrix B() {
-        return new DenseMatrix("0.01049331603841954 ;1.815143571819886 ;0.0 ;");
+        return new DenseMatrix("0.005981277752620018 ;1.117170814999006 ;0.0 ;");
     }
 
     double dt() { return 0.01; }
@@ -31,20 +30,23 @@ public class WristGains {
     }
 
     public static DenseMatrix R() {
-        return new DenseMatrix("0.01 ;");
+        return new DenseMatrix("0.0001 ;");
     }
 
     public static DenseMatrix K() {
-        return new DenseMatrix("0.4472135954999559 0.032696106993670676 1.0 ;");
+        //return new DenseMatrix("0.379056641655649 0.08307340501080238 1.0 ;");
+        return new DenseMatrix("0.15 0.083 1.0 ;");
     }
 
     public static DenseMatrix Kff() {
-        return new DenseMatrix("0.0 0.5509206078929543 0.0 ;");
+        return new DenseMatrix("0.0 0.8951182635404682 0.0 ;");
     }
 
     public static DenseMatrix L() {
-        return new DenseMatrix("0.1172739763721758 ;0.38561346325768 ;0.13075092107545971 ;");
+        return new DenseMatrix("1.5 ;1.129562013499633 ;3.0441717112764493 ;");
     }
 }
+
+
 
 

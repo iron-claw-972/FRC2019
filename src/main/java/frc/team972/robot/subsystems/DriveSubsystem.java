@@ -5,19 +5,16 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import frc.team972.robot.Constants;
-import frc.team972.robot.Robot;
 import frc.team972.robot.RobotState;
 import frc.team972.robot.driver_utils.TalonSRXFactory;
-import frc.team972.robot.teleop.ControlBoard;
 import frc.team972.robot.util.CoordinateDriveSignal;
 import frc.team972.robot.util.DriveSignal;
 import frc.team972.robot.util.MecanumHelper;
 
-public class Drive extends Subsystem {
+public class DriveSubsystem extends Subsystem {
 
     static private AHRS ahrs;
 
@@ -29,9 +26,9 @@ public class Drive extends Subsystem {
     CoordinateDriveSignal mecanumDriveSignalDesired = null;
 
     private boolean mIsBrakeMode;
-    private static Drive mInstance = null;
+    private static DriveSubsystem mInstance = null;
 
-    public Drive() {
+    public DriveSubsystem() {
         mLeftFront = TalonSRXFactory.createDefaultTalon(Constants.kLeftFrontId);
         configureMaster(mLeftFront, true);
 
@@ -48,10 +45,10 @@ public class Drive extends Subsystem {
         setBrakeMode(true);
     }
 
-    public static Drive getInstance() {
+    public static DriveSubsystem getInstance() {
         if (mInstance == null) {
             ahrs = new AHRS(SPI.Port.kMXP, (byte)200);
-            mInstance = new Drive();
+            mInstance = new DriveSubsystem();
         }
         return mInstance;
     }
