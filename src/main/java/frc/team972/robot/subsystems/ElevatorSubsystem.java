@@ -2,6 +2,9 @@ package frc.team972.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.team972.robot.Constants;
 import frc.team972.robot.RobotState;
 import frc.team972.robot.controls.HallCalibration;
@@ -57,7 +60,6 @@ public class ElevatorSubsystem extends Subsystem {
 
     @Override
     public void slowPeriodic() {
-
     }
 
     public boolean checkSystem() {
@@ -65,7 +67,6 @@ public class ElevatorSubsystem extends Subsystem {
     }
 
     public void outputTelemetry() {
-
     }
 
     public void stop() {

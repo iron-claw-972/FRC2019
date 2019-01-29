@@ -34,6 +34,11 @@ public class TeleopManager {
         mExample.setDesiredVoltage(controlBoard.getExampleJoystickValue());
         */
 
-        WristSubsystem.getInstance().setWrist_goal_pos(stick.getRawAxis(2) * Math.PI/2.0);
+        double wrist_goal = 0;
+        if(stick.getRawButton(6)) {
+            wrist_goal = Math.PI;
+        }
+
+        WristSubsystem.getInstance().setWrist_goal_pos(wrist_goal);
     }
 }

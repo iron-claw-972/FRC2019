@@ -1,6 +1,7 @@
 package frc.team972.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.team972.robot.loops.Looper;
 import frc.team972.robot.subsystems.SubsystemManager;
 import frc.team972.robot.subsystems.WristSubsystem;
@@ -23,6 +24,7 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		mSubsystemManager.registerLoops(mLooper); // This loop runs FOREVER!
 		mLooper.start();
+		Shuffleboard.startRecording();
 	}
 
 	@Override
