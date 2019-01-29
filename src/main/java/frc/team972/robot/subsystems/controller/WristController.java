@@ -72,7 +72,7 @@ public class WristController {
         HallCalibration hall_calibration = wristSubsystem.getHall_calibration_();
         boolean was_calibrated = hall_calibration.is_calibrated();
 
-        DenseMatrix y = new DenseMatrix(1, 1);
+        DenseMatrix y = new DenseMatrix(2, 1);
         y.set(0, 0, hall_calibration.Update(wristSubsystem.getEncoder(), wristSubsystem.getHall()));
 
         //Gain Schedule

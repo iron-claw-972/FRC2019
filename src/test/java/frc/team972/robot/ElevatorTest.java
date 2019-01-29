@@ -112,7 +112,7 @@ public class ElevatorTest {
     }
 
     @Test
-    public void elevatorMoveHeight() {
+    public void testElevatorMoveHeight() {
         double offset = 0.2;
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 

@@ -39,7 +39,6 @@ public class WristSubsystem extends Subsystem {
 
     public WristSubsystem() {
         this(false);
-        wristController.SetWeights();
 
         mWristTalon = TalonSRXFactory.createDefaultTalon(Constants.kWristMotorId);
         mWristTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 100);
@@ -50,6 +49,7 @@ public class WristSubsystem extends Subsystem {
     }
 
     public WristSubsystem(boolean test_mode) {
+        wristController.SetWeights();
         if (test_mode == false) {
             mWristTalon = TalonSRXFactory.createDefaultTalon(Constants.kWristMotorId);
         } else {
