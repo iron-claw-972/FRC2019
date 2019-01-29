@@ -168,6 +168,7 @@ public class WristTest {
         Assert.assertEquals(plant.x_.get(0, 0), observer.plant_.x_.get(0, 0), 0.01);
         Assert.assertEquals(plant.x_.get(1, 0), observer.plant_.x_.get(1, 0), 0.1);
 
+        /*
         Graphing graphing = new Graphing("state_space", "wrist_observer", dataset);
         graphing.display();
         try {
@@ -175,10 +176,16 @@ public class WristTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        */
     }
 
     @Test
     public void testWristMove() {
+        // make the plant model less accurate
+        plant_.A_.set(0, 1, plant_.A_.get(0, 1) * 1.5);
+        plant_.A_.set(1, 1, plant_.A_.get(1, 1) * 1.26);
+        plant_.A_.set(0, 2, plant_.A_.get(1, 2) * 0.15);
+
         double offset = Math.toRadians(30);
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
@@ -197,23 +204,18 @@ public class WristTest {
             dataset.addValue(wrist_.profiled_goal_.position, "profiled_pos", Integer.toString(i));
             dataset.addValue(wrist_.profiled_goal_.velocity, "profiled_velocity", Integer.toString(i));
 
-            //dataset.addValue(wrist_.observer_.plant_.y().get(0, 0), "observer_y", Integer.toString(i));
-            //dataset.addValue(wrist_.observer_.plant_.x_.get(1, 0), "observer_x[1]", Integer.toString(i));
-            //dataset.addValue(wrist_.getWrist_u(), "u", Integer.toString(i));
+            dataset.addValue(wrist_.observer_.plant_.y().get(0, 0), "observer_y", Integer.toString(i));
+            dataset.addValue(wrist_.observer_.plant_.x_.get(1, 0), "observer_x[1]", Integer.toString(i));
+            dataset.addValue(wrist_.getWrist_u(), "u", Integer.toString(i));
 
-            //System.out.println(wrist_.observer_.plant_.x_);
-
-            wristSubsystem.setEncoder(plant_.y().get(0, 0) - offset + generateRandomNoise(0.000));
+            wristSubsystem.setEncoder(plant_.y().get(0, 0) - offset + generateRandomNoise(Math.toRadians(0.05)));
             Update();
             Assert.assertEquals(wrist_.getWrist_u(), 0, 12);
         }
 
-        /*
-        Assert.assertEquals(plant_.y().get(0,0), 0.6, 0.01);
-        Assert.assertEquals(wrist_.observer_.plant_.y().get(0, 0), 0.6, 0.01);
-        Assert.assertEquals(wrist_.unprofiled_goal_.position, 0.6, 0.01);
-        Assert.assertEquals(wrist_.profiled_goal_.position, 0.6, 0.01);
-        */
+        Assert.assertEquals(plant_.y().get(0, 0), wrist_.unprofiled_goal_.position, 0.01);
+        Assert.assertEquals(wrist_.observer_.plant_.y().get(0, 0), wrist_.unprofiled_goal_.position, 0.01);
+        Assert.assertEquals(wrist_.profiled_goal_.position, wrist_.unprofiled_goal_.position, 0.01);
 
         Graphing graphing = new Graphing("state_space", "wristMoveAngle", dataset);
         graphing.display();
