@@ -84,8 +84,9 @@ public class WristTest {
     }
 
     public void stayStill(double offset) {
+        System.out.println("-- Staying still --");
         for (int i = 0; i <= 100; i++) {
-            plant_.x_.set(0, 0, 0);
+            plant_.x_.set(0, 0, plant_.y().get(0, 0));
             wristSubsystem.setEncoder(plant_.y().get(0, 0) - offset);
             Update();
             Assert.assertEquals(wrist_.getWrist_u(), 0, 0);
@@ -94,6 +95,7 @@ public class WristTest {
         Assert.assertEquals(wrist_.unprofiled_goal_.position, 0, 0.001);
         Assert.assertEquals(wrist_.profiled_goal_.position, 0, 0.001);
         Assert.assertTrue(wristSubsystem.isCalibrated());
+        System.out.println("-- Staying still done! --");
     }
 
     @Test
@@ -191,19 +193,17 @@ public class WristTest {
         for (int i = 0; i < 1000; i++) {
             dataset.addValue(plant_.y().get(0, 0), "plant_y", Integer.toString(i));
             dataset.addValue(plant_.x_.get(1, 0), "plant_x[1]", Integer.toString(i));
+
             dataset.addValue(wrist_.profiled_goal_.position, "profiled_pos", Integer.toString(i));
             dataset.addValue(wrist_.profiled_goal_.velocity, "profiled_velocity", Integer.toString(i));
 
-            dataset.addValue(wrist_.observer_.plant_.y().get(0, 0), "observer_y", Integer.toString(i));
-            dataset.addValue(wrist_.observer_.plant_.x_.get(1, 0), "observer_x[1]", Integer.toString(i));
-            dataset.addValue(wrist_.getWrist_u() * (1.0 / 12.0), "u", Integer.toString(i));
+            //dataset.addValue(wrist_.observer_.plant_.y().get(0, 0), "observer_y", Integer.toString(i));
+            //dataset.addValue(wrist_.observer_.plant_.x_.get(1, 0), "observer_x[1]", Integer.toString(i));
+            //dataset.addValue(wrist_.getWrist_u(), "u", Integer.toString(i));
 
-            System.out.println(wrist_.observer_.plant_.x_);
+            //System.out.println(wrist_.observer_.plant_.x_);
 
-            wrist_.controller_.K_ = new DenseMatrix("0.0 0.0 0.0");
-            //wrist_.controller_.Kff_ = new DenseMatrix("0.0 0.0 0.0");
-
-            wristSubsystem.setEncoder(plant_.y().get(0, 0) - offset + generateRandomNoise(0.0005));
+            wristSubsystem.setEncoder(plant_.y().get(0, 0) - offset + generateRandomNoise(0.000));
             Update();
             Assert.assertEquals(wrist_.getWrist_u(), 0, 12);
         }

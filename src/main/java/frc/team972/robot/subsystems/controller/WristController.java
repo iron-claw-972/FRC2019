@@ -54,7 +54,7 @@ public class WristController {
         TrapezodialMotionProfile profile = new TrapezodialMotionProfile(Constants.kWristConstraints, unprofiled_goal_, profiled_goal_);
 
         if (outputs_enabled) {
-            profiled_goal_ = profile.Calculate(5.0 * 0.001); // 5 ms
+            profiled_goal_ = profile.Calculate(10.0 * 0.001); //TODO: MUST UPDATE THIS TIME UNIT!!!!!!!!
         } else {
             profiled_goal_ = profile.Calculate(0.0);
         }

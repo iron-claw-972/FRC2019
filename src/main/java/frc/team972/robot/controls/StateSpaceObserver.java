@@ -21,7 +21,6 @@ public class StateSpaceObserver {
     public void Update(DenseMatrix u, DenseMatrix y) {
         DenseMatrix x_add = plant_.x_.add(L_.mmul(y.sub(plant_.y())));
         plant_.x_ = x_add;
-        System.out.println(L_.mmul(y.sub(plant_.y())));
         plant_.Update(u);
     }
 }
