@@ -53,7 +53,7 @@ public class ElevatorController {
         TrapezodialMotionProfile profile = new TrapezodialMotionProfile(Constants.kElevatorConstraints, unprofiled_goal_, profiled_goal_);
 
         if (outputs_enabled) {
-            profiled_goal_ = profile.Calculate(5.0 * 0.001); // 5 ms
+            profiled_goal_ = profile.Calculate(Constants.dt);
         } else {
             profiled_goal_ = profile.Calculate(0.0); //deded robot
         }

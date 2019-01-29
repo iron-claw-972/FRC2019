@@ -1,5 +1,7 @@
 package frc.team972.robot.loops;
 
+import frc.team972.robot.Constants;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +17,6 @@ public class Looper implements ILooper {
     private final List<Loop> loops_;
     private final Object taskRunningLock_ = new Object();
     private double timestamp_ = 0;
-    private double dt_ = 0;
 
     private final CrashTrackingRunnable runnable_ = new CrashTrackingRunnable() {
         @Override
@@ -26,11 +27,22 @@ public class Looper implements ILooper {
                     for (Loop loop : loops_) {
                         Thread thread = new Thread() {
                             public void run() {
-                                while (running_) {
-                                    double now = System.currentTimeMillis();
-                                    loop.onLoop(now);
-                                    dt_ = now - timestamp_;
-                                    timestamp_ = now;
+                                try {
+                                    long timestamp_ = System.currentTimeMillis();
+                                    while (running_) {
+                                        long now = System.currentTimeMillis();
+                                        loop.onLoop(now);
+                                        long dt_ = now - timestamp_;
+                                        timestamp_ = now;
+                                        long remain_time = (long) Constants.dt - dt_;
+                                        if (remain_time < 0) {
+                                            System.out.println("MAJOR WARNING, RT LOOP CAN NOT KEEP UP!!!");
+                                        } else {
+                                            Thread.sleep(remain_time);
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
                             }
                         };

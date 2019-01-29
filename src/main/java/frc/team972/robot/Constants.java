@@ -4,6 +4,8 @@ import frc.team972.robot.controls.MotionProfileConstraints;
 
 public class Constants {
 
+    public static final double dt = 0.01;
+
     // CONTROLLER PORT IDS
     public static final int kDriveGamepadPort = 1;
     public static final int kElevatorJoystickPort = 999; //TODO: CHANGE THIS!!!
