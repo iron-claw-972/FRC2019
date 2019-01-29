@@ -26,7 +26,7 @@ public class ElevatorTest {
         DenseMatrix u_mat = new DenseMatrix(1, 1);
         u_mat.set(0, 0, elevator_.getElevator_u());
 
-        plant_.Update(new DenseMatrix(u_mat));
+        plant_.Update(u_mat);
     }
 
     private void SetGoal(double goal) {
