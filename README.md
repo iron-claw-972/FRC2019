@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/iron-claw-972/FRC2019.svg?branch=master)](https://travis-ci.com/iron-claw-972/FRC2019)
+
 # FRC2019
 ___
 ### TODO
