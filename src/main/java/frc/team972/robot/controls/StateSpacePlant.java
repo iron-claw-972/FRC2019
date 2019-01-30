@@ -46,6 +46,7 @@ public class StateSpacePlant {
     }
 
     public void Update(DenseMatrix u) {
+        System.out.println(x_);
         x_ = A_.mmul(x_).add(B_.mmul(u));
     }
 }
