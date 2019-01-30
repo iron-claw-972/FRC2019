@@ -28,13 +28,12 @@ public class Looper implements ILooper {
                         Thread thread = new Thread() {
                             public void run() {
                                 try {
-                                    long timestamp_ = System.currentTimeMillis();
                                     while (running_) {
                                         long now = System.currentTimeMillis();
                                         loop.onLoop(now);
+                                        long timestamp_ = System.currentTimeMillis();
                                         long dt_ = now - timestamp_;
-                                        timestamp_ = now;
-                                        long remain_time = (long) Constants.dt - dt_;
+                                        long remain_time = (long) (Constants.dt * 1000) - dt_;
                                         if (remain_time < 0) {
                                             System.out.println("MAJOR WARNING, RT LOOP CAN NOT KEEP UP!!!");
                                         } else {
