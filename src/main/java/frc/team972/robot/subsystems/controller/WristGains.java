@@ -39,7 +39,7 @@ public class WristGains {
     }
 
     public static DenseMatrix L() {
-        return new DenseMatrix("0.8628152389790823 ;16.39207645718683 ;5.846215076714724 ;");
+        return new DenseMatrix("0.8628152389790823 ;16.39207645718683 ; 0.0 ;"); // acceleration observer gain needs to be 0, because our plant does not actually provide a real sample... unobservables must only be done through state estimation
     }
 }
 

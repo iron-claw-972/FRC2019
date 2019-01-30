@@ -183,8 +183,8 @@ public class WristTest {
     public void testWristMove() {
         // make the plant model less accurate
         plant_.A_.set(0, 1, plant_.A_.get(0, 1) * 1.5);
-        plant_.A_.set(1, 1, plant_.A_.get(1, 1) * 1.26);
-        plant_.A_.set(0, 2, plant_.A_.get(1, 2) * 0.15);
+        plant_.A_.set(1, 1, plant_.A_.get(1, 1) * 1.1);
+        plant_.A_.set(0, 2, plant_.A_.get(1, 2) * 0.1);
 
         double offset = Math.toRadians(30);
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -200,6 +200,7 @@ public class WristTest {
         for (int i = 0; i < 1000; i++) {
             dataset.addValue(plant_.y().get(0, 0), "plant_y", Integer.toString(i));
             dataset.addValue(plant_.x_.get(1, 0), "plant_x[1]", Integer.toString(i));
+            System.out.println(plant_.x_.get(2, 0));
 
             dataset.addValue(wrist_.profiled_goal_.position, "profiled_pos", Integer.toString(i));
             dataset.addValue(wrist_.profiled_goal_.velocity, "profiled_velocity", Integer.toString(i));
