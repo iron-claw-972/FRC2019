@@ -8,7 +8,6 @@ public class TeleopManager {
     private static TeleopManager mInstance = null;
 
     private Drive mDrive = Drive.getInstance();
-    private PistonClimb pistonClimb = PistonClimb.getInstance();
     private ControlBoard controlBoard = ControlBoard.getInstance();
 
     public static TeleopManager getInstance() {
