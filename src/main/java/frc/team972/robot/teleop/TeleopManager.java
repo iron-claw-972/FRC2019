@@ -22,6 +22,10 @@ public class TeleopManager {
         mDrive.setOpenLoopMecanum(
                 MecanumHelper.mecanumDrive(-controlBoard.getTranslateX(), controlBoard.getTranslateY(), controlBoard.getRotate(), controlBoard.getNoFieldOrient())
         );
-        pistonClimb.climbManager(controlBoard.getPistonClimbStart());
+        /*
+        if (controlBoard.getRawButton(something needs to go here, don't know yet)) {
+            pistonClimb.activateClimb();
+        }
+        */
     }
 }

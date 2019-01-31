@@ -3,7 +3,7 @@ package frc.team972.robot.subsystems;
 import frc.team972.robot.loops.ILooper;
 
 public class PistonClimb extends Subsystem {
-    private static PistonClimb mInstance = new ExampleSubsystem();
+    private static PistonClimb mInstance = new PistonClimb();
 
     private final double HAB_LEVEL_ONE_LEVEL_TWO_DIFF_INCHES = Constants.HabLevelTwoElevationInches - Constants.HabLevelOneElevationInches;
     private final double GROUND_CLEARANCE_INCHES = 12; //TODO: Find actual value
@@ -15,7 +15,8 @@ public class PistonClimb extends Subsystem {
     private Timer waitTimer = new Timer();
     private double time = 0;
 
-    private Ultrasonic RangeSensor = new Ultrasonic(1, 1);
+    private Ultrasonic RangeSensorFront;
+    private Ultrasonic RangeSensorBack;
     private double range = 0;
 
     private double detectionTime = 0;
@@ -27,6 +28,7 @@ public class PistonClimb extends Subsystem {
     private Drive driveControl = new Drive();
 
     public double[] StageClimbTimings = new double[6];
+    private boolean testing;
 
     public enum stage {
         NOSTAGE, STAGE_1, STAGE_2, STAGE_3, STAGE_4, STAGE_5, STAGE_6, ABORT;
@@ -39,16 +41,19 @@ public class PistonClimb extends Subsystem {
     private stage currentStage = NOSTAGE;
     private stageState pistonClimbOutput;
 
-    public void PistonClimb(double stage1Delay, double stage2Delay, double stage3Delay, double stage4Delay, double stage5Delay, double stage6Delay)
+    public void PistonClimb(double stage1Delay, double stage2Delay, double stage3Delay, double stage4Delay, double stage5Delay, double stage6Delay, boolean _testing)
     {
         frontPistons = new DoubleSolenoid(1, 2);
         backPistons = new DoubleSolenoid(3, 4);
+        RangeSensorFront = new UltraSonic(1, 1);
+        RangeSensorBack = new UltraSonic(2,2);
         StageClimbTimings[0] = stage1Delay;
         StageClimbTimings[1] = stage2Delay;
         StageClimbTimings[2] = stage3Delay;
         StageClimbTimings[3] = stage4Delay;
         StageClimbTimings[4] = stage5Delay;
         StageClimbTimings[5] = stage6Delay;
+        testing = _testing;
     }
 
     private void restartTimer() {
@@ -70,10 +75,29 @@ public class PistonClimb extends Subsystem {
         }
     }
 
+    public void takeTime() {
+        time = waitTimer.get();
+    }
+
+    public void takeRange() {
+        if (testing)
+        {
+            pistonClimbTest.testPistonClimb(time, currentStage);
+        }
+        else if (currentStage == STAGE_2)
+        {
+            range = RangeSensorFront.getRangeInches();
+        }
+        else if (currentStage == STAGE_5)
+        {
+            range = RangeSensorBack.getRangeInches();
+        }
+    }
+
     public void fastPeriodic() {
 
-        time = waitTimer.get();
-        range = RangeSensor.getRangeInches();
+        takeTime();
+        takeRange();
 
         switch (currentStage) {
         case STAGE_1:
@@ -117,6 +141,7 @@ public class PistonClimb extends Subsystem {
         case STAGE_5:
             output = climbStage5(StageClimbTimings[4], true);
             if (output == COMPLETE) {
+                detectionTime = 0;
                 currentStage = STAGE_6;
                 restartTimer();
             } else if (output == FAILED){
@@ -153,7 +178,7 @@ public class PistonClimb extends Subsystem {
     { // move forward until the stage is detected and waitTime driven forward since detection
 
         driveControl.setOpenLoopMecanum(forward); // drive forward
-        if(range <= (HAB_LEVEL_ONE_LEVEL_TWO_DIFF_INCHES - ERROR_TOLERANCE) // check for UltraSonic sensor to be over the stage platform
+        if(range <= (HAB_LEVEL_ONE_LEVEL_TWO_DIFF_INCHES - ERROR_TOLERANCE)) // check for UltraSonic sensor to be over the stage platform
         {
             if (detectionTime == 0) {
                 detectionTime = waitTimer.get();
@@ -202,7 +227,7 @@ public class PistonClimb extends Subsystem {
     { // move forward until the stage is detected and waitTime driven forward since detection
 
         driveControl.setOpenLoopMecanum(forward); // drive forward
-        if(range <= (GROUND_CLEARANCE_INCHES - ERROR_TOLERANCE)) // check for UltraSonic sensor to be over the stage platform
+        if(range <= (GROUND_CLEARANCE_INCHES + ERROR_TOLERANCE)) // check for UltraSonic sensor to be over the stage platform
         {
             if (detectionTime == 0) {
                 detectionTime = waitTimer.get();
