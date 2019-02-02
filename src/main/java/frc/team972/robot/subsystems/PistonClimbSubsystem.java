@@ -1,16 +1,17 @@
 package frc.team972.robot.subsystems;
 
+import frc.team972.robot.Constants;
 import frc.team972.robot.loops.ILooper;
 
 public class PistonClimbSubsystem extends Subsystem {
-    private static PistonClimbSubsystem mInstance = new PistonClimbSubsystem(stage1Delay, stage2Delay, stage3Delay, stage4Delay, stage5Delay, stage6Delay, false);
+    private static PistonClimbSubsystem mInstance = new PistonClimbSubsystem(Constants.stage1Delay, Constants.stage2Delay, Constants.stage3Delay, Constants.stage4Delay, Constants.stage5Delay, Constants.stage6Delay, false);
 
     public final double HAB_LEVEL_ONE_LEVEL_TWO_DIFF_INCHES = Constants.HabLevelTwoElevationInches - Constants.HabLevelOneElevationInches;
     public final double GROUND_CLEARANCE_INCHES = 12; //TODO: Find actual value
     private final double ERROR_TOLERANCE = 1;
     private final double speed = 0.5;
     private final double alignmentDelay = 1.5;
-    private final CoordinateDriveSignal forward = new cooCdinateDriveSignal(speed, 0.0, 0.0, false);
+    private final CoordinateDriveSignal forward = new CoordinateDriveSignal(speed, 0.0, 0.0, false);
 
     private Timer waitTimer = new Timer();
     private double time = 0;
@@ -40,7 +41,7 @@ public class PistonClimbSubsystem extends Subsystem {
     private stage currentStage = NOSTAGE;
     private stageState output;
 
-    public void PistonClimb(double stage1Delay, double stage2Delay, double stage3Delay, double stage4Delay, double stage5Delay, double stage6Delay, boolean _testing)
+    public PistonClimbSubsystem(double stage1Delay, double stage2Delay, double stage3Delay, double stage4Delay, double stage5Delay, double stage6Delay, boolean _testing)
     {
         frontPistons = new DoubleSolenoid(1, 2);
         backPistons = new DoubleSolenoid(3, 4);
