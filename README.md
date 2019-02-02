@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.com/iron-claw-972/FRC2019.svg?branch=master)](https://travis-ci.com/iron-claw-972/FRC2019)
+[![Coverage Status](https://coveralls.io/repos/github/iron-claw-972/FRC2019/badge.svg?branch=master)](https://coveralls.io/github/iron-claw-972/FRC2019?branch=master)
 
 # FRC2019
 ___
