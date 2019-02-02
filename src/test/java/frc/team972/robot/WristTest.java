@@ -107,8 +107,8 @@ public class WristTest {
 
         Calibrate(offset);
 
-        Assert.assertEquals(wrist_.unprofiled_goal_.position, 0, 0.001);
-        Assert.assertEquals(wrist_.profiled_goal_.position, 0, 0.001);
+        Assert.assertEquals(wrist_.unprofiled_goal_.position, 0, 0.01);
+        Assert.assertEquals(wrist_.profiled_goal_.position, 0, 0.01);
         Assert.assertTrue(wristSubsystem.isCalibrated());
     }
 
