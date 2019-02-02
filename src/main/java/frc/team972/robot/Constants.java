@@ -44,6 +44,17 @@ public class Constants {
     public static final double kWristHallEffectPosition = Math.toRadians(10);
     public static final int kWristEncoderCountPerRev = 1024;
 
+    //HAB ELEVATIONS
+    public static final double HabLevelOneElevationInches = 3;
+    public static final double HabLevelTwoElevationInches = 9;
+    public static final double HabLevelThreeElevationInches = 22;
 
+    //PISTON CLIMB STAGE TIMINGS
+    public static final double stage1Delay = 1;
+    public static final double stage2Delay = 5;
+    public static final double stage3Delay = 1.5;
+    public static final double stage4Delay = 1.5;
+    public static final double stage5Delay = 1;
+    public static final double stage6Delay = 1;
 
 }
