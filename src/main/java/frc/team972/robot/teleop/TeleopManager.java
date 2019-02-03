@@ -37,6 +37,8 @@ public class TeleopManager {
         double wrist_goal = 0;
         if(stick.getRawButton(6)) {
             wrist_goal = Math.PI;
+        } else if(stick.getRawButton(5)) {
+            wrist_goal = Math.PI / 2;
         }
 
         WristSubsystem.getInstance().setWrist_goal_pos(wrist_goal);

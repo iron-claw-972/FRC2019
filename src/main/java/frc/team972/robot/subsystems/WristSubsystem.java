@@ -4,6 +4,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.team972.robot.Constants;
 import frc.team972.robot.RobotState;
 import frc.team972.robot.controls.HallCalibration;
@@ -27,14 +30,13 @@ public class WristSubsystem extends Subsystem {
     private double wrist_goal_pos = 0;
     private double u = 0;
 
-    /*
     ShuffleboardTab tab = Shuffleboard.getTab("ss");
     NetworkTableEntry enc_g = tab.add("enc", 0).getEntry();
     NetworkTableEntry obs_g = tab.add("obs", 0).getEntry();
     NetworkTableEntry obsv_g = tab.add("obs_v", 0).getEntry();
     NetworkTableEntry des_g = tab.add("des", 0).getEntry();
+    NetworkTableEntry des_v_g = tab.add("des_v", 0).getEntry();
     NetworkTableEntry u_g = tab.add("u", 0).getEntry();
-    */
 
     public WristSubsystem() {
         this(false);
@@ -78,8 +80,6 @@ public class WristSubsystem extends Subsystem {
         u = u * (1.0 / 12.0);
         u = u * -1.0;
 
-        //System.out.println(u + " " + wrist_goal_pos + " " + this.getEncoder() + " " + wristController.observer_.plant_.y().get(0,0));
-
         mWristTalon.set(ControlMode.PercentOutput, u);
     }
 
@@ -93,13 +93,12 @@ public class WristSubsystem extends Subsystem {
 
     public void outputTelemetry() {
         //System.out.println(u + " " + wrist_goal_pos + " " + this.getEncoder() + " " + wristController.observer_.plant_.y().get(0, 0));
-        /*
         enc_g.setDouble(getEncoder());
         obs_g.setDouble(wristController.observer_.plant_.x_.get(0,0));
         obsv_g.setDouble(wristController.observer_.plant_.x_.get(1,0));
         des_g.setDouble(wristController.profiled_goal_.position);
+        des_v_g.setDouble(wristController.profiled_goal_.velocity);
         u_g.setDouble(wristController.getWrist_u());
-        */
     }
 
     public void stop() {

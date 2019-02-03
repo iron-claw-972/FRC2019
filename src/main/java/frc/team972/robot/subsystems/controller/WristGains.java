@@ -5,7 +5,7 @@ import jeigen.DenseMatrix;
 public class WristGains {
 
     public static DenseMatrix A() {
-        return new DenseMatrix("1.0 0.008052264544873055 0.006272574663735769 ;0.0 0.6375522968414454 1.16724284798389 ;0.0 0.0 1.0 ;");
+        return new DenseMatrix("1.0 0.007817589621787227 0.007028332317008231 ;0.0 0.5978462403800927 1.2951140140094168 ;0.0 0.0 1.0 ;");
     }
 
     public static DenseMatrix Q() {
@@ -17,7 +17,7 @@ public class WristGains {
     }
 
     public static DenseMatrix B() {
-        return new DenseMatrix("0.006272574663735769 ;1.16724284798389 ;0.0 ;");
+        return new DenseMatrix("0.007028332317008231 ;1.2951140140094168 ;0.0 ;");
     }
 
     double dt() { return 0.01; }
@@ -27,19 +27,18 @@ public class WristGains {
     }
 
     public static DenseMatrix R() {
-        return new DenseMatrix("0.0001 ;");
+        return new DenseMatrix("1e-05 ;");
     }
 
     public static DenseMatrix K() {
-        return new DenseMatrix("20.000000000000004 0.860962282899181 1.0 ;");
+        return new DenseMatrix("1.0690449676496967 0.07302871414631534 1.0 ;");
     }
 
     public static DenseMatrix Kff() {
-        return new DenseMatrix("0.0 0.8567197492169185 0.0 ;");
+        return new DenseMatrix("0.0 0.772132792312391 0.0 ;");
     }
 
     public static DenseMatrix L() {
-        return new DenseMatrix("0.5190013467966326 ;4.980545124924455 ; 0.0;");
+        return new DenseMatrix("1.7398532867950036 ;11.411158821157272 ;3.6770659727687294 ;");
     }
 }
-

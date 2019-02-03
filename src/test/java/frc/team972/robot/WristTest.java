@@ -215,7 +215,6 @@ public class WristTest {
         Assert.assertEquals(wrist_.observer_.plant_.y().get(0, 0), wrist_.unprofiled_goal_.position, 0.01);
         Assert.assertEquals(wrist_.profiled_goal_.position, wrist_.unprofiled_goal_.position, 0.01);
 
-        /*
         Graphing graphing = new Graphing("state_space", "wristMoveAngle", dataset);
         graphing.display();
         try {
@@ -223,7 +222,6 @@ public class WristTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        */
     }
 
 
