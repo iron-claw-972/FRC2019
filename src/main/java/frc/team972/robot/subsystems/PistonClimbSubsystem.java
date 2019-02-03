@@ -18,7 +18,7 @@ public class PistonClimbSubsystem extends Subsystem {
 
     private Ultrasonic RangeSensorFront;
     private Ultrasonic RangeSensorBack;
-    public double range = 0;
+    private double range = 0;
 
     private double detectionTime = 0;
 
@@ -27,8 +27,20 @@ public class PistonClimbSubsystem extends Subsystem {
 
     private Drive driveControl = new Drive();
 
-    public double[] StageClimbTimings = new double[6];
+    private double[] StageClimbTimings = new double[6];
     private boolean testing = false;
+
+    public void setDetectionTime(double detectionTime) {
+        this.detectionTime = detectionTime;
+    }
+
+    public void setTime(double time) {
+        this.time = time;
+    }
+
+    public void setRange(double range) {
+        this.range = range;
+    }
 
     public enum stage {
         NOSTAGE, STAGE_1, STAGE_2, STAGE_3, STAGE_4, STAGE_5, STAGE_6, ABORT;
@@ -67,30 +79,26 @@ public class PistonClimbSubsystem extends Subsystem {
     }
 
     public void beginClimb() {
-        if (currentStage == NOSTAGE) {
-            currentStage = STAGE_1;
+        if (currentStage == stage.NOSTAGE) {
+            currentStage = stage.STAGE_1;
             restartTimer();
         } else {
-            currentStage = ABORT;
+            currentStage = stage.ABORT;
         }
     }
 
     public void takeTime() {
-        time = waitTimer.get();
+        setTime(waitTimer.get());
     }
 
     public void takeRange() {
-        if (testing)
+        if (currentStage == stage.STAGE_2)
         {
-            pistonClimbTest.testPistonClimb(time, currentStage);
-        }
-        else if (currentStage == stage.STAGE_2)
-        {
-            range = RangeSensorFront.getRangeInches();
+            setRange(RangeSensorFront.getRangeInches());
         }
         else if (currentStage == stage.STAGE_5)
         {
-            range = RangeSensorBack.getRangeInches();
+            setRange(RangeSensorBack.getRangeInches());
         }
     }
 
@@ -100,9 +108,10 @@ public class PistonClimbSubsystem extends Subsystem {
 
     public void fastPeriodic() {
 
-        if (!(currentStage == stage.NOSTAGE))
-        takeTime();
-        takeRange();
+        if (!(currentStage == stage.NOSTAGE)) {
+            takeTime();
+            takeRange();
+        }
 
         switch (currentStage) {
             case STAGE_1:
@@ -170,7 +179,7 @@ public class PistonClimbSubsystem extends Subsystem {
 
     public stageState climbStage1(double waitTime)// raising the front pistons
     {
-        restartTimer(); // restart the timer so that it is representing the time spent on this stage
+        // restart the timer so that it is representing the time spent on this stage
         setFrontPistonsState(true);
         if(time < waitTime) {
             return stageState.IN_PROG;
