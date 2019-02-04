@@ -17,11 +17,13 @@ public class MecanumHelper {
         signal.x = rotatedVector[0];
         signal.y = rotatedVector[1];
 
+        System.out.println(signal.x + " " + signal.y);
+
         DriveSignal driveSignal = new DriveSignal(
-                -signal.x + signal.y + signal.rotation,
-                signal.x - signal.y + signal.rotation,
                 signal.x + signal.y + signal.rotation,
-                -signal.x - signal.y + signal.rotation
+                signal.x + signal.y + signal.rotation,
+                signal.x + signal.y + signal.rotation,
+                signal.x + signal.y + signal.rotation
         );
 
         normalize(driveSignal);

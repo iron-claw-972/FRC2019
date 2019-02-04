@@ -6,6 +6,7 @@ import frc.team972.robot.subsystems.ElevatorSubsystem;
 import frc.team972.robot.subsystems.ExampleSubsystem;
 
 import frc.team972.robot.subsystems.WristSubsystem;
+import frc.team972.robot.util.MecanumHelper;
 
 public class TeleopManager {
     private static TeleopManager mInstance = null;
@@ -25,15 +26,14 @@ public class TeleopManager {
     }
 
     public void update() {
-        /*
+
         mDrive.setOpenLoopMecanum(
                 MecanumHelper.mecanumDrive(-controlBoard.getTranslateX(), controlBoard.getTranslateY(), controlBoard.getRotate(), controlBoard.getNoFieldOrient())
         );
 
-      
-        mExample.setDesiredVoltage(controlBoard.getExampleJoystickValue());
-        */
+        //mExample.setDesiredVoltage(controlBoard.getExampleJoystickValue());
 
+        /*
         double wrist_goal = 0;
         if(stick.getRawButton(6)) {
             wrist_goal = Math.PI;
@@ -42,5 +42,6 @@ public class TeleopManager {
         }
 
         WristSubsystem.getInstance().setWrist_goal_pos(wrist_goal);
+        */
     }
 }

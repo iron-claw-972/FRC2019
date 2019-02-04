@@ -38,7 +38,7 @@ public class Constants {
     public static final double kElevatorVoltageCap = 12.0;
     public static final double kElevatorHallEffectPosition = 0.1;
 
-    public static final MotionProfileConstraints kWristConstraints = new MotionProfileConstraints(24.0, 24.0);
+    public static final MotionProfileConstraints kWristConstraints = new MotionProfileConstraints(12, 12.0);
     public static final double kWristMaxAngle = 180.0;
     public static final double kWristVoltageCap = 6.0;
     public static final double kWristHallEffectPosition = Math.toRadians(10);

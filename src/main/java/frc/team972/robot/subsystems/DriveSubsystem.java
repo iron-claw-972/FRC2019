@@ -146,8 +146,6 @@ public class DriveSubsystem extends Subsystem {
             double angle_correction = -angle_velocity * 0.2;
             angle_correction = MecanumHelper.handleDeadband(angle_correction, 0.01);
 
-            System.out.println(current_angle + " " + last_angle + " " + mecanumDriveSignalDesired.getFieldOrient());
-
             if(current_angle != 0) {
                 mecanumDriveSignalDesired.addRotation(angle_correction);
             }
