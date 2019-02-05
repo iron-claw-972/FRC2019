@@ -65,3 +65,5 @@ talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 1
 talon.getSensorCollection().getQuadraturePosition();
 talon.getSensorCollection().getQuadratureVelocity();
 ```
+### Google Java Style Guide
+https://google.github.io/styleguide/javaguide.html
