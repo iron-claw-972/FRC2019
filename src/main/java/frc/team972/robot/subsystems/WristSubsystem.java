@@ -30,6 +30,7 @@ public class WristSubsystem extends Subsystem {
     private double wrist_goal_pos = 0;
     private double u = 0;
 
+    /*
     ShuffleboardTab tab = Shuffleboard.getTab("ss");
     NetworkTableEntry enc_g = tab.add("enc", 0).getEntry();
     NetworkTableEntry obs_g = tab.add("obs", 0).getEntry();
@@ -37,8 +38,9 @@ public class WristSubsystem extends Subsystem {
     NetworkTableEntry des_g = tab.add("des", 0).getEntry();
     NetworkTableEntry des_v_g = tab.add("des_v", 0).getEntry();
     NetworkTableEntry u_g = tab.add("u", 0).getEntry();
+    */
 
-    public WristSubsystem() {
+    private WristSubsystem() {
         this(false);
 
         mWristTalon = TalonSRXFactory.createDefaultTalon(Constants.kWristMotorId);
@@ -51,7 +53,7 @@ public class WristSubsystem extends Subsystem {
 
     public WristSubsystem(boolean test_mode) {
         wristController.SetWeights();
-        if (test_mode == false) {
+        if (!test_mode) {
             mWristTalon = TalonSRXFactory.createDefaultTalon(Constants.kWristMotorId);
         } else {
             System.out.println("WristSubsystem created in Test Mode");
@@ -93,12 +95,14 @@ public class WristSubsystem extends Subsystem {
 
     public void outputTelemetry() {
         //System.out.println(u + " " + wrist_goal_pos + " " + this.getEncoder() + " " + wristController.observer_.plant_.y().get(0, 0));
+        /*
         enc_g.setDouble(getEncoder());
         obs_g.setDouble(wristController.observer_.plant_.x_.get(0,0));
         obsv_g.setDouble(wristController.observer_.plant_.x_.get(1,0));
         des_g.setDouble(wristController.profiled_goal_.position);
         des_v_g.setDouble(wristController.profiled_goal_.velocity);
         u_g.setDouble(wristController.getWrist_u());
+        */
     }
 
     public void stop() {

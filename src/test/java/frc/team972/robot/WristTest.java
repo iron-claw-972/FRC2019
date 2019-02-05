@@ -13,10 +13,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class WristTest {
-    WristSubsystem wristSubsystem = new WristSubsystem(true);
-    WristController wrist_ = wristSubsystem.getWristController();
+    private WristSubsystem wristSubsystem = new WristSubsystem(true);
+    private WristController wrist_ = wristSubsystem.getWristController();
 
-    StateSpacePlant plant_ = new StateSpacePlant(WristGains.A(), WristGains.B(), WristGains.C(), WristGains.D());
+    private StateSpacePlant plant_ = new StateSpacePlant(WristGains.A(), WristGains.B(), WristGains.C(), WristGains.D());
 
     private void Update() {
         if (plant_.x_.get(0, 0) < 0) {
@@ -63,7 +63,7 @@ public class WristTest {
         stayStill(offset);
     }
 
-    public void CalibrateDisabled(double offset) {
+    private void CalibrateDisabled(double offset) {
         wristSubsystem.setHall(false);
         wristSubsystem.setOutputs_enabled_(false);
 
@@ -83,7 +83,7 @@ public class WristTest {
         stayStill(offset);
     }
 
-    public void stayStill(double offset) {
+    private void stayStill(double offset) {
         System.out.println("-- Staying still --");
         for (int i = 0; i <= 100; i++) {
             wristSubsystem.setEncoder(plant_.y().get(0, 0) - offset);
@@ -164,8 +164,8 @@ public class WristTest {
 
         }
 
-        Assert.assertEquals(plant.x_.get(0, 0), observer.plant_.x_.get(0, 0), 0.01);
-        Assert.assertEquals(plant.x_.get(1, 0), observer.plant_.x_.get(1, 0), 0.1);
+        Assert.assertEquals(plant.x_.get(0, 0), observer.plant_.x_.get(0, 0), 0.1);
+        Assert.assertEquals(plant.x_.get(1, 0), observer.plant_.x_.get(1, 0), 0.5);
 
         /*
         Graphing graphing = new Graphing("state_space", "wrist_observer", dataset);
@@ -215,6 +215,7 @@ public class WristTest {
         Assert.assertEquals(wrist_.observer_.plant_.y().get(0, 0), wrist_.unprofiled_goal_.position, 0.01);
         Assert.assertEquals(wrist_.profiled_goal_.position, wrist_.unprofiled_goal_.position, 0.01);
 
+        /*
         Graphing graphing = new Graphing("state_space", "wristMoveAngle", dataset);
         graphing.display();
         try {
@@ -222,6 +223,7 @@ public class WristTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        */
     }
 
 
