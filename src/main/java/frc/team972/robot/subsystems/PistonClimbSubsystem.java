@@ -32,7 +32,9 @@ public class PistonClimbSubsystem extends Subsystem {
     private DriveSubsystem driveControl = new DriveSubsystem();
 
     private double[] StageClimbTimings = new double[6];
-    private boolean testing = false;
+    
+    private stage currentStage = stage.NOSTAGE;
+    private stageState output;
 
     public void setDetectionTime(double detectionTime) {
         this.detectionTime = detectionTime;
@@ -53,9 +55,6 @@ public class PistonClimbSubsystem extends Subsystem {
     public enum stageState {
         COMPLETE, IN_PROG, FAILED;
     }
-
-    private stage currentStage = stage.NOSTAGE;
-    private stageState output;
 
     public PistonClimbSubsystem(double stage1Delay, double stage2Delay, double stage3Delay, double stage4Delay, double stage5Delay, double stage6Delay, boolean _testing)
     {
@@ -178,6 +177,8 @@ public class PistonClimbSubsystem extends Subsystem {
                 abortClimb();
                 currentStage = stage.NOSTAGE;
                 break;
+            case default:
+                break;
         }
     }
 
@@ -294,11 +295,11 @@ public class PistonClimbSubsystem extends Subsystem {
 
     public void setFrontPistonsState(boolean value)
     {
-        if(value == true)
+        if(value)
         {
             frontPistons.set(DoubleSolenoid.Value.kForward);
         }
-        else if(value == false)
+        else if(!value)
         {
             frontPistons.set(DoubleSolenoid.Value.kReverse);
         }
@@ -306,11 +307,11 @@ public class PistonClimbSubsystem extends Subsystem {
 
     public void setBackPistonsState(boolean value)
     {
-        if(value == true)
+        if(value)
         {
             backPistons.set(DoubleSolenoid.Value.kForward);
         }
-        else if(value == false)
+        else if(!value)
         {
             backPistons.set(DoubleSolenoid.Value.kReverse);
         }
