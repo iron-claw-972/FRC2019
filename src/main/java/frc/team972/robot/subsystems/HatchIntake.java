@@ -7,7 +7,7 @@ public class HatchIntake extends Subsystem {
 
     public boolean hatchIntakeWorks = false;
 
-    private static ExampleSubsystem mInstance = new ExampleSubsystem();
+    private static HatchIntake mHatchIntake = new HatchIntake();
 
     public DoubleSolenoid hatchIntakeDoubleSolenoid;
 
@@ -23,7 +23,7 @@ public class HatchIntake extends Subsystem {
         hatchIntakeDoubleSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
-    public void off() {
+    public void stop() {
         hatchIntakeDoubleSolenoid.set(DoubleSolenoid.Value.kOff);
     }
 
@@ -37,13 +37,16 @@ public class HatchIntake extends Subsystem {
     }
 
     public void writeToLog() {
+        //Doesn't do stuff
     }
 
     public void readPeriodicInputs() {
+        //Doesn't do stuff
     }
 
     public void writePeriodicOutputs() {
         //System.out.println("Test");
+        //Doesn't do stuff
     }
 
     public boolean checkSystem() {
@@ -51,15 +54,17 @@ public class HatchIntake extends Subsystem {
     }
 
     public void outputTelemetry() {
+        //Doesn't do stuff
     }
 
-    public void stop() {
-    }
+
 
     public void zeroSensors() {
+        //Doesn't do stuff
     }
 
     public void registerEnabledLoops(ILooper enabledLooper) {
+        //Doesn't do stuff
     }
 
     public static ExampleSubsystem getInstance() {
