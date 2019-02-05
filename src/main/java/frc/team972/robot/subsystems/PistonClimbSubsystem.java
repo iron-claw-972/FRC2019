@@ -1,7 +1,11 @@
 package frc.team972.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import frc.team972.robot.Constants;
 import frc.team972.robot.loops.ILooper;
+import frc.team972.robot.util.CoordinateDriveSignal;
 
 public class PistonClimbSubsystem extends Subsystem {
     private static PistonClimbSubsystem mInstance = new PistonClimbSubsystem(Constants.stage1Delay, Constants.stage2Delay, Constants.stage3Delay, Constants.stage4Delay, Constants.stage5Delay, Constants.stage6Delay, false);
@@ -25,7 +29,7 @@ public class PistonClimbSubsystem extends Subsystem {
     private DoubleSolenoid frontPistons;
     private DoubleSolenoid backPistons;
 
-    private Drive driveControl = new Drive();
+    private DriveSubsystem driveControl = new DriveSubsystem();
 
     private double[] StageClimbTimings = new double[6];
     private boolean testing = false;
@@ -50,15 +54,15 @@ public class PistonClimbSubsystem extends Subsystem {
         COMPLETE, IN_PROG, FAILED;
     }
 
-    private stage currentStage = NOSTAGE;
+    private stage currentStage = stage.NOSTAGE;
     private stageState output;
 
     public PistonClimbSubsystem(double stage1Delay, double stage2Delay, double stage3Delay, double stage4Delay, double stage5Delay, double stage6Delay, boolean _testing)
     {
         frontPistons = new DoubleSolenoid(1, 2);
         backPistons = new DoubleSolenoid(3, 4);
-        RangeSensorFront = new UltraSonic(1, 1);
-        RangeSensorBack = new UltraSonic(2,2);
+        RangeSensorFront = new Ultrasonic(1, 1);
+        RangeSensorBack = new Ultrasonic(2,2);
         StageClimbTimings[0] = stage1Delay;
         StageClimbTimings[1] = stage2Delay;
         StageClimbTimings[2] = stage3Delay;
@@ -280,7 +284,7 @@ public class PistonClimbSubsystem extends Subsystem {
     }
 
     public void abortClimb() {
-        driveControl.mecanumDriveSignalDesired(new coordinateDriveSignal(0, 0, 0, false));
+        driveControl.setOpenLoopMecanum(new CoordinateDriveSignal(0, 0, 0, false));
         setFrontPistonsState(false);
         setBackPistonsState(false);
         waitTimer.stop();
