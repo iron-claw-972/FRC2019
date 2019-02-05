@@ -67,7 +67,7 @@ public class HatchIntake extends Subsystem {
         //Doesn't do stuff
     }
 
-    public static ExampleSubsystem getInstance() {
-        return mInstance;
+    public static HatchIntake getInstance() {
+        return mHatchIntake;
     }
 }
