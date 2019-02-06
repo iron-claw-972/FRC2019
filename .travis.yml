@@ -2,7 +2,7 @@
 language: groovy
 
 jdk:
-- oraclejdk11
+- oraclejdk8
 
 sudo: required
 
