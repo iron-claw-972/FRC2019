@@ -177,7 +177,7 @@ public class PistonClimbSubsystem extends Subsystem {
                 abortClimb();
                 currentStage = stage.NOSTAGE;
                 break;
-            case default:
+            default:
                 break;
         }
     }
