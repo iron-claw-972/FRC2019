@@ -17,7 +17,8 @@ public class PistonClimbSubsystem extends Subsystem {
     private final double alignmentDelay = 1.5;
     private final CoordinateDriveSignal forward = new CoordinateDriveSignal(speed, 0.0, 0.0, false);
 
-    private Timer waitTimer = new Timer();
+    private float waitTimer;
+    private java.time.LocalTime startTime;
     private double time = 0;
 
     private Ultrasonic RangeSensorFront;
@@ -71,16 +72,18 @@ public class PistonClimbSubsystem extends Subsystem {
     }
 
     private void restartTimer() {
-        waitTimer.stop();
+        //waitTimer.stop();
         time = 0;
-        waitTimer.reset();
-        waitTimer.start();
+        startTime = java.time.LocalTime.now();
+        //waitTimer.start();
     }
 
     public void writeToLog() {
     }
 
-    public void beginClimb() {
+    public void beginClimb()
+    {
+        startTime = java.time.LocalTime.now();
         if (currentStage == stage.NOSTAGE) {
             currentStage = stage.STAGE_1;
             restartTimer();
@@ -90,7 +93,7 @@ public class PistonClimbSubsystem extends Subsystem {
     }
 
     public void takeTime() {
-        setTime(waitTimer.get());
+        setTime(waitTimer);
     }
 
     public void takeRange() {
@@ -114,6 +117,9 @@ public class PistonClimbSubsystem extends Subsystem {
             takeTime();
             takeRange();
         }
+        // hahahahahaha "optimization"
+        waitTimer = (java.time.LocalTime.now().getHour()* 360 + java.time.LocalTime.now().getMinute()* 60 + java.time.LocalTime.now().getSecond() + (java.time.LocalTime.now().getNano()/1000)) -
+                (startTime.getHour() * 360 + startTime.getMinute()*60 + startTime.getSecond() + startTime.getNano()/1000);
 
         switch (currentStage) {
             case STAGE_1:
@@ -199,7 +205,7 @@ public class PistonClimbSubsystem extends Subsystem {
         if(range <= (HAB_LEVEL_ONE_LEVEL_TWO_DIFF_INCHES - ERROR_TOLERANCE)) // check for UltraSonic sensor to be over the stage platform
         {
             if (detectionTime == 0) {
-                detectionTime = waitTimer.get();
+                detectionTime = waitTimer;
             }
 
             if(time >= detectionTime + alignmentDelay && time >= waitTime) // drive forward for waitTime and then stop
@@ -249,7 +255,7 @@ public class PistonClimbSubsystem extends Subsystem {
         if(range <= (GROUND_CLEARANCE_INCHES + ERROR_TOLERANCE)) // check for UltraSonic sensor to be over the stage platform
         {
             if (detectionTime == 0) {
-                detectionTime = waitTimer.get();
+                detectionTime = waitTimer;
             }
 
             if(time >= detectionTime + alignmentDelay && time >= waitTime) // drive forward for waitTime and then stop
@@ -287,9 +293,7 @@ public class PistonClimbSubsystem extends Subsystem {
         driveControl.setOpenLoopMecanum(new CoordinateDriveSignal(0, 0, 0, false));
         setFrontPistonsState(false);
         setBackPistonsState(false);
-        waitTimer.stop();
-        time = 0;
-        waitTimer.reset();
+        restartTimer();
     }
 
     public void setFrontPistonsState(boolean value)
