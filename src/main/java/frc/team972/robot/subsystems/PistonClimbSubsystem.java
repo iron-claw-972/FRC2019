@@ -56,7 +56,7 @@ public class PistonClimbSubsystem extends Subsystem {
         COMPLETE, IN_PROG, FAILED;
     }
 
-    public PistonClimbSubsystem(double stage1Delay, double stage2Delay, double stage3Delay, double stage4Delay, double stage5Delay, double stage6Delay, boolean _testing)
+    public PistonClimbSubsystem(double stage1Delay, double stage2Delay, double stage3Delay, double stage4Delay, double stage5Delay, double stage6Delay)
     {
         frontPistons = new DoubleSolenoid(1, 2);
         backPistons = new DoubleSolenoid(3, 4);
@@ -68,7 +68,6 @@ public class PistonClimbSubsystem extends Subsystem {
         StageClimbTimings[3] = stage4Delay;
         StageClimbTimings[4] = stage5Delay;
         StageClimbTimings[5] = stage6Delay;
-        testing = _testing;
     }
 
     private void restartTimer() {
