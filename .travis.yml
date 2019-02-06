@@ -1,8 +1,6 @@
 
 language: groovy
 
-os: windows
-
 jdk:
 - oraclejdk11
 
@@ -10,9 +8,3 @@ sudo: required
 
 notifications:
   email: false
-
-install:
-- ./gradlew -version
-- sudo add-apt-repository ppa:wpilib/toolchain -y
-- sudo apt-get update -q
-- sudo apt-get install frc-toolchain -y
