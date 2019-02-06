@@ -8,7 +8,7 @@ import frc.team972.robot.loops.ILooper;
 import frc.team972.robot.util.CoordinateDriveSignal;
 
 public class PistonClimbSubsystem extends Subsystem {
-    private static PistonClimbSubsystem mInstance = new PistonClimbSubsystem(Constants.stage1Delay, Constants.stage2Delay, Constants.stage3Delay, Constants.stage4Delay, Constants.stage5Delay, Constants.stage6Delay, false);
+    private static PistonClimbSubsystem mInstance = new PistonClimbSubsystem(Constants.stage1Delay, Constants.stage2Delay, Constants.stage3Delay, Constants.stage4Delay, Constants.stage5Delay, Constants.stage6Delay);
 
     public final double HAB_LEVEL_ONE_LEVEL_TWO_DIFF_INCHES = Constants.HabLevelTwoElevationInches - Constants.HabLevelOneElevationInches;
     public final double GROUND_CLEARANCE_INCHES = 12; //TODO: Find actual value
