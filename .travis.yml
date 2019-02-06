@@ -1,6 +1,8 @@
 
 language: groovy
 
+os: windows
+
 jdk:
 - oraclejdk11
 
