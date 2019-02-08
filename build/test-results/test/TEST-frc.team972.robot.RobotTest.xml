@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="frc.team972.robot.RobotTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2019-01-12T22:49:15" hostname="DESKTOP-1FKL8Q8" time="0.0">
-  <properties/>
-  <testcase name="test" classname="frc.team972.robot.RobotTest" time="0.0"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

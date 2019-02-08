@@ -38,9 +38,9 @@ public class Constants {
     public static final double kElevatorVoltageCap = 12.0;
     public static final double kElevatorHallEffectPosition = 0.1;
 
-    public static final MotionProfileConstraints kWristConstraints = new MotionProfileConstraints(1.0, 2.0);
+    public static final MotionProfileConstraints kWristConstraints = new MotionProfileConstraints(12, 12.0);
     public static final double kWristMaxAngle = 180.0;
-    public static final double kWristVoltageCap = 2.0;
+    public static final double kWristVoltageCap = 6.0;
     public static final double kWristHallEffectPosition = Math.toRadians(10);
     public static final int kWristEncoderCountPerRev = 1024;
 
@@ -56,5 +56,6 @@ public class Constants {
     public static final double stage4Delay = 1.5;
     public static final double stage5Delay = 1;
     public static final double stage6Delay = 1;
+
 
 }

@@ -10,8 +10,6 @@ import java.util.List;
  * powers up and stopped after the match.
  */
 public class Looper implements ILooper {
-    public final double kPeriod = 0.01;
-
     private boolean running_;
 
     private final List<Loop> loops_;
@@ -32,7 +30,7 @@ public class Looper implements ILooper {
                                         long now = System.currentTimeMillis();
                                         loop.onLoop(now);
                                         long timestamp_ = System.currentTimeMillis();
-                                        long dt_ = now - timestamp_;
+                                        long dt_ = timestamp_ - now;
                                         long remain_time = (long) (Constants.dt * 1000) - dt_;
                                         if (remain_time < 0) {
                                             System.out.println("MAJOR WARNING, RT LOOP CAN NOT KEEP UP!!!");
