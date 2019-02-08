@@ -89,7 +89,7 @@ public class PistonClimbSubsystem extends Subsystem {
     }
 
     public void takeTime() {
-        waitTimer = System.currentTimeMillis() - startTimer;
+        waitTimer = System.currentTimeMillis() - startTime;
         setTime(waitTimer);
     }
 
