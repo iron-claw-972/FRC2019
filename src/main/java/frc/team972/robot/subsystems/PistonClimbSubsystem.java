@@ -33,10 +33,10 @@ public class PistonClimbSubsystem extends Subsystem {
     private stage currentStage = stage.NOSTAGE;
     private stageState output;
     
-    private boolean testing = false;
+    private boolean notTesting = false;
     
-    public void setPistonClimbTesting(boolean testing) {
-        this.testing = testing;
+    public void setPistonClimbNotTesting(boolean notTesting) {
+        this.notTesting = !notTesting;
     }    
     
     public void setDetectionTime(double detectionTime) {
@@ -187,7 +187,7 @@ public class PistonClimbSubsystem extends Subsystem {
 
     public stageState climbStage1(double waitTime)//extends front pistons; moves onto next stage when certain time is reached
     {
-        if (testing) {
+        if (notTesting) {
             setFrontPistonsState(true);
         }
 
@@ -230,7 +230,7 @@ public class PistonClimbSubsystem extends Subsystem {
 
     public stageState climbStage3(double waitTime) //Retracts the front pistons; moves on when time is reached
     { 
-        if (testing) {
+        if (notTesting) {
             setFrontPistonsState(false);
         }
         
@@ -243,7 +243,7 @@ public class PistonClimbSubsystem extends Subsystem {
 
     public stageState climbStage4(double waitTime) //Extends the back pistons; moves on when time is reached
     {
-        if (testing) {
+        if (notTesting) {
             setBackPistonsState(true);
         }
         
@@ -286,7 +286,7 @@ public class PistonClimbSubsystem extends Subsystem {
 
     public stageState climbStage6(double waitTime) //retract the back pistons; end the climb after a certain period of time
     {
-        if (testing) {
+        if (notTesting) {
             setBackPistonsState(false);
         }
 
