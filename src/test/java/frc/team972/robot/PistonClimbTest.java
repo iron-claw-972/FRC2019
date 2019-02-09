@@ -11,6 +11,7 @@ public class PistonClimbTest {
     @Test
     public void testPistonClimb()
     {
+        PistonClimbSubsystem.getInstance().setPistonClimbTesting(true);
         PistonClimbSubsystem.getInstance().setTime(5); //Tests all piston extension stages to see if they return completion or progression successfully
         assertEquals(PistonClimbSubsystem.getInstance().climbStage1(4), PistonClimbSubsystem.stageState.IN_PROG);
         assertEquals(PistonClimbSubsystem.getInstance().climbStage1(6), PistonClimbSubsystem.stageState.COMPLETE);
@@ -46,6 +47,6 @@ public class PistonClimbTest {
         assertEquals(PistonClimbSubsystem.getInstance().climbStage5(6, true), PistonClimbSubsystem.stageState.IN_PROG);
         PistonClimbSubsystem.getInstance().setTime(7);
         assertEquals(PistonClimbSubsystem.getInstance().climbStage5(6, true), PistonClimbSubsystem.stageState.FAILED);
-
+        PistonClimbSubsystem.getInstance().setPistonClimbTesting(false);
     }
 }
