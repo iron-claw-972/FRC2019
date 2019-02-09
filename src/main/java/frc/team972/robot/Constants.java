@@ -13,6 +13,9 @@ public class Constants {
     // DRIVE MOTOR IDS
     // TODO: Fill with real Talon ID
 
+    public static final double kDriveTicksPerRev = 4096;
+    public static final double kDriveVelocityGain = 0.5;
+
     public static final int kLeftFrontId = 1;
     public static final int kLeftBackId = 3;
     public static final int kRightFrontId = 2;

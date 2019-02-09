@@ -43,10 +43,12 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		robotState.outputs_enabled = true;
+		DriveSubsystem.getInstance().zeroSensors();
 		//WristSubsystem.getInstance().zeroSensors();
 	}
 
-	@Override public void teleopPeriodic() {
+	@Override
+	public void teleopPeriodic() {
 		teleopManager.update();
 		mSubsystemManager.slowPeriodic();
 		mSubsystemManager.outputToSmartDashboard();

@@ -27,7 +27,7 @@ public class TeleopManager {
 
     public void update() {
 
-        mDrive.setOpenLoopMecanum(
+        mDrive.setCloseLoopMecanum(
                 MecanumHelper.mecanumDrive(-controlBoard.getTranslateX(), controlBoard.getTranslateY(), controlBoard.getRotate(), controlBoard.getNoFieldOrient())
         );
 

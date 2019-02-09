@@ -1,9 +1,6 @@
 package frc.team972.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
@@ -30,16 +27,16 @@ public class DriveSubsystem extends Subsystem {
 
     public DriveSubsystem() {
         mLeftFront = TalonSRXFactory.createDefaultTalon(Constants.kLeftFrontId);
-        configureMaster(mLeftFront, true);
+        configureMaster(mLeftFront);
 
         mLeftBack = TalonSRXFactory.createDefaultTalon(Constants.kLeftBackId);
-        configureMaster(mLeftBack, true);
+        configureMaster(mLeftBack);
 
         mRightFront = TalonSRXFactory.createDefaultTalon(Constants.kRightFrontId);
-        configureMaster(mRightFront, false);
+        configureMaster(mRightFront);
 
         mRightBack = TalonSRXFactory.createDefaultTalon(Constants.kRightBackId);
-        configureMaster(mRightBack, false);
+        configureMaster(mRightBack);
 
         mIsBrakeMode = true;
         setBrakeMode(true);
@@ -54,22 +51,22 @@ public class DriveSubsystem extends Subsystem {
     }
 
 
-    private void configureMaster(TalonSRX talon, boolean left) {
+    private void configureMaster(TalonSRX talon) {
         //TODO: Configure Talons for Sensored operation
         talon.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5, 100);
-        /*final ErrorCode sensorPresent = talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 100);
+        /*
+        final ErrorCode sensorPresent = talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 100);
         if (sensorPresent != ErrorCode.OK) {
-            DriverStation.reportError("Could not detect " + (left ? "left" : "right") + " encoder: " + sensorPresent, false);
+            DriverStation.reportError("Could not detect encoder: " + sensorPresent, false);
         }
         */
-        //talon.setInverted(!left);
-        //talon.setSensorPhase(true);
+
+        talon.setSensorPhase(true);
         talon.enableVoltageCompensation(true);
         talon.configVoltageCompSaturation(12.0, Constants.kLongCANTimeoutMs);
-        //talon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_50Ms, Constants.kLongCANTimeoutMs);
-        //talon.configVelocityMeasurementWindow(1, Constants.kLongCANTimeoutMs);
-        //talon.configClosedloopRamp(Constants.kDriveVoltageRampRate, Constants.kLongCANTimeoutMs);
-        talon.configNeutralDeadband(0.04, 0);
+        talon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, Constants.kLongCANTimeoutMs);
+        talon.configVelocityMeasurementWindow(1, Constants.kLongCANTimeoutMs);
+        talon.configNeutralDeadband(0.01, 0);
     }
 
     public synchronized  void setOpenLoopMecanum(CoordinateDriveSignal signal) {
@@ -94,6 +91,31 @@ public class DriveSubsystem extends Subsystem {
         mPeriodicIO.right_back_demand = signal.getRightBack();
     }
 
+    public synchronized  void setCloseLoopMecanum(CoordinateDriveSignal signal) {
+        mecanumDriveSignalDesired = signal;
+        if(mDriveControlState != DriveControlState.CLOSED_LOOP_MECANUM) {
+            setBrakeMode(true);
+
+            mDriveControlState = DriveControlState.CLOSED_LOOP_MECANUM;
+        }
+    }
+
+    public synchronized void setCloseLoop(DriveSignal signal) {
+        if (mDriveControlState != DriveControlState.CLOSED_LOOP) {
+            setBrakeMode(true);
+
+            mDriveControlState = DriveControlState.CLOSED_LOOP;
+        }
+
+        DriveSensorReading sensorReading = encoderToRealUnits(readEncodersVelocity());
+
+        mPeriodicIO.left_front_demand = (signal.getLeftFront() - sensorReading.left) * Constants.kDriveVelocityGain;
+        mPeriodicIO.right_front_demand = (signal.getRightFront() + sensorReading.right) * Constants.kDriveVelocityGain;
+        mPeriodicIO.left_back_demand = (signal.getLeftBack() - sensorReading.left_back) * Constants.kDriveVelocityGain;
+        mPeriodicIO.right_back_demand = (signal.getRightBack() + sensorReading.right_back) * Constants.kDriveVelocityGain;
+
+    }
+
     public synchronized void setBrakeMode(boolean on) {
         if (mIsBrakeMode != on) {
             mIsBrakeMode = on;
@@ -113,7 +135,9 @@ public class DriveSubsystem extends Subsystem {
     public enum DriveControlState {
         OPEN_LOOP, // voltage control
         PATH_FOLLOWING, // velocity control
-        OPEN_LOOP_MECANUM
+        OPEN_LOOP_MECANUM,
+        CLOSED_LOOP,
+        CLOSED_LOOP_MECANUM
     }
 
     @Override
@@ -162,6 +186,14 @@ public class DriveSubsystem extends Subsystem {
             } else {
                 last_angle = null;
             }
+        } else if((mDriveControlState == DriveControlState.CLOSED_LOOP_MECANUM) && (mecanumDriveSignalDesired != null)) {
+            double current_angle = -ahrs.getAngle();
+            DriveSignal driveSignal = MecanumHelper.cartesianCalculate(mecanumDriveSignalDesired, current_angle);
+
+            //Feed transformed Mecanum values into traditional motor values
+
+            setCloseLoop(driveSignal); // Calculate u's
+            setMotorsOpenValue();
         }
     }
 
@@ -174,13 +206,46 @@ public class DriveSubsystem extends Subsystem {
 
     @Override
     public void outputTelemetry() {
-
+        //System.out.println(encoderToRealUnits(readEncodersPosition()));
     }
 
     @Override
     public void zeroSensors() {
         ahrs.reset();
+        mLeftBack.getSensorCollection().setQuadraturePosition(0, Constants.kLongCANTimeoutMs);
+        mRightBack.getSensorCollection().setQuadraturePosition(0, Constants.kLongCANTimeoutMs);
+        mLeftFront.getSensorCollection().setQuadraturePosition(0, Constants.kLongCANTimeoutMs);
+        mRightFront.getSensorCollection().setQuadraturePosition(0, Constants.kLongCANTimeoutMs);
         last_angle = null;
+    }
+
+    public DriveSensorReading readEncodersPosition() {
+        DriveSensorReading sensorReading = new DriveSensorReading();
+        sensorReading.left = -mLeftFront.getSensorCollection().getQuadraturePosition();
+        sensorReading.right = mRightFront.getSensorCollection().getQuadraturePosition();
+        sensorReading.left_back = -mLeftBack.getSensorCollection().getQuadraturePosition();
+        sensorReading.right_back = mRightBack.getSensorCollection().getQuadraturePosition();
+
+        return sensorReading;
+    }
+
+    public DriveSensorReading readEncodersVelocity() {
+        DriveSensorReading sensorReading = new DriveSensorReading();
+        sensorReading.left = -mLeftFront.getSensorCollection().getQuadratureVelocity();
+        sensorReading.right = mRightFront.getSensorCollection().getQuadratureVelocity();
+        sensorReading.left_back = -mLeftBack.getSensorCollection().getQuadratureVelocity();
+        sensorReading.right_back = mRightBack.getSensorCollection().getQuadratureVelocity();
+
+        return sensorReading;
+    }
+
+    public DriveSensorReading encoderToRealUnits(DriveSensorReading sensorReading) {
+        sensorReading.left = sensorReading.left * (1/Constants.kDriveTicksPerRev);
+        sensorReading.right = sensorReading.right * (1/Constants.kDriveTicksPerRev);
+        sensorReading.left_back = sensorReading.left_back * (1/Constants.kDriveTicksPerRev);
+        sensorReading.right_back = sensorReading.right_back * (1/Constants.kDriveTicksPerRev);
+
+        return sensorReading;
     }
 
     @Override
@@ -198,6 +263,17 @@ public class DriveSubsystem extends Subsystem {
 
         public String toString() {
             return left_back_demand + " " + right_front_demand + " " + left_back_demand + " " + right_back_demand;
+        }
+    }
+
+    public static class DriveSensorReading {
+        public double left = 0;
+        public double left_back = 0;
+        public double right = 0;
+        public double right_back = 0;
+
+        public String toString() {
+            return left + " " + right + " " + left_back + " " + right_back;
         }
     }
 
