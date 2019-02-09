@@ -228,7 +228,7 @@ public class PistonClimbSubsystem extends Subsystem {
 
     }
 
-    public stageState climbStage3(double waitTime, boolean test) //Retracts the front pistons; moves on when time is reached
+    public stageState climbStage3(double waitTime) //Retracts the front pistons; moves on when time is reached
     { 
         if (testing) {
             setFrontPistonsState(false);
