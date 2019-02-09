@@ -27,14 +27,18 @@ public class PistonClimbSubsystem extends Subsystem {
 
     private DoubleSolenoid frontPistons;
     private DoubleSolenoid backPistons;
-
     private DriveSubsystem driveControl = new DriveSubsystem();
 
     private double[] StageClimbTimings = new double[6];
-    
     private stage currentStage = stage.NOSTAGE;
     private stageState output;
-
+    
+    private boolean testing = false;
+    
+    public void setPistonClimbTesting(boolean testing) {
+        this.testing = testing;
+    }    
+    
     public void setDetectionTime(double detectionTime) {
         this.detectionTime = detectionTime;
     }
@@ -108,7 +112,7 @@ public class PistonClimbSubsystem extends Subsystem {
 
     }
 
-    public void fastPeriodic() {
+    public void fastPeriodic() {//Checks stage and completion requirements
 
         if (!(currentStage == stage.NOSTAGE)) {
             takeTime();
@@ -181,10 +185,12 @@ public class PistonClimbSubsystem extends Subsystem {
         }
     }
 
-    public stageState climbStage1(double waitTime)// raising the front pistons
+    public stageState climbStage1(double waitTime)//extends front pistons; moves onto next stage when certain time is reached
     {
-        // restart the timer so that it is representing the time spent on this stage
-        setFrontPistonsState(true);
+        if (testing) {
+            setFrontPistonsState(true);
+        }
+
         if(time < waitTime) {
             return stageState.IN_PROG;
         } else {
@@ -222,9 +228,12 @@ public class PistonClimbSubsystem extends Subsystem {
 
     }
 
-    public stageState climbStage3(double waitTime) // retract the front pistons to lower the front wheels, over the platform
-    {
-        setFrontPistonsState(false);
+    public stageState climbStage3(double waitTime, boolean test) //Retracts the front pistons; moves on when time is reached
+    { 
+        if (testing) {
+            setFrontPistonsState(false);
+        }
+        
         if (time < waitTime) {
             return stageState.COMPLETE;
         } else {
@@ -232,9 +241,12 @@ public class PistonClimbSubsystem extends Subsystem {
         }
     }
 
-    public stageState climbStage4(double waitTime) // raise the back pistons
+    public stageState climbStage4(double waitTime) //Extends the back pistons; moves on when time is reached
     {
-        setBackPistonsState(true);
+        if (testing) {
+            setBackPistonsState(true);
+        }
+        
         if (time < waitTime) {
             return stageState.COMPLETE;
         } else {
@@ -272,10 +284,12 @@ public class PistonClimbSubsystem extends Subsystem {
 
     }
 
-    public stageState climbStage6(double waitTime) // retract the back pistons to close the climbing loop
+    public stageState climbStage6(double waitTime) //retract the back pistons; end the climb after a certain period of time
     {
-        // restart the timer so that it is representing the time spent on this stage
-        setBackPistonsState(false);
+        if (testing) {
+            setBackPistonsState(false);
+        }
+
         if(time <= waitTime) {
             return stageState.IN_PROG;
         } else {
@@ -283,7 +297,7 @@ public class PistonClimbSubsystem extends Subsystem {
         }
     }
 
-    public void abortClimb() {
+    public void abortClimb() {//resets variables and puts robot into starting state (still, no pistons out)
         driveControl.setOpenLoopMecanum(new CoordinateDriveSignal(0, 0, 0, false));
         setFrontPistonsState(false);
         setBackPistonsState(false);
