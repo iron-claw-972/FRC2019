@@ -7,7 +7,7 @@ import frc.team972.robot.loops.ILooper;
 import frc.team972.robot.util.CoordinateDriveSignal;
 
 public class PistonClimbSubsystem extends Subsystem {
-    private static PistonClimbSubsystem mInstance = new PistonClimbSubsystem(/*Constants.stage1Delay, Constants.stage2Delay, Constants.stage3Delay, Constants.stage4Delay, Constants.stage5Delay, Constants.stage6Delay*/);
+    private static PistonClimbSubsystem mInstance = new PistonClimbSubsystem();
 
     public final double HAB_LEVEL_ONE_LEVEL_TWO_DIFF_INCHES = Constants.HabLevelTwoElevationInches - Constants.HabLevelOneElevationInches;
     public final double GROUND_CLEARANCE_INCHES = 12; //TODO: Find actual value
@@ -20,12 +20,12 @@ public class PistonClimbSubsystem extends Subsystem {
     private double detectionTime = 0;
     private double time = 0;
 
+    private DoubleSolenoid frontPistons;
+    private DoubleSolenoid backPistons;
     private Ultrasonic RangeSensorFront;
     private Ultrasonic RangeSensorBack;
     private double range = 0;
 
-    private DoubleSolenoid frontPistons;
-    private DoubleSolenoid backPistons;
     //private DriveSubsystem driveControl = new DriveSubsystem();
     //TODO: Fix DriveSubsystem problems/affirm functionality
     
@@ -59,19 +59,24 @@ public class PistonClimbSubsystem extends Subsystem {
         COMPLETE, IN_PROG, FAILED;
     }
 
-    /*public PistonClimbSubsystem(double stage1Delay, double stage2Delay, double stage3Delay, double stage4Delay, double stage5Delay, double stage6Delay)
+    public PistonClimbSubsystem()
     { //TODO: Fix problem with initializer (ExceptionInitializerError)
+    	System.out.println("1af");
         frontPistons = new DoubleSolenoid(1, 2);
+        System.out.println("2af");
         backPistons = new DoubleSolenoid(3, 4);
-        RangeSensorFront = new Ultrasonic(1, 1);
-        RangeSensorBack = new Ultrasonic(2,2);
-        StageClimbTimings[0] = stage1Delay;
-        StageClimbTimings[1] = stage2Delay;
-        StageClimbTimings[2] = stage3Delay;
-        StageClimbTimings[3] = stage4Delay;
-        StageClimbTimings[4] = stage5Delay;
-        StageClimbTimings[5] = stage6Delay;
-    }*/
+        System.out.println("3af");
+        RangeSensorFront = new Ultrasonic(1, 2);
+        System.out.println("4af");
+        RangeSensorBack = new Ultrasonic(3, 4);
+        System.out.println("5af");
+        StageClimbTimings[0] = Constants.stage1Delay;
+        StageClimbTimings[1] = Constants.stage2Delay;
+        StageClimbTimings[2] = Constants.stage3Delay;
+        StageClimbTimings[3] = Constants.stage4Delay;
+        StageClimbTimings[4] = Constants.stage5Delay;
+        StageClimbTimings[5] = Constants.stage6Delay;
+    }
 
     private void restartTimer() {
         waitTimer = 0;
