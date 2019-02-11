@@ -53,6 +53,7 @@ public class SubsystemManager {
         @Override
         public void onLoop(double timestamp) {
             subsystem.fastPeriodic();
+            subsystem.fastPeriodic(timestamp);
         }
 
         @Override
