@@ -28,8 +28,8 @@ public class ElevatorController {
 
     private double elevator_u = 0.0;
 
-    public MotionProfilePosition unprofiled_goal_ = new MotionProfilePosition(0 ,0);
-    public MotionProfilePosition profiled_goal_ = new MotionProfilePosition(0 ,0);
+    public MotionProfilePosition unprofiled_goal_ = new MotionProfilePosition(0, 0);
+    public MotionProfilePosition profiled_goal_ = new MotionProfilePosition(0, 0);
 
     public void SetWeights(boolean second_stage) {
         plant_.A_ = ControlsMathUtil.CloneMatrix(ElevatorGains.A());
@@ -41,7 +41,7 @@ public class ElevatorController {
         controller_.Kff_ = ControlsMathUtil.CloneMatrix(ElevatorGains.Kff());
         controller_.A_ = ControlsMathUtil.CloneMatrix(ElevatorGains.A());
 
-        observer_.L_ =  ControlsMathUtil.CloneMatrix(ElevatorGains.L());
+        observer_.L_ = ControlsMathUtil.CloneMatrix(ElevatorGains.L());
 
         observer_.plant_.A_ = ControlsMathUtil.CloneMatrix(ElevatorGains.A());
         observer_.plant_.B_ = ControlsMathUtil.CloneMatrix(ElevatorGains.B());
@@ -82,7 +82,7 @@ public class ElevatorController {
         }
 
         if (hall_calibration.is_calibrated() && !was_calibrated) {
-            observer_.plant_.x_.set(0,0, observer_.plant_.x_.get(0,0) + hall_calibration.offset);
+            observer_.plant_.x_.set(0, 0, observer_.plant_.x_.get(0, 0) + hall_calibration.offset);
             profiled_goal_ = new MotionProfilePosition(observer_.plant_.x_.get(0, 0), observer_.plant_.x_.get(1, 0));
         }
 
@@ -105,6 +105,7 @@ public class ElevatorController {
 
         elevator_u = ControlsMathUtil.Cap(elevator_u, -Constants.kElevatorVoltageCap, Constants.kElevatorVoltageCap);
 
+        /* // ---- ENCODER FAULT DETECTION REMOVED TEMPORARILY
         if (elevatorSubsystem.old_pos_ == elevatorSubsystem.getEncoder() &&
                 Math.abs(elevator_u) >= Constants.kEncoderFaultMinVoltage) {
             elevatorSubsystem.num_encoder_fault_ticks_++;
@@ -116,9 +117,10 @@ public class ElevatorController {
             elevatorSubsystem.encoder_fault_detected_ = false;
         }
 
-        elevator_u = ControlsMathUtil.Cap(elevator_u, -Constants.kElevatorVoltageCap, Constants.kElevatorVoltageCap); //Cap... again?
-
         elevatorSubsystem.old_pos_ = elevatorSubsystem.getEncoder();
+        */
+
+        elevator_u = ControlsMathUtil.Cap(elevator_u, -Constants.kElevatorVoltageCap, Constants.kElevatorVoltageCap); //Cap... again?
 
         DenseMatrix elevator_u_mat = new DenseMatrix(1, 1);
         elevator_u_mat.set(0, 0, elevator_u);
