@@ -71,6 +71,7 @@ public class ElevatorController {
         HallCalibration hall_calibration = elevatorSubsystem.getHall_calibration_();
         boolean was_calibrated = hall_calibration.is_calibrated();
 
+        //TODO: add velocity component to the observer matrix [pos, vel] so simple 1x2 matrix needed
         DenseMatrix y = new DenseMatrix(1, 1);
         y.set(0, 0, hall_calibration.Update(elevatorSubsystem.getEncoder(), elevatorSubsystem.getHall()));
 
