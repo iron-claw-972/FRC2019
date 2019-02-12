@@ -88,10 +88,14 @@ public class DriveSubsystem extends Subsystem {
     }
 
     public synchronized void setMecanumDrivePoseDesired(Pose2d pose) {
-        driveStateMachine.requestNewPath(pose);
-        if (mDriveControlState != DriveControlState.PATH_FOLLOWING) {
-            setBrakeMode(true);
-            mDriveControlState = DriveControlState.PATH_FOLLOWING;
+        if(pose == null) {
+            driveStateMachine.requestManual();
+        } else {
+            driveStateMachine.requestNewPath(pose);
+            if (mDriveControlState != DriveControlState.PATH_FOLLOWING) {
+                setBrakeMode(true);
+                mDriveControlState = DriveControlState.PATH_FOLLOWING;
+            }
         }
     }
 
@@ -203,6 +207,7 @@ public class DriveSubsystem extends Subsystem {
         } else if ((mDriveControlState == DriveControlState.PATH_FOLLOWING)) {
             //path following mode
             DenseMatrix commanded_full_state = driveStateMachine.update(timestamp); // full state matrix that the robot should be at
+
 
             //TODO: implement control law to turn desired matrix [position, velocity] state into a desired [velocity] state to converge our goal optimally
             double x_p = 0;
