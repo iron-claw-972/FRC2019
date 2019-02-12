@@ -88,7 +88,7 @@ public class WristTest {
         for (int i = 0; i <= 100; i++) {
             wristSubsystem.setEncoder(plant_.y().get(0, 0) - offset);
             Update();
-            Assert.assertEquals(wrist_.getWrist_u(), 0, 0.0025);
+            Assert.assertEquals(wrist_.getWrist_u(), 0, 0.025);
         }
 
         Assert.assertEquals(wrist_.unprofiled_goal_.position, 0, 0.001);

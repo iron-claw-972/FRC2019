@@ -24,7 +24,7 @@ public class RobotState {
     public synchronized void reset(double start_time, Pose2d initial_field_to_vehicle) {
         field_to_vehicle_ = new InterpolatingTreeMap<>(kObservationBufferSize);
         field_to_vehicle_.put(new InterpolatingDouble(start_time), initial_field_to_vehicle);
-        DriveSubsystem.getInstance().zeroSensors();
+        //DriveSubsystem.getInstance().zeroSensors();
     }
 
     public synchronized Pose2d getFieldToVehicle(double timestamp) {
