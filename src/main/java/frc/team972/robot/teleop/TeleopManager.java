@@ -37,12 +37,6 @@ public class TeleopManager {
             );
         }
 
-        /*if (controlBoard.getRawButton(/*something needs to go here, don't know yet)) {
-               mPistonClimb.activateClimb();
-        }
-            *///NEEDS TO BE FULLY IMPLEMENTED, CANNOT BE DONE UNTIL REAL TESTING BEGINS
-            //ALSO, WE NEED TO MOUNT THAT/THOSE ULTRASONIC SENSORS*/
-            
         //mExample.setDesiredVoltage(controlBoard.getExampleJoystickValue());
 
         /*
@@ -55,5 +49,12 @@ public class TeleopManager {
 
         WristSubsystem.getInstance().setWrist_goal_pos(wrist_goal);
         */
+      
+       /*if (controlBoard.getRawButton(/*something needs to go here, don't know yet)) {
+               mPistonClimb.activateClimb();
+        }
+            *///NEEDS TO BE FULLY IMPLEMENTED, CANNOT BE DONE UNTIL REAL TESTING BEGINS
+            //ALSO, WE NEED TO MOUNT THAT/THOSE ULTRASONIC SENSORS*/
+            
     }
 }
