@@ -10,6 +10,9 @@ public abstract class Subsystem {
     public void fastPeriodic() {
     }
 
+    public void fastPeriodic(double time) {
+    }
+
     public abstract boolean checkSystem();
 
     public abstract void outputTelemetry();

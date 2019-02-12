@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.team972.robot.loops.Looper;
 import frc.team972.robot.subsystems.DriveSubsystem;
+import frc.team972.robot.subsystems.RobotStateEstimator;
 import frc.team972.robot.subsystems.SubsystemManager;
 import frc.team972.robot.subsystems.WristSubsystem;
 import frc.team972.robot.teleop.TeleopManager;
@@ -16,7 +17,7 @@ public class Robot extends TimedRobot {
 	private Looper mLooper = new Looper();
 
 	private final SubsystemManager mSubsystemManager = new SubsystemManager(
-			Arrays.asList(DriveSubsystem.getInstance()
+			Arrays.asList(DriveSubsystem.getInstance(), RobotStateEstimator.getInstance()
 	));
 
 	private RobotState robotState = RobotState.getInstance();
@@ -43,10 +44,13 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		robotState.outputs_enabled = true;
+		DriveSubsystem.getInstance().zeroSensors();
+		RobotStateEstimator.getInstance().reset();
 		//WristSubsystem.getInstance().zeroSensors();
 	}
 
-	@Override public void teleopPeriodic() {
+	@Override
+	public void teleopPeriodic() {
 		teleopManager.update();
 		mSubsystemManager.slowPeriodic();
 		mSubsystemManager.outputToSmartDashboard();
