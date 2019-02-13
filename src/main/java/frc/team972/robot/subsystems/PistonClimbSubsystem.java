@@ -1,6 +1,9 @@
 package frc.team972.robot.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import frc.team972.robot.Constants;
 import frc.team972.robot.loops.ILooper;
@@ -13,6 +16,7 @@ public class PistonClimbSubsystem extends Subsystem {
     public final double GROUND_CLEARANCE_INCHES = 12; //TODO: Find actual value
     private final double ERROR_TOLERANCE = 1;
     private final double ALIGN_DELAY = 1.5;
+    private final double G_STOP_THRESHOLD = 1.5; //TODO: figure out the actual speed of the robot and therefore get max deceleration
     private final CoordinateDriveSignal forward = new CoordinateDriveSignal(0.5, 0.0, 0.0, false);
     
     private double startTime = 0;
@@ -30,6 +34,7 @@ public class PistonClimbSubsystem extends Subsystem {
     //TODO: Fix DriveSubsystem problems/affirm functionality
     
     private double[] StageClimbTimings = new double[6];
+    private double acceleration = 0.0d;
     private stage currentStage = stage.NOSTAGE;
     private stageState output;
     
@@ -98,7 +103,7 @@ public class PistonClimbSubsystem extends Subsystem {
     }
 
     public void takeTime() {
-        waitTimer = System.currentTimeMillis() - startTime;
+        waitTimer = system.currentTimeMillis() - startTime;
         setTime(waitTimer);
     }
 
@@ -123,6 +128,9 @@ public class PistonClimbSubsystem extends Subsystem {
             takeTime();
             takeRange();
         }
+
+        AHRS ahrs = new AHRS(SPI.Port.kMXP); //TODO: Configure the actual ahrs port
+        acceleration = ahrs.getAccelFullScaleRangeG();
 
         switch (currentStage) {
             case STAGE_1:
@@ -214,7 +222,7 @@ public class PistonClimbSubsystem extends Subsystem {
     { // move forward until the stage is detected and waitTime driven forward since detection
 
         //driveControl.setOpenLoopMecanum(forward); // drive forward
-        if(range <= (HAB_LEVEL_ONE_LEVEL_TWO_DIFF_INCHES - ERROR_TOLERANCE)) // check for UltraSonic sensor to be over the stage platform
+        if(acceleration >= G_STOP_THRESHOLD) // check for UltraSonic sensor to be over the stage platform
         {
             if (detectionTime == 0) {
                 detectionTime = System.currentTimeMillis() - startTime;
@@ -284,7 +292,7 @@ public class PistonClimbSubsystem extends Subsystem {
     { // move forward until the stage is detected and waitTime driven forward since detection
 
         //driveControl.setOpenLoopMecanum(forward); // drive forward
-        if(range <= (GROUND_CLEARANCE_INCHES + ERROR_TOLERANCE)) // check for UltraSonic sensor to be over the stage platform
+        if(acceleration >= G_STOP_THRESHOLD) // check for UltraSonic sensor to be over the stage platform
         {
             if (detectionTime == 0) {
                 detectionTime = System.currentTimeMillis() - startTime;
