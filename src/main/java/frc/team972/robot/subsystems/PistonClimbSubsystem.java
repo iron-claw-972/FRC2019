@@ -24,17 +24,19 @@ public class PistonClimbSubsystem extends Subsystem {
     private double detectionTime = 0;
     private double time = 0;
 
+    private AHRS ahrs = new AHRS(SPI.Port.kMXP); //TODO: Configure the actual ahrs port
     private DoubleSolenoid frontPistons;
     private DoubleSolenoid backPistons;
     private Ultrasonic RangeSensorFront;
     private Ultrasonic RangeSensorBack;
     private double range = 0;
+    private double acceleration = 0;
 
     //private DriveSubsystem driveControl = new DriveSubsystem();
     //TODO: Fix DriveSubsystem problems/affirm functionality
     
     private double[] StageClimbTimings = new double[6];
-    private double acceleration = 0.0d;
+    private double acceleration = 0.0;
     private stage currentStage = stage.NOSTAGE;
     private stageState output;
     
@@ -127,10 +129,8 @@ public class PistonClimbSubsystem extends Subsystem {
         if (!(currentStage == stage.NOSTAGE)) {
             takeTime();
             takeRange();
+            acceleration = ahrs.getAccelFullScaleRangeG();
         }
-
-        AHRS ahrs = new AHRS(SPI.Port.kMXP); //TODO: Configure the actual ahrs port
-        acceleration = ahrs.getAccelFullScaleRangeG();
 
         switch (currentStage) {
             case STAGE_1:
@@ -222,7 +222,7 @@ public class PistonClimbSubsystem extends Subsystem {
     { // move forward until the stage is detected and waitTime driven forward since detection
 
         //driveControl.setOpenLoopMecanum(forward); // drive forward
-        if(acceleration >= G_STOP_THRESHOLD) // check for UltraSonic sensor to be over the stage platform
+        if(acceleration <= G_STOP_THRESHOLD) // check for continued impact with wall
         {
             if (detectionTime == 0) {
                 detectionTime = System.currentTimeMillis() - startTime;
@@ -292,7 +292,7 @@ public class PistonClimbSubsystem extends Subsystem {
     { // move forward until the stage is detected and waitTime driven forward since detection
 
         //driveControl.setOpenLoopMecanum(forward); // drive forward
-        if(acceleration >= G_STOP_THRESHOLD) // check for UltraSonic sensor to be over the stage platform
+        if(acceleration <= G_STOP_THRESHOLD) // check for continued contact with wall
         {
             if (detectionTime == 0) {
                 detectionTime = System.currentTimeMillis() - startTime;
@@ -340,6 +340,8 @@ public class PistonClimbSubsystem extends Subsystem {
 
     public void abortClimb() {//resets variables and puts robot into starting state (still, no pistons out)
         //driveControl.setOpenLoopMecanum(new CoordinateDriveSignal(0, 0, 0, false));
+        range = 0;
+        acceleration = 0;
         setFrontPistonsState(false);
         setBackPistonsState(false);
         waitTimer = 0;
