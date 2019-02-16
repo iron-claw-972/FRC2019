@@ -33,7 +33,7 @@ public class Looper implements ILooper {
                                         long dt_ = timestamp_ - now;
                                         long remain_time = (long) (Constants.dt * 1000) - dt_;
                                         if (remain_time < 0) {
-                                            System.out.println("MAJOR WARNING, RT LOOP CAN NOT KEEP UP!!!");
+                                            System.out.println("MAJOR WARNING, RT LOOP CAN NOT KEEP UP!!! " + currentThread().getName());
                                         } else {
                                             Thread.sleep(remain_time);
                                         }
@@ -44,6 +44,7 @@ public class Looper implements ILooper {
                             }
                         };
                         System.out.println("Spawning new Thread: " + loop.getName());
+                        thread.setPriority(Thread.MAX_PRIORITY); // real time priority
                         thread.start();
                     }
                 }

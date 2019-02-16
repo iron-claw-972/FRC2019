@@ -72,6 +72,7 @@ public class WristController {
         HallCalibration hall_calibration = wristSubsystem.getHall_calibration_();
         boolean was_calibrated = hall_calibration.is_calibrated();
 
+        //TODO: add velocity component to the observer matrix [pos, vel] so simple 1x2 matrix needed
         DenseMatrix y = new DenseMatrix(1, 1);
         y.set(0, 0, hall_calibration.Update(wristSubsystem.getEncoder(), wristSubsystem.getHall()));
 
@@ -106,8 +107,6 @@ public class WristController {
         }
 
         wrist_u = ControlsMathUtil.Cap(wrist_u, -Constants.kWristVoltageCap, Constants.kWristVoltageCap);
-
-        wristSubsystem.old_pos_ = wristSubsystem.getEncoder();
 
         DenseMatrix wrist_u_mat = new DenseMatrix(1, 1);
         wrist_u_mat.set(0, 0, wrist_u);

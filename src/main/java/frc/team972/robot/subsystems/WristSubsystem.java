@@ -23,8 +23,6 @@ public class WristSubsystem extends Subsystem {
     private HallCalibration hall_calibration_ = new HallCalibration(Constants.kWristHallEffectPosition);
     private boolean outputs_enabled_;
 
-    public double old_pos_;
-
     private double encoder_value;
     private boolean hall_status;
     private double wrist_goal_pos = 0;
@@ -43,10 +41,6 @@ public class WristSubsystem extends Subsystem {
     private WristSubsystem() {
         this(false);
 
-        mWristTalon = TalonSRXFactory.createDefaultTalon(Constants.kWristMotorId);
-        mWristTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 100);
-        mSensorCollection = mWristTalon.getSensorCollection();
-
         hall_calibration_.is_calibrated = true;
         hall_calibration_.offset = 0;
     }
@@ -55,6 +49,8 @@ public class WristSubsystem extends Subsystem {
         wristController.SetWeights();
         if (!test_mode) {
             mWristTalon = TalonSRXFactory.createDefaultTalon(Constants.kWristMotorId);
+            mWristTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 100);
+            mSensorCollection = mWristTalon.getSensorCollection();
         } else {
             System.out.println("WristSubsystem created in Test Mode");
         }
