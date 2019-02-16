@@ -18,7 +18,7 @@ public class PistonClimbSubsystem extends Subsystem {
     private final double ALIGN_DELAY = 1.5;
     private final double G_STOP_THRESHOLD = 1.5; //TODO: figure out the actual speed of the robot and therefore get max deceleration
     private final CoordinateDriveSignal forward = new CoordinateDriveSignal(0.5, 0.0, 0.0, false);
-    
+
     private double startTime = 0;
     private double waitTimer = 0;
     private double detectionTime = 0;
@@ -34,20 +34,19 @@ public class PistonClimbSubsystem extends Subsystem {
 
     //private DriveSubsystem driveControl = new DriveSubsystem();
     //TODO: Fix DriveSubsystem problems/affirm functionality
-    
+
     private double[] StageClimbTimings = new double[6];
-    private double acceleration = 0.0;
     private stage currentStage = stage.NOSTAGE;
     private stageState output;
-    
+
     private boolean notTesting = false;
-    
+
     private boolean manual = false;
-    
+
     public void setPistonClimbNotTesting(boolean notTesting) {
         this.notTesting = notTesting;
-    }    
-    
+    }
+
     public void setDetectionTime(double detectionTime) {
         this.detectionTime = detectionTime;
     }
@@ -67,20 +66,7 @@ public class PistonClimbSubsystem extends Subsystem {
     public enum stageState {
         COMPLETE, IN_PROG, FAILED;
     }
-    
-    public void switchMode()
-    {
-        if(manual == true)
-        {
-            currentStage = stage.ABORT;
-            manual == false
-        }
-        else
-        {
-            manual == true
-        }
-    }
-    
+
     public PistonClimbSubsystem()
     { //TODO: Fix problem with initializer (ExceptionInitializerError)
     	System.out.println("1af");
@@ -115,7 +101,21 @@ public class PistonClimbSubsystem extends Subsystem {
             currentStage = stage.STAGE_1;
             restartTimer();
         } else {
+            manual = false;
             currentStage = stage.ABORT;
+        }
+    }
+
+    public void switchMode()
+    {
+        if(manual == true)
+        {
+            currentStage = stage.ABORT;
+            manual = false;
+        }
+        else
+        {
+            manual = true;
         }
     }
 
@@ -141,22 +141,22 @@ public class PistonClimbSubsystem extends Subsystem {
 
     public void frontPistonsManual()
     {
-        if (!frontPistons.get()) {
+        if ((frontPistons.get() == DoubleSolenoid.Value.kReverse) && (manual)) {
             currentStage = stage.STAGE_1;
         } else {
-            currentSTAGE = stage.STAGE_3;
+            currentStage = stage.STAGE_3;
         }
     }
-    
+
     public void backPistonsManual()
     {
-        if (!backPistons.get()) {
+        if ((backPistons.get() == DoubleSolenoid.Value.kReverse) && (manual)) {
             currentStage = stage.STAGE_4;
         } else {
-            currentSTAGE = stage.STAGE_6;
+            currentStage = stage.STAGE_6;
         }
     }
-    
+
     public void fastPeriodic() {//Checks stage and completion requirements
 
         if (!(currentStage == stage.NOSTAGE)) {
@@ -173,7 +173,7 @@ public class PistonClimbSubsystem extends Subsystem {
                     {
                         currentStage = stage.STAGE_2;
                     } else {
-                        currentStage = stage.NOSTAGE;  
+                        currentStage = stage.NOSTAGE;
                     }
                     restartTimer();
                 } else if (output == stageState.FAILED){
@@ -198,7 +198,7 @@ public class PistonClimbSubsystem extends Subsystem {
                     {
                         currentStage = stage.STAGE_4;
                     } else {
-                        currentStage = stage.NOSTAGE;  
+                        currentStage = stage.NOSTAGE;
                     }
                     restartTimer();
                 } else if (output == stageState.FAILED){
@@ -212,7 +212,7 @@ public class PistonClimbSubsystem extends Subsystem {
                     {
                         currentStage = stage.STAGE_5;
                     } else {
-                        currentStage = stage.NOSTAGE;  
+                        currentStage = stage.NOSTAGE;
                     }
                     restartTimer();
                 } else if (output == stageState.FAILED){
@@ -250,16 +250,16 @@ public class PistonClimbSubsystem extends Subsystem {
                 break;
         }
     }
-    
+
     public stageState climbStage1(double waitTime)//extends front pistons; moves onto next stage when certain time is reached
     {
     	System.out.println("climbStage1 check1");
-    	
+
         if (notTesting) {
         	System.out.println("notTesting " + notTesting);
             setFrontPistonsState(true);
         }
-        
+
         System.out.println("climbstage1 check2");
 
         if(time < waitTime) {
@@ -283,7 +283,8 @@ public class PistonClimbSubsystem extends Subsystem {
 
             if(time >= detectionTime + ALIGN_DELAY && time >= waitTime) // drive forward for waitTime and then stop
             {
-                driveControl.setOpenLoopMecanum(new CoordinateDriveSignal(0,0,0, false)); // stop after "waitTime"
+                driveControl.setOpenLoopMecanum(new CoordinateDriveSignal(0, 0, 0, false));
+                // stop after "waitTime"
                 return stageState.COMPLETE;
             } else {
                 return stageState.IN_PROG;
@@ -302,14 +303,14 @@ public class PistonClimbSubsystem extends Subsystem {
     }
 
     public stageState climbStage3(double waitTime) //Retracts the front pistons; moves on when time is reached
-    { 
+    {
     	System.out.println("climbStage2 check1");
-    	
+
         if (notTesting) {
         	System.out.println("notTesting " + notTesting);
             setFrontPistonsState(false);
         }
-        
+
         System.out.println("climbstage2 check2");
 
         if(time < waitTime) {
@@ -324,12 +325,12 @@ public class PistonClimbSubsystem extends Subsystem {
     public stageState climbStage4(double waitTime) //Extends the back pistons; moves on when time is reached
     {
     	System.out.println("climbStage4 check1");
-    	
+
         if (notTesting) {
         	System.out.println("notTesting " + notTesting);
             setBackPistonsState(true);
         }
-        
+
         System.out.println("climbstage4 check2");
 
         if(time < waitTime) {
@@ -353,7 +354,8 @@ public class PistonClimbSubsystem extends Subsystem {
 
             if(time >= detectionTime + ALIGN_DELAY && time >= waitTime) // drive forward for waitTime and then stop
             {
-                driveControl.setOpenLoopMecanum(new CoordinateDriveSignal(0,0,0, false)); // stop after "waitTime"
+                driveControl.setOpenLoopMecanum(new CoordinateDriveSignal(0,0,0, false));
+                // stop after "waitTime"
                 return stageState.COMPLETE;
             } else {
                 return stageState.IN_PROG;
@@ -374,12 +376,12 @@ public class PistonClimbSubsystem extends Subsystem {
     public stageState climbStage6(double waitTime) //retract the back pistons; end the climb after a certain period of time
     {
     	System.out.println("climbStage6 check1");
-    	
+
         if (notTesting) {
         	System.out.println("notTesting " + notTesting);
             setBackPistonsState(false);
         }
-        
+
         System.out.println("climbstage6 check2");
 
         if(time < waitTime) {

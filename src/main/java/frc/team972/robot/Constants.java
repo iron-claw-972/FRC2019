@@ -32,9 +32,6 @@ public class Constants {
     public static final int mArmTalonId = -1;
     public static final int kWristMotorId = 2;
 
-    //WRIST MOTOR IDS
-    public static final int kWristMotorId = 999;
-
     //INTAKE MOTOR IDS
     public static final int kIntakeMotorId = 999;
 
@@ -68,7 +65,7 @@ public class Constants {
     public static final double stage4Delay = 1.5;
     public static final double stage5Delay = 1;
     public static final double stage6Delay = 1;
-  
+
     public static final MotionProfileConstraints kIntakeConstraints = new MotionProfileConstraints(12, 12.0);
     public static final double kIntakeMaxAngle = 180.0;
     public static final double kIntakeVoltageCap = 6.0;

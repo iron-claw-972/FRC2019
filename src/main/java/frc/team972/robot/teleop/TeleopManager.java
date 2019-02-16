@@ -49,12 +49,25 @@ public class TeleopManager {
 
         WristSubsystem.getInstance().setWrist_goal_pos(wrist_goal);
         */
-      
-       /*if (controlBoard.getRawButton(/*something needs to go here, don't know yet)) {
-               mPistonClimb.activateClimb();
+
+        /*
+        if (controlBoard.getRawButton(***pending***)) {
+                mPistonClimb.beginClimb();
         }
-            *///NEEDS TO BE FULLY IMPLEMENTED, CANNOT BE DONE UNTIL REAL TESTING BEGINS
-            //ALSO, WE NEED TO MOUNT THAT/THOSE ULTRASONIC SENSORS*/
-            
+             //NEEDS TO BE FULLY IMPLEMENTED, CANNOT BE DONE UNTIL REAL TESTING BEGINS
+        if (controlBoard.getRawButton(***pending***)) {
+                mPistonClimb.switchMode();
+        }
+
+        if (controlBoard.getRawButton(***pending***) && manual) {
+                mPistonClimb.frontPistonsManual();
+        }
+
+        if (controlBoard.getRawButton(***pending***) && manual) {
+                mPistonClimb.backPistonsManual();
+        }
+      }
+        */
+
     }
 }
