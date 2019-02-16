@@ -57,6 +57,12 @@ public class Constants {
     public static final double kIntakeHallEffectPosition = Math.toRadians(10);
     public static final int kIntakeEncoderCountPerRev = 1024;
 
+    //POSITION CONSTANTS FOR MOTION CONTROL SYSTEMS
+    public static final double kIntakeGeneralTolerance = Math.toRadians(1);
+    public static final double kIntakeStowPosition = Math.toRadians(0);
+    public static final double kIntakeUnstowPosition = Math.toRadians(90);
+    public static final double kIntakeReadyPosition = Math.toRadians(100);
+
 
 
 }

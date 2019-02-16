@@ -23,8 +23,6 @@ public class WristSubsystem extends Subsystem {
     private HallCalibration hall_calibration_ = new HallCalibration(Constants.kWristHallEffectPosition);
     private boolean outputs_enabled_;
 
-    public double old_pos_;
-
     private double encoder_value;
     private boolean hall_status;
     private double wrist_goal_pos = 0;
