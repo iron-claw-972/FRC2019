@@ -24,6 +24,8 @@ public class SuperstructureSubsystem extends Subsystem {
 
         State temp_state = state_;
 
+        //TODO: change this collision avoidance thing to a profile goal constraint system like how 971 does it
+
         switch (state_) {
             //Moves the wrist/elevator assembly to a safe space for the wrist to move
             case SAFE_WRIST_INTAKE: {
