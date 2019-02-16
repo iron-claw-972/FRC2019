@@ -141,12 +141,20 @@ public class PistonClimbSubsystem extends Subsystem {
 
     public void frontPistonsManual()
     {
-        
+        if (!frontPistons.get()) {
+            currentStage = stage.STAGE_1;
+        } else {
+            currentSTAGE = stage.STAGE_3;
+        }
     }
     
     public void backPistonsManual()
     {
-        
+        if (!backPistons.get()) {
+            currentStage = stage.STAGE_4;
+        } else {
+            currentSTAGE = stage.STAGE_6;
+        }
     }
     
     public void fastPeriodic() {//Checks stage and completion requirements
