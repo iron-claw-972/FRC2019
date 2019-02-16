@@ -42,6 +42,8 @@ public class PistonClimbSubsystem extends Subsystem {
     
     private boolean notTesting = false;
     
+    private boolean MANUAL_MODE = false;
+    
     public void setPistonClimbNotTesting(boolean notTesting) {
         this.notTesting = notTesting;
     }    
@@ -65,7 +67,19 @@ public class PistonClimbSubsystem extends Subsystem {
     public enum stageState {
         COMPLETE, IN_PROG, FAILED;
     }
-
+    
+    public void switchMode()
+    {
+        if(MANUAL_MODE == true)
+        {
+            MANUAL_MODE == false
+        }
+        else
+        {
+            MANUAL_MODE == true
+        }
+    }
+    
     public PistonClimbSubsystem()
     { //TODO: Fix problem with initializer (ExceptionInitializerError)
     	System.out.println("1af");
@@ -124,6 +138,42 @@ public class PistonClimbSubsystem extends Subsystem {
 
     }
 
+    public void manualS1()
+    {
+        stageState.FAILED;
+        currentStage = stage.STAGE_1;
+    }
+    
+    public void manualS2()
+    {
+        stageState.FAILED;
+        currentStage = stage.STAGE_2;
+    }
+    
+    public void manualS3()
+    {
+        stageState.FAILED;
+        currentStage = stage.STAGE_3;
+    }
+    
+    public void manualS4()
+    {
+        stageState.FAILED;
+        currentStage = stage.STAGE_4;
+    }
+    
+    public void manualS5()
+    {
+        stageState.FAILED;
+        currentStage = stage.STAGE_5;
+    }
+    
+    public void manualS6()
+    {
+        stageState.FAILED;
+        currentStage = stage.STAGE_6;
+    }
+    
     public void fastPeriodic() {//Checks stage and completion requirements
 
         if (!(currentStage == stage.NOSTAGE)) {
@@ -137,7 +187,10 @@ public class PistonClimbSubsystem extends Subsystem {
                 output = climbStage1(StageClimbTimings[0]);
                 if (output == stageState.COMPLETE) {
                     restartTimer();
+                    if(MANUAL_MODE == false)
+                    {
                     currentStage = stage.STAGE_2;
+                    }
                 } else if (output == stageState.FAILED){
                     currentStage = stage.ABORT;
                 }
@@ -147,7 +200,10 @@ public class PistonClimbSubsystem extends Subsystem {
                 if (output == stageState.COMPLETE) {
                     detectionTime = 0;
                     restartTimer();
+                    if(MANUAL_MODE == false)
+                    {
                     currentStage = stage.STAGE_3;
+                    }
                 } else if (output == stageState.FAILED){
                     detectionTime = 0;
                     currentStage = stage.ABORT;
@@ -157,7 +213,10 @@ public class PistonClimbSubsystem extends Subsystem {
                 output = climbStage3(StageClimbTimings[2]);
                 if (output == stageState.COMPLETE) {
                     restartTimer();
+                    if(MANUAL_MODE == false)
+                    {
                     currentStage = stage.STAGE_4;
+                    }
                 } else if (output == stageState.FAILED){
                     currentStage = stage.ABORT;
                 }
@@ -166,7 +225,10 @@ public class PistonClimbSubsystem extends Subsystem {
                 output = climbStage4(StageClimbTimings[3]);
                 if (output == stageState.COMPLETE) {
                     restartTimer();
+                    if(MANUAL_MODE == false)
+                    {
                     currentStage = stage.STAGE_5;
+                    }
                 } else if (output == stageState.FAILED){
                     currentStage = stage.ABORT;
                 }
@@ -175,7 +237,10 @@ public class PistonClimbSubsystem extends Subsystem {
                 output = climbStage5(StageClimbTimings[4], true);
                 if (output == stageState.COMPLETE) {
                     detectionTime = 0;
+                    if(MANUAL_MODE == false)
+                    {
                     currentStage = stage.STAGE_6;
+                    }
                     restartTimer();
                 } else if (output == stageState.FAILED){
                     currentStage = stage.ABORT;
