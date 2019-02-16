@@ -26,15 +26,16 @@ public class Constants {
 
     //ELEVATOR MOTOR IDS
     public static final int kElevatorMotorId = 999;
-  
-    //ARM MOTOR IDS
-    public static final int mArmTalonId = -1;
-    public static final int kWristMotorId = 2;
+
+    //WRIST MOTOR IDS
+    public static final int kWristMotorId = 999;
+
+    //INTAKE MOTOR IDS
+    public static final int kIntakeMotorId = 999;
 
     public static final int kLongCANTimeoutMs = 100;
-    public static final double kDriveVoltageRampRate = 0.0;
 
-    //STATE SPACE MAGICAL STUFF
+    //STATE SPACE MAGICAL STUFF -- DO NOT TOUCH
     public static final int kEncoderFaultTicksAllowed = 1024;
     public static final double kEncoderFaultMinVoltage = 1.0;
     public static final double kCalibrationVoltage = -0.5; // Calibrate downwards
@@ -49,6 +50,12 @@ public class Constants {
     public static final double kWristVoltageCap = 6.0;
     public static final double kWristHallEffectPosition = Math.toRadians(10);
     public static final int kWristEncoderCountPerRev = 1024;
+
+    public static final MotionProfileConstraints kIntakeConstraints = new MotionProfileConstraints(12, 12.0);
+    public static final double kIntakeMaxAngle = 180.0;
+    public static final double kIntakeVoltageCap = 6.0;
+    public static final double kIntakeHallEffectPosition = Math.toRadians(10);
+    public static final int kIntakeEncoderCountPerRev = 1024;
 
 
 

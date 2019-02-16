@@ -108,8 +108,6 @@ public class WristController {
 
         wrist_u = ControlsMathUtil.Cap(wrist_u, -Constants.kWristVoltageCap, Constants.kWristVoltageCap);
 
-        wristSubsystem.old_pos_ = wristSubsystem.getEncoder();
-
         DenseMatrix wrist_u_mat = new DenseMatrix(1, 1);
         wrist_u_mat.set(0, 0, wrist_u);
         observer_.Update(wrist_u_mat, y);
