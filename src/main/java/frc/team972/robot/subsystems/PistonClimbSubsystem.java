@@ -32,7 +32,7 @@ public class PistonClimbSubsystem extends Subsystem {
     private double range = 0;
     private double acceleration = 0;
 
-    //private DriveSubsystem driveControl = new DriveSubsystem();
+    private DriveSubsystem driveControl = new DriveSubsystem();
     //TODO: Fix DriveSubsystem problems/affirm functionality
 
     private double[] StageClimbTimings = new double[6];
@@ -120,7 +120,7 @@ public class PistonClimbSubsystem extends Subsystem {
     }
 
     public void takeTime() {
-        waitTimer = system.currentTimeMillis() - startTime;
+        waitTimer = System.currentTimeMillis() - startTime;
         setTime(waitTimer);
     }
 
@@ -274,7 +274,7 @@ public class PistonClimbSubsystem extends Subsystem {
     public stageState climbStage2(double waitTime, boolean safety) // safety is recommended while the numbers have not been calibrated as desired
     { // move forward until the stage is detected and waitTime driven forward since detection
 
-        //driveControl.setOpenLoopMecanum(forward); // drive forward
+        driveControl.setOpenLoopMecanum(forward); // drive forward
         if(acceleration <= G_STOP_THRESHOLD) // check for continued impact with wall
         {
             if (detectionTime == 0) {
@@ -345,7 +345,7 @@ public class PistonClimbSubsystem extends Subsystem {
     public stageState climbStage5(double waitTime, boolean safety) // be careful when using the waitTime on this
     { // move forward until the stage is detected and waitTime driven forward since detection
 
-        //driveControl.setOpenLoopMecanum(forward); // drive forward
+        driveControl.setOpenLoopMecanum(forward); // drive forward
         if(acceleration <= G_STOP_THRESHOLD) // check for continued contact with wall
         {
             if (detectionTime == 0) {
@@ -394,7 +394,7 @@ public class PistonClimbSubsystem extends Subsystem {
     }
 
     public void abortClimb() {//resets variables and puts robot into starting state (still, no pistons out)
-        //driveControl.setOpenLoopMecanum(new CoordinateDriveSignal(0, 0, 0, false));
+        driveControl.setOpenLoopMecanum(new CoordinateDriveSignal(0, 0, 0, false));
         range = 0;
         acceleration = 0;
         setFrontPistonsState(false);
