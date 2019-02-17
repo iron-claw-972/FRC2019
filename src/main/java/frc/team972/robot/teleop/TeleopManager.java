@@ -6,7 +6,7 @@ import frc.team972.robot.lib.Rotation2d;
 import frc.team972.robot.subsystems.DriveSubsystem;
 import frc.team972.robot.subsystems.ElevatorSubsystem;
 import frc.team972.robot.subsystems.ExampleSubsystem;
-
+import frc.team972.robot.subsystems.PistonClimbSubsystem;
 import frc.team972.robot.subsystems.WristSubsystem;
 import frc.team972.robot.util.MecanumHelper;
 
@@ -50,24 +50,21 @@ public class TeleopManager {
         WristSubsystem.getInstance().setWrist_goal_pos(wrist_goal);
         */
 
-        /*
-        if (controlBoard.getRawButton(***pending***)) {
-                mPistonClimb.beginClimb();
+        
+        if (controlBoard.getTest1()) {
+                PistonClimbSubsystem.getInstance().beginClimb();
         }
-             //NEEDS TO BE FULLY IMPLEMENTED, CANNOT BE DONE UNTIL REAL TESTING BEGINS
-        if (controlBoard.getRawButton(***pending***)) {
-                mPistonClimb.switchMode();
-        }
-
-        if (controlBoard.getRawButton(***pending***) && manual) {
-                mPistonClimb.frontPistonsManual();
+     
+        if (controlBoard.getTest2()) {
+                PistonClimbSubsystem.getInstance().switchMode();
         }
 
-        if (controlBoard.getRawButton(***pending***) && manual) {
-                mPistonClimb.backPistonsManual();
+        if (controlBoard.getTest3()) {
+                PistonClimbSubsystem.getInstance().frontPistonsManual();
         }
-      }
-        */
 
+        if (controlBoard.getTest4()) {
+                PistonClimbSubsystem.getInstance().backPistonsManual();
+        }
     }
 }

@@ -24,12 +24,9 @@ public class PistonClimbSubsystem extends Subsystem {
     private double detectionTime = 0;
     private double time = 0;
 
-    private AHRS ahrs = new AHRS(SPI.Port.kMXP); //TODO: Configure the actual ahrs port
+    private AHRS ahrs = new AHRS(SPI.Port.kMXP, (byte) 200); //TODO: Configure the actual ahrs port
     private DoubleSolenoid frontPistons;
     private DoubleSolenoid backPistons;
-    private Ultrasonic RangeSensorFront;
-    private Ultrasonic RangeSensorBack;
-    private double range = 0;
     private double acceleration = 0;
 
     private DriveSubsystem driveControl = new DriveSubsystem();
@@ -43,6 +40,11 @@ public class PistonClimbSubsystem extends Subsystem {
 
     private boolean manual = false;
 
+    public void setAcceleration(double acceleration) 
+    {
+    	this.acceleration = acceleration;
+    }
+    
     public void setPistonClimbNotTesting(boolean notTesting) {
         this.notTesting = notTesting;
     }
@@ -53,10 +55,6 @@ public class PistonClimbSubsystem extends Subsystem {
 
     public void setTime(double time) {
         this.time = time;
-    }
-
-    public void setRange(double range) {
-        this.range = range;
     }
 
     public enum stage {
@@ -70,14 +68,9 @@ public class PistonClimbSubsystem extends Subsystem {
     public PistonClimbSubsystem()
     { //TODO: Fix problem with initializer (ExceptionInitializerError)
     	System.out.println("1af");
-        frontPistons = new DoubleSolenoid(1, 2);
+        frontPistons = new DoubleSolenoid(0, 1);
         System.out.println("2af");
-        backPistons = new DoubleSolenoid(3, 4);
-        System.out.println("3af");
-        RangeSensorFront = new Ultrasonic(1, 2);
-        System.out.println("4af");
-        RangeSensorBack = new Ultrasonic(3, 4);
-        System.out.println("5af");
+        backPistons = new DoubleSolenoid(2, 3);
         StageClimbTimings[0] = Constants.stage1Delay;
         StageClimbTimings[1] = Constants.stage2Delay;
         StageClimbTimings[2] = Constants.stage3Delay;
@@ -124,14 +117,14 @@ public class PistonClimbSubsystem extends Subsystem {
         setTime(waitTimer);
     }
 
-    public void takeRange() {
+    public void takeAcceleration() {
         if (currentStage == stage.STAGE_2)
         {
-            setRange(RangeSensorFront.getRangeInches());
+            setAcceleration(Math.sqrt(Math.pow(ahrs.getWorldLinearAccelX(), 2) + Math.pow(ahrs.getWorldLinearAccelY(), 2)));
         }
         else if (currentStage == stage.STAGE_5)
         {
-            setRange(RangeSensorBack.getRangeInches());
+        	setAcceleration(Math.sqrt(Math.pow(ahrs.getWorldLinearAccelX(), 2) + Math.pow(ahrs.getWorldLinearAccelY(), 2)));
         }
     }
 
@@ -161,8 +154,7 @@ public class PistonClimbSubsystem extends Subsystem {
 
         if (!(currentStage == stage.NOSTAGE)) {
             takeTime();
-            takeRange();
-            acceleration = ahrs.getAccelFullScaleRangeG();
+            takeAcceleration();
         }
 
         switch (currentStage) {
@@ -395,7 +387,6 @@ public class PistonClimbSubsystem extends Subsystem {
 
     public void abortClimb() {//resets variables and puts robot into starting state (still, no pistons out)
         driveControl.setOpenLoopMecanum(new CoordinateDriveSignal(0, 0, 0, false));
-        range = 0;
         acceleration = 0;
         setFrontPistonsState(false);
         setBackPistonsState(false);

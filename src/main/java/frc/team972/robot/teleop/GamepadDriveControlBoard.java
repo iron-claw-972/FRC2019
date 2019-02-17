@@ -43,5 +43,21 @@ public class GamepadDriveControlBoard {
     public boolean getNoFieldOrient() {
         return mJoystick.getRawButton(6);
     }
+    
+    public boolean getButtonA() {
+    	return mJoystick.getRawButton(0);
+    }
+    
+    public boolean getButtonB() {
+    	return mJoystick.getRawButton(1);
+    }
+    
+    public boolean getButtonX() {
+    	return mJoystick.getRawButton(2);
+    }
+    
+    public boolean getButtonY() {
+    	return mJoystick.getRawButton(3);
+    }
 
 }

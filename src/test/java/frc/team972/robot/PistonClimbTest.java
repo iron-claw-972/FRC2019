@@ -29,26 +29,26 @@ public class PistonClimbTest
 		
 		
         PistonClimbSubsystem.getInstance().setDetectionTime(3);
-        PistonClimbSubsystem.getInstance().setRange(0); //Tests what happens if robot is in theory successfully mounting lip onto platform
+        PistonClimbSubsystem.getInstance().setAcceleration(0); //Tests what happens if robot is in theory successfully mounting lip onto platform
         PistonClimbSubsystem.getInstance().setTime(3);
         Assert.assertTrue(PistonClimbSubsystem.getInstance().climbStage2(6, true) == PistonClimbSubsystem.stageState.IN_PROG);
         PistonClimbSubsystem.getInstance().setTime(7);
         Assert.assertTrue(PistonClimbSubsystem.getInstance().climbStage2(6, true) == PistonClimbSubsystem.stageState.COMPLETE);
 
-        PistonClimbSubsystem.getInstance().setRange(0); //Tests what happens if robot is in theory rolling successfully onto top of platform
+        PistonClimbSubsystem.getInstance().setAcceleration(0); //Tests what happens if robot is in theory rolling successfully onto top of platform
         PistonClimbSubsystem.getInstance().setTime(3);
         Assert.assertTrue(PistonClimbSubsystem.getInstance().climbStage5(6, true) == PistonClimbSubsystem.stageState.IN_PROG);
         PistonClimbSubsystem.getInstance().setTime(7);
         Assert.assertTrue(PistonClimbSubsystem.getInstance().climbStage5(6, true) == PistonClimbSubsystem.stageState.COMPLETE);
 
         PistonClimbSubsystem.getInstance().setDetectionTime(0);
-        PistonClimbSubsystem.getInstance().setRange(800); //Tests what happens if robot has not reached platform yet while rolling towards platform
+        PistonClimbSubsystem.getInstance().setAcceleration(800); //Tests what happens if robot has not reached platform yet while rolling towards platform
         PistonClimbSubsystem.getInstance().setTime(3);
         Assert.assertTrue(PistonClimbSubsystem.getInstance().climbStage2(6, true) == PistonClimbSubsystem.stageState.IN_PROG);
         PistonClimbSubsystem.getInstance().setTime(7);
         Assert.assertTrue(PistonClimbSubsystem.getInstance().climbStage2(6, true) == PistonClimbSubsystem.stageState.FAILED);
 
-        PistonClimbSubsystem.getInstance().setRange(800); //Tests what happens if robot is not on platform yet while rolling onto platform
+        PistonClimbSubsystem.getInstance().setAcceleration(800); //Tests what happens if robot is not on platform yet while rolling onto platform
         PistonClimbSubsystem.getInstance().setTime(3);
         Assert.assertTrue(PistonClimbSubsystem.getInstance().climbStage5(6, true) == PistonClimbSubsystem.stageState.IN_PROG);
         PistonClimbSubsystem.getInstance().setTime(7);

@@ -41,10 +41,27 @@ public class ControlBoard {
     public double getElevatorAxis() {
         return mElevatorControlBoard.getElevatorAxis();
     }
+    
+    public boolean getTest1() {
+    	return mDriveControlBoard.getButtonA();
+    }
+    
+    public boolean getTest2() {
+    	return mDriveControlBoard.getButtonB();
+    }
+    
+    public boolean getTest3() {
+    	return mDriveControlBoard.getButtonX();
+    }
+    
+    public boolean getTest4() {
+    	return mDriveControlBoard.getButtonY();
+    }
 
     public double getExampleJoystickValue() {
         return 0.254;
     }
+    
 
     ;
 
