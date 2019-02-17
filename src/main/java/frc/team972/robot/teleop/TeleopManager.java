@@ -3,11 +3,8 @@ package frc.team972.robot.teleop;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.team972.robot.lib.Pose2d;
 import frc.team972.robot.lib.Rotation2d;
-import frc.team972.robot.subsystems.DriveSubsystem;
-import frc.team972.robot.subsystems.ElevatorSubsystem;
-import frc.team972.robot.subsystems.ExampleSubsystem;
+import frc.team972.robot.subsystems.*;
 
-import frc.team972.robot.subsystems.WristSubsystem;
 import frc.team972.robot.util.MecanumHelper;
 
 public class TeleopManager {
@@ -18,7 +15,7 @@ public class TeleopManager {
     private ExampleSubsystem mExample = ExampleSubsystem.getInstance();
 
     private ControlBoard controlBoard = ControlBoard.getInstance();
-    Joystick stick = new Joystick(3);
+    Joystick stick = new Joystick(1);
 
     public static TeleopManager getInstance() {
         if (mInstance == null) {
@@ -29,13 +26,23 @@ public class TeleopManager {
 
     public void update() {
         if (controlBoard.getTestButton()) {
-            mDrive.setMecanumDrivePoseDesired(new Pose2d(1, 1, Rotation2d.fromDegrees(0)));
+            IntakeSubsystem.getInstance().setIntake_goal_pos(Math.toRadians(90));
+
+
+            //mDrive.setMecanumDrivePoseDesired(new Pose2d(1, 1, Rotation2d.fromDegrees(0)));
         } else {
+            IntakeSubsystem.getInstance().setIntake_goal_pos(Math.toRadians(30));
+
+
+            /*
             mDrive.setMecanumDrivePoseDesired(null);
             mDrive.setCloseLoopMecanum(
                     MecanumHelper.mecanumDrive(-controlBoard.getTranslateX(), controlBoard.getTranslateY(), controlBoard.getRotate(), controlBoard.getNoFieldOrient())
             );
+            */
         }
+
+        IntakeSubsystem.getInstance().setRollerPower(-Math.abs(stick.getRawAxis(3)));
 
         //mExample.setDesiredVoltage(controlBoard.getExampleJoystickValue());
 

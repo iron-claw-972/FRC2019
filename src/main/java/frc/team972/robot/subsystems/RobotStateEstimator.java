@@ -52,7 +52,7 @@ public class RobotStateEstimator extends Subsystem {
 
     @Override
     public void outputTelemetry() {
-        System.out.println(robot_state_.getLatestFieldToVehicle().getValue());
+        //System.out.println(robot_state_.getLatestFieldToVehicle().getValue());
     }
 
     @Override

@@ -31,7 +31,8 @@ public class Constants {
     public static final int kWristMotorId = 999;
 
     //INTAKE MOTOR IDS
-    public static final int kIntakeMotorId = 999;
+    public static final int kIntakeMotorId = 8;
+    public static final int kIntakeRollerMotorId = 9;
 
     public static final int kLongCANTimeoutMs = 100;
 
@@ -51,7 +52,7 @@ public class Constants {
     public static final double kWristHallEffectPosition = Math.toRadians(10);
     public static final int kWristEncoderCountPerRev = 1024;
 
-    public static final MotionProfileConstraints kIntakeConstraints = new MotionProfileConstraints(12, 12.0);
+    public static final MotionProfileConstraints kIntakeConstraints = new MotionProfileConstraints(2.0, 6.0);
     public static final double kIntakeMaxAngle = 180.0;
     public static final double kIntakeVoltageCap = 6.0;
     public static final double kIntakeHallEffectPosition = Math.toRadians(10);

@@ -16,6 +16,8 @@ public class IntakeSubsystem extends Subsystem {
     private IntakeController IntakeController = new IntakeController();
 
     private TalonSRX mIntakeTalon;
+    private TalonSRX mRollerTalon;
+
     private SensorCollection mSensorCollection;
 
     private HallCalibration hall_calibration_ = new HallCalibration(Constants.kIntakeHallEffectPosition);
@@ -25,6 +27,7 @@ public class IntakeSubsystem extends Subsystem {
     private boolean hall_status;
     private double Intake_goal_pos = 0;
     private double u = 0;
+    private double roller_power = 0;
 
     private IntakeSubsystem() {
         this(false);
@@ -39,6 +42,9 @@ public class IntakeSubsystem extends Subsystem {
         if (!test_mode) {
             mIntakeTalon = TalonSRXFactory.createDefaultTalon(Constants.kIntakeMotorId);
             mIntakeTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 100);
+
+            mRollerTalon = TalonSRXFactory.createDefaultTalon(Constants.kIntakeRollerMotorId);
+
             mSensorCollection = mIntakeTalon.getSensorCollection();
         } else {
             System.out.println("IntakeSubsystem created in Test Mode");
@@ -68,6 +74,7 @@ public class IntakeSubsystem extends Subsystem {
         u = u * -1.0;
 
         mIntakeTalon.set(ControlMode.PercentOutput, u);
+        mRollerTalon.set(ControlMode.PercentOutput, roller_power);
     }
 
     @Override
@@ -79,7 +86,8 @@ public class IntakeSubsystem extends Subsystem {
     }
 
     public void outputTelemetry() {
-
+        //System.out.println(u + " " + Intake_goal_pos + " " + this.getEncoder() + " " + IntakeController.observer_.plant_.y().get(0, 0));
+        System.out.println(roller_power);
     }
 
     public void stop() {
@@ -140,6 +148,10 @@ public class IntakeSubsystem extends Subsystem {
 
     public boolean isCalibrated() {
         return hall_calibration_.is_calibrated;
+    }
+
+    public void setRollerPower(double power) {
+        roller_power = power;
     }
 
 }

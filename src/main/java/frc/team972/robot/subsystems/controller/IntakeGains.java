@@ -1,6 +1,5 @@
 package frc.team972.robot.subsystems.controller;
 
-
 import jeigen.DenseMatrix;
 
 public class IntakeGains {
@@ -32,7 +31,7 @@ public class IntakeGains {
     }
 
     public static DenseMatrix K() {
-        return new DenseMatrix("15.8113883008419 1.116921030821255 1.0 ;");
+        return new DenseMatrix("15.8113883008419 1.116921030821255 0.0 ;");
     }
 
     public static DenseMatrix Kff() {
@@ -40,6 +39,7 @@ public class IntakeGains {
     }
 
     public static DenseMatrix L() {
-        return new DenseMatrix("0.4905747254311517 ;0.675646509464782 ;0.5992154010978374 ;");
+        return new DenseMatrix("0.5011200625938521 ;1.0158102158971183 ;0.0 ;");
     }
 }
+
