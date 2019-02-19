@@ -139,15 +139,17 @@ public class DriveSubsystem extends Subsystem {
 
         DriveSensorReading sensorReading = encoderToRealUnits(readEncodersVelocity());
 
-        double left_error = (signal.getLeftFront() - sensorReading.left);
-        double right_error = (signal.getRightFront() + sensorReading.right);
-        double left_b_error = (signal.getLeftBack() - sensorReading.left_back);
-        double right_b_error = (signal.getRightBack() + sensorReading.right_back);
+        double desiredVelocity = 5;
 
-        mPeriodicIO.left_front_demand = (signal.getLeftFront() * Constants.kDriveVelocityFF) + left_error * Constants.kDriveVelocityPGain + (left_error - left_error_old) * Constants.kDriveVelocityDGain;
-        mPeriodicIO.right_front_demand = (signal.getRightFront() * Constants.kDriveVelocityFF) + right_error * Constants.kDriveVelocityPGain + (right_error - right_error_old) * Constants.kDriveVelocityDGain;
-        mPeriodicIO.right_back_demand = (signal.getRightBack() * Constants.kDriveVelocityFF) + right_b_error * Constants.kDriveVelocityPGain + (left_b_error - left_b_error_old) * Constants.kDriveVelocityDGain;
-        mPeriodicIO.left_back_demand = (signal.getLeftBack() * Constants.kDriveVelocityFF) + left_b_error * Constants.kDriveVelocityPGain + (right_b_error - right_b_error_old) * Constants.kDriveVelocityDGain;
+        double left_error = (signal.getLeftFront() * desiredVelocity - sensorReading.left);
+        double right_error = (signal.getRightFront() * desiredVelocity + sensorReading.right);
+        double left_b_error = (signal.getLeftBack() * desiredVelocity - sensorReading.left_back);
+        double right_b_error = (signal.getRightBack() * desiredVelocity + sensorReading.right_back);
+
+        mPeriodicIO.left_front_demand = (signal.getLeftFront() * Constants.kDriveVelocityFF) + left_error * Constants.kDriveVelocityPGain;
+        mPeriodicIO.right_front_demand = (signal.getRightFront() * Constants.kDriveVelocityFF) + right_error * Constants.kDriveVelocityPGain;
+        mPeriodicIO.right_back_demand = (signal.getRightBack() * Constants.kDriveVelocityFF) + right_b_error * Constants.kDriveVelocityPGain;
+        mPeriodicIO.left_back_demand = (signal.getLeftBack() * Constants.kDriveVelocityFF) + left_b_error * Constants.kDriveVelocityPGain;
 
         left_error_old = left_error;
         right_error_old = right_error;
@@ -256,12 +258,30 @@ public class DriveSubsystem extends Subsystem {
                 current_angle = -ahrs.getAngle();
             }
 
+            if (last_angle == null) {
+                //Zero Last angle on first loop
+                last_angle = current_angle;
+            }
+            double angle_velocity = (current_angle - last_angle);
+            double angle_correction = -angle_velocity * 0.1;
+            angle_correction = MecanumHelper.handleDeadband(angle_correction, 0.01);
+
+            if (current_angle != 0) {
+                mecanumDriveSignalDesired.addRotation(angle_correction);
+            }
+
             DriveSignal driveSignal = MecanumHelper.cartesianCalculate(mecanumDriveSignalDesired, current_angle);
 
             //Feed transformed Mecanum values into traditional motor values
 
             setCloseLoop(driveSignal); // Calculate u's
             setMotorsOpenValue();
+
+            if (mecanumDriveSignalDesired.getFieldOrient()) {
+                last_angle = current_angle;
+            } else {
+                last_angle = null;
+            }
         }
     }
 

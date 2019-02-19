@@ -15,7 +15,7 @@ public class Constants {
 
     public static final double kDriveWheelRadius = 3.0;
     public static final double kDriveTicksPerRev = 4096;
-    public static final double kDriveVelocityFF = 0.2; // dutyCycle per revs
+    public static final double kDriveVelocityFF = 0.0; // dutyCycle per revs
     public static final double kDriveVelocityPGain = 0.1;
     public static final double kDriveVelocityDGain = 0.0;
 
@@ -28,7 +28,10 @@ public class Constants {
     public static final int kElevatorMotorId = 999;
 
     //WRIST MOTOR IDS
-    public static final int kWristMotorId = 999;
+    public static final int kWristMotorId = 0;
+    public static final int kWristRollerAMotorId = 1;
+    public static final int kWristRollerBMotorId = 2;
+
 
     //INTAKE MOTOR IDS
     public static final int kIntakeMotorId = 8;
@@ -44,18 +47,18 @@ public class Constants {
     public static final MotionProfileConstraints kElevatorConstraints = new MotionProfileConstraints(3.0, 3.0);
     public static final double kElevatorMaxHeight = 2.0;
     public static final double kElevatorVoltageCap = 12.0;
-    public static final double kElevatorHallEffectPosition = 0.1;
+    public static final double kElevatorHallEffectPosition = 0.0;
 
-    public static final MotionProfileConstraints kWristConstraints = new MotionProfileConstraints(12, 12.0);
+    public static final MotionProfileConstraints kWristConstraints = new MotionProfileConstraints(6.0, 6.0);
     public static final double kWristMaxAngle = 180.0;
-    public static final double kWristVoltageCap = 6.0;
-    public static final double kWristHallEffectPosition = Math.toRadians(10);
+    public static final double kWristVoltageCap = 8.0;
+    public static final double kWristHallEffectPosition = Math.toRadians(0);
     public static final int kWristEncoderCountPerRev = 1024;
 
-    public static final MotionProfileConstraints kIntakeConstraints = new MotionProfileConstraints(2.0, 6.0);
+    public static final MotionProfileConstraints kIntakeConstraints = new MotionProfileConstraints(3.0, 3.0);
     public static final double kIntakeMaxAngle = 180.0;
     public static final double kIntakeVoltageCap = 6.0;
-    public static final double kIntakeHallEffectPosition = Math.toRadians(10);
+    public static final double kIntakeHallEffectPosition = Math.toRadians(0);
     public static final int kIntakeEncoderCountPerRev = 1024;
 
     //POSITION CONSTANTS FOR MOTION CONTROL SYSTEMS

@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -18,6 +19,8 @@ public class WristSubsystem extends Subsystem {
     private WristController wristController = new WristController();
 
     private TalonSRX mWristTalon;
+    private VictorSPX mWristARollerTalon, mWristBRollerTalon;
+
     private SensorCollection mSensorCollection;
 
     private HallCalibration hall_calibration_ = new HallCalibration(Constants.kWristHallEffectPosition);
@@ -26,6 +29,7 @@ public class WristSubsystem extends Subsystem {
     private double encoder_value;
     private boolean hall_status;
     private double wrist_goal_pos = 0;
+    private double wrist_roller_goal = 0;
     private double u = 0;
 
     /*
@@ -51,6 +55,10 @@ public class WristSubsystem extends Subsystem {
             mWristTalon = TalonSRXFactory.createDefaultTalon(Constants.kWristMotorId);
             mWristTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 100);
             mSensorCollection = mWristTalon.getSensorCollection();
+
+            mWristARollerTalon = new VictorSPX(Constants.kWristRollerAMotorId);
+            mWristBRollerTalon = new VictorSPX(Constants.kWristRollerBMotorId);
+
         } else {
             System.out.println("WristSubsystem created in Test Mode");
         }
@@ -76,9 +84,11 @@ public class WristSubsystem extends Subsystem {
         wristController.Update(this);
         u = wristController.getWrist_u();
         u = u * (1.0 / 12.0);
-        u = u * -1.0;
+        //u = u * -1.0;
 
         mWristTalon.set(ControlMode.PercentOutput, u);
+        mWristARollerTalon.set(ControlMode.PercentOutput, wrist_roller_goal);
+        mWristBRollerTalon.set(ControlMode.PercentOutput, wrist_roller_goal);
     }
 
     @Override
@@ -115,6 +125,10 @@ public class WristSubsystem extends Subsystem {
             mInstance = new WristSubsystem();
         }
         return mInstance;
+    }
+
+    public void setRoller(double power) {
+        wrist_roller_goal = power;
     }
 
     public HallCalibration getHall_calibration_() {

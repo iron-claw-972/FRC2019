@@ -5,7 +5,7 @@ import jeigen.DenseMatrix;
 public class IntakeGains {
 
     public static DenseMatrix A() {
-        return new DenseMatrix("1.0 0.008477923610655096 0.001583903044768651 ;0.0 0.7118735883334479 0.29983008994268356 ;0.0 0.0 1.0 ;");
+        return new DenseMatrix("1.0 0.008755843126226166 0.0012946944544540066 ;0.0 0.7619426853146791 0.24772718912078645 ;0.0 0.0 1.0 ;");
     }
 
     public static DenseMatrix Q() {
@@ -17,7 +17,7 @@ public class IntakeGains {
     }
 
     public static DenseMatrix B() {
-        return new DenseMatrix("0.001583903044768651 ;0.29983008994268356 ;0.0 ;");
+        return new DenseMatrix("0.0012946944544540066 ;0.24772718912078645 ;0.0 ;");
     }
 
     double dt() { return 0.01; }
@@ -31,15 +31,20 @@ public class IntakeGains {
     }
 
     public static DenseMatrix K() {
-        return new DenseMatrix("15.8113883008419 1.116921030821255 0.0 ;");
+        return new DenseMatrix("35.622776601683775 5.401762222574543 1.0 ;");
     }
 
     public static DenseMatrix Kff() {
-        return new DenseMatrix("0.0 3.3352222927030546 0.0 ;");
+        return new DenseMatrix("0.0 4.036698610068277 0.0 ;");
     }
 
     public static DenseMatrix L() {
-        return new DenseMatrix("0.5011200625938521 ;1.0158102158971183 ;0.0 ;");
+        return new DenseMatrix("0.4981315144359132 ;0.9146928601437839 ;0.0 ;");
     }
 }
+
+
+
+
+
 

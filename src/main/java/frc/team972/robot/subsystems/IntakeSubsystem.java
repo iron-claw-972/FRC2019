@@ -60,6 +60,8 @@ public class IntakeSubsystem extends Subsystem {
     public void fastPeriodic() {
         outputs_enabled_ = RobotState.getInstance().outputs_enabled;
 
+        System.out.println(mSensorCollection.getQuadraturePosition());
+
         double sensor_pos_native_units = mSensorCollection.getQuadraturePosition();
         double sensor_pos_rad = (sensor_pos_native_units / Constants.kIntakeEncoderCountPerRev) * Math.PI * 2.0 * (1.0 / 4.0);
 
@@ -86,8 +88,8 @@ public class IntakeSubsystem extends Subsystem {
     }
 
     public void outputTelemetry() {
+        //System.out.println(this.getEncoder() + " " + u);
         //System.out.println(u + " " + Intake_goal_pos + " " + this.getEncoder() + " " + IntakeController.observer_.plant_.y().get(0, 0));
-        System.out.println(roller_power);
     }
 
     public void stop() {

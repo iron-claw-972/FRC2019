@@ -38,6 +38,11 @@ public class ControlBoard {
         return mDriveControlBoard.getTestButton();
     }
 
+    public boolean getTestButton2() {
+        return mDriveControlBoard.getTestButton2();
+    }
+
+
     public double getElevatorAxis() {
         return mElevatorControlBoard.getElevatorAxis();
     }
