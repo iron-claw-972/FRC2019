@@ -47,6 +47,7 @@ public class SuperstructureSubsystem extends Subsystem {
 
 
         // ---- COLLISION AVOIDANCE
+        //todo: perhaps kElevatorMinPosBeforeIntakeCollision can be calculated dynamically for all the various intake angles?
 
         //if we move our wrist more than 90 degrees, and the elevator is too far down, we will hit stuff
         if ((wrist_state.angle > kWristIntakeMaxAngleBeforeProtrudeDown + kSafetyMargin) || (wrist_goal > 90.0 + kSafetyMargin)) {
@@ -72,7 +73,17 @@ public class SuperstructureSubsystem extends Subsystem {
 
         if(intake_state.angle > kIntakePositionRangeBeforeIntakeCollision) {
             if(intake_goal < kIntakePositionRangeBeforeIntakeCollision) {
-                
+                //we are stowing the intake, so the elevator must be limited to only above the intake
+                if ((elevator_state.linear < kElevatorMinPosBeforeIntakeCollision) || (elevator_goal < kElevatorMinPosBeforeIntakeCollision)) {
+                    elevator_goal = kElevatorMinPosBeforeIntakeCollision;
+                }
+            }
+        } else {
+            if(intake_goal > kIntakePositionRangeForStow) {
+                //we are moving the intake outwards from the stow position
+                if ((elevator_state.linear < kElevatorMinPosBeforeIntakeCollision) || (elevator_goal < kElevatorMinPosBeforeIntakeCollision)) {
+                    elevator_goal = kElevatorMinPosBeforeIntakeCollision;
+                }
             }
         }
 
