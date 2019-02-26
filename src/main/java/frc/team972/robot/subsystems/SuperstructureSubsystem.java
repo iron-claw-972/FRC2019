@@ -1,6 +1,6 @@
 package frc.team972.robot.subsystems;
 
-import frc.team972.robot.Constants;
+import static frc.team972.robot.Constants.*;
 
 public class SuperstructureSubsystem extends Subsystem {
 
@@ -8,40 +8,21 @@ public class SuperstructureSubsystem extends Subsystem {
     WristSubsystem wrist_ = WristSubsystem.getInstance();
     ElevatorSubsystem elevator_ = ElevatorSubsystem.getInstance();
 
-    enum State {
-        UNSTOW_INTAKE, STOW_INTAKE, READY_INTAKE,
-        SAFE_WRIST_INTAKE,
-        SAFE_WRIST_INTAKE_FOR_ELEVATOR,
-        WRIST_ELEVATOR_INTAKE_IDLE,
-        MOVE_WRIST_ELEVATOR
-    }
-
-    private State state_;
-    private State lastState_;
-
     private double wristUserGoal_ = 0;
     private double elevatorUserGoal_ = 0;
     private double intakeUserGoal_ = 0;
+
+    private double kSafetyMargin = 2.0; //degrees
 
     private static SuperstructureSubsystem mInstance = new SuperstructureSubsystem();
 
     public void setElevatorWristUserGoal_(double elevator, double wrist) {
         elevatorUserGoal_ = elevator;
         wristUserGoal_ = wrist;
-        state_ = State.MOVE_WRIST_ELEVATOR;
     }
 
-    public void setIntakeUserGoal_(String mode) {
-        if (mode.equals("UNSTOW")) {
-            state_ = State.UNSTOW_INTAKE;
-            intakeUserGoal_ = Constants.kIntakeUnstowPosition;
-        } else if (mode.equals("STOW")) {
-            state_ = State.STOW_INTAKE;
-            intakeUserGoal_ = Constants.kIntakeStowPosition;
-        } else if (mode.equals("READY")) {
-            state_ = State.READY_INTAKE;
-            intakeUserGoal_ = Constants.kIntakeReadyPosition;
-        }
+    public void setIntakeUserGoal_(double intake) {
+        intakeUserGoal_ = intake;
     }
 
     @Override
@@ -54,89 +35,32 @@ public class SuperstructureSubsystem extends Subsystem {
         wrist_state.angle = wrist_.getEncoder();
         wrist_state.unprofiled_goal_angle = wrist_.getWristController().unprofiled_goal_.position;
 
-        double elevator_pos = 0;
+        PositionState elevator_state = new PositionState(); //angle is linear lol
+        elevator_state.linear = elevator_.getEncoder();
+        elevator_state.unprofiled_goal_linear = elevator_.getElevatorController().unprofiled_goal_.position;
 
-        State temp_state = state_;
+        double wrist_goal = wristUserGoal_;
+        double elevator_goal = elevatorUserGoal_;
+        double intake_goal = intakeUserGoal_;
 
-        //TODO: change this collision avoidance thing to a profile goal constraint system like how 971 does it
-        switch (state_) {
-            //Moves the wrist/elevator assembly to a safe space for the wrist to move
-            case WRIST_ELEVATOR_INTAKE_IDLE: {
-                intake_.setIntake_goal_pos(intakeUserGoal_);
-                elevator_.setElevator_goal_pos(elevatorUserGoal_);
-                wrist_.setWrist_goal_pos(wristUserGoal_);
 
-                break;
-            }
-            case MOVE_WRIST_ELEVATOR: {
-                if(checkIntakeSafeMoveWrist(intake_state, wrist_state, elevator_pos)) {
-                    elevator_.setElevator_goal_pos(elevatorUserGoal_);
-                    wrist_.setWrist_goal_pos(wristUserGoal_);
-                } else {
-                    state_ = State.SAFE_WRIST_INTAKE_FOR_ELEVATOR;
-                }
+        // ---- COLLISION AVOIDANCE
 
-                break;
-            }
-            case SAFE_WRIST_INTAKE_FOR_ELEVATOR: {
-                temp_state = lastState_;
-                if (checkIntakeSafeMoveWrist(intake_state, wrist_state, elevator_pos) == false) {
-                    //move the intake out of the way
-
-                } else {
-                    temp_state = State.SAFE_WRIST_INTAKE_FOR_ELEVATOR;
-                    state_ = lastState_;
-                }
-                break;
-            }
-            case SAFE_WRIST_INTAKE: {
-                temp_state = lastState_;
-                if (checkIntakeSafeMoveWrist(intake_state, wrist_state, elevator_pos) == false) {
-                    //move the wrist/elevator out of the way in the most efficent manner so that it doesn't hit the intake
-
-                } else {
-                    //return to the 'last state' before we needed to safe the wrist
-                    temp_state = State.SAFE_WRIST_INTAKE;
-                    state_ = lastState_;
-                }
-                break;
-            }
-            case UNSTOW_INTAKE: {
-                if (checkIntakeSafeMoveWrist(intake_state, wrist_state, elevator_pos)) {
-                    intake_.setIntake_goal_pos(Constants.kIntakeUnstowPosition);
-                    if (checkTol(intake_state.angle, intake_state.unprofiled_goal_angle, Constants.kIntakeGeneralTolerance)) {
-                        state_ = State.WRIST_ELEVATOR_INTAKE_IDLE;
-                    }
-                } else {
-                    state_ = State.SAFE_WRIST_INTAKE;
-                }
-                break;
-            }
-            case STOW_INTAKE: {
-                if (checkIntakeSafeMoveWrist(intake_state, wrist_state, elevator_pos)) {
-                    intake_.setIntake_goal_pos(Constants.kIntakeStowPosition);
-                    if (checkTol(intake_state.angle, intake_state.unprofiled_goal_angle, Constants.kIntakeGeneralTolerance)) {
-                        state_ = State.WRIST_ELEVATOR_INTAKE_IDLE;
-                    }
-                } else {
-                    state_ = State.SAFE_WRIST_INTAKE;
-                }
-                break;
-            }
-            case READY_INTAKE: {
-                if (checkIntakeSafeMoveWrist(intake_state, wrist_state, elevator_pos)) {
-                    intake_.setIntake_goal_pos(Constants.kIntakeReadyPosition);
-                    if (checkTol(intake_state.angle, intake_state.unprofiled_goal_angle, Constants.kIntakeGeneralTolerance)) {
-                        state_ = State.WRIST_ELEVATOR_INTAKE_IDLE;
-                    }
-                } else {
-                    state_ = State.SAFE_WRIST_INTAKE;
-                }
-                break;
+        //if we move our wrist more than 90 degrees, and the elevator is too far down, we will hit stuff
+        if((wrist_state.angle > kWristIntakeMaxAngleBeforeProtrudeDown + kSafetyMargin) || (wrist_goal > 90.0 + kSafetyMargin)) {
+            if(elevator_state.linear < 0.2) {
+                wrist_goal = 90;
             }
         }
 
-        lastState_ = temp_state;
+        if((elevator_state.linear < kElevatorMinPosBeforeIntakeCollision) && (elevator_goal < kElevatorMinPosBeforeIntakeCollision)) {
+            boolean intake_in_safe_side_for_elevator_max_down = false;
+            if(intake_state.angle >= kIntakePositionRangeBeforeIntakeCollision - kSafetyMargin) {
+
+            }
+        }
+
+
     }
 
     @Override
@@ -160,10 +84,6 @@ public class SuperstructureSubsystem extends Subsystem {
         } else {
             return false;
         }
-    }
-
-    public boolean checkIntakeSafeMoveWrist(JointState intake, JointState wrist, double elevator_pos) {
-        return true; //TODO: intakes are not always safe to move...
     }
 
     public static SuperstructureSubsystem getInstance() {
@@ -190,4 +110,13 @@ class JointState {
     double goal_angular_velocity;
     double unprofiled_goal_angle;
     double unprofiled_goal_angular_velocity;
+}
+
+class PositionState {
+    double linear;
+    double linear_velocity;
+    double goal_linear;
+    double goal_linear_velocity;
+    double unprofiled_goal_linear;
+    double unprofiled_goal_linear_velocity;
 }
