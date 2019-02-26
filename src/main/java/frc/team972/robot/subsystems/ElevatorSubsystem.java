@@ -1,7 +1,10 @@
 package frc.team972.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -16,6 +19,8 @@ public class ElevatorSubsystem extends Subsystem {
     private ElevatorController elevatorController = new ElevatorController();
 
     private TalonSRX mElevatorTalon;
+    private VictorSPX mElevatorSlaveAVictor,mElevatorSlaveBVictor,mElevatorSlaveCVictor;
+    private SensorCollection mSensorCollection;
 
     private HallCalibration hall_calibration_ = new HallCalibration(Constants.kElevatorHallEffectPosition);
     private boolean outputs_enabled_;
@@ -36,6 +41,12 @@ public class ElevatorSubsystem extends Subsystem {
     public ElevatorSubsystem(boolean test_mode) {
         if (test_mode == false) {
             mElevatorTalon = TalonSRXFactory.createDefaultTalon(Constants.kElevatorMotorId);
+            mElevatorTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 100);
+            mSensorCollection = mElevatorTalon.getSensorCollection();
+
+            mElevatorSlaveAVictor = new VictorSPX(Constants.kElevatorSlaveAMotorId);
+            mElevatorSlaveBVictor = new VictorSPX(Constants.kElevatorSlaveBMotorId);
+            mElevatorSlaveCVictor = new VictorSPX(Constants.kElevatorSlaveCMotorId);
         } else {
             System.out.println("ElevatorSubsystem created in Test Mode");
         }
@@ -50,12 +61,23 @@ public class ElevatorSubsystem extends Subsystem {
     public void fastPeriodic() {
         outputs_enabled_ = RobotState.getInstance().outputs_enabled;
 
+        double sensor_pos_native_units = mSensorCollection.getQuadraturePosition();
+        double sensor_pos_rad = (sensor_pos_native_units / Constants.kElevatorEncoderCountPerRev) * Math.PI * 2.0 * (1.0 / 4.0);
+        double sensor_pos_linear = sensor_pos_rad * Constants.kElevatorSpoolDiameter;
+
+        this.setEncoder(sensor_pos_linear);
+        this.setHall(false); //cheat
+
         elevatorController.SetGoal(elevator_goal_pos);
 
         elevatorController.Update(this);
         double u = elevatorController.getElevator_u();
         u = u * (1.0/Constants.kElevatorVoltageCap);
+
         mElevatorTalon.set(ControlMode.PercentOutput, u);
+        mElevatorSlaveAVictor.set(ControlMode.PercentOutput, u);
+        mElevatorSlaveBVictor.set(ControlMode.PercentOutput, u);
+        mElevatorSlaveCVictor.set(ControlMode.PercentOutput, u);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package frc.team972.robot.subsystems;
 
+import frc.team972.robot.Constants;
 import frc.team972.robot.loops.ILooper;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
@@ -8,6 +9,10 @@ public class HatchIntakeSubsystem extends Subsystem {
     private static HatchIntakeSubsystem mInstance = new HatchIntakeSubsystem();
     private DoubleSolenoid mIntakeSolenoid;
     private boolean desiredSolenoidState = false;
+
+    public HatchIntakeSubsystem() {
+        mIntakeSolenoid = new DoubleSolenoid(Constants.kHatchIntakePistonChannelAId, Constants.kHatchIntakePistonChannelBId);
+    }
 
     public void writeToLog() {
     }
