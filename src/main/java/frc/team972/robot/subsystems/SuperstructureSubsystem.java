@@ -1,5 +1,7 @@
 package frc.team972.robot.subsystems;
 
+import frc.team972.robot.Constants;
+
 import static frc.team972.robot.Constants.*;
 
 public class SuperstructureSubsystem extends Subsystem {
@@ -47,16 +49,30 @@ public class SuperstructureSubsystem extends Subsystem {
         // ---- COLLISION AVOIDANCE
 
         //if we move our wrist more than 90 degrees, and the elevator is too far down, we will hit stuff
-        if((wrist_state.angle > kWristIntakeMaxAngleBeforeProtrudeDown + kSafetyMargin) || (wrist_goal > 90.0 + kSafetyMargin)) {
-            if(elevator_state.linear < 0.2) {
+        if ((wrist_state.angle > kWristIntakeMaxAngleBeforeProtrudeDown + kSafetyMargin) || (wrist_goal > 90.0 + kSafetyMargin)) {
+            if (elevator_state.linear < 0.2) {
                 wrist_goal = 90;
             }
         }
 
-        if((elevator_state.linear < kElevatorMinPosBeforeIntakeCollision) && (elevator_goal < kElevatorMinPosBeforeIntakeCollision)) {
-            boolean intake_in_safe_side_for_elevator_max_down = false;
-            if(intake_state.angle >= kIntakePositionRangeBeforeIntakeCollision - kSafetyMargin) {
+        //checks final positions and current positions for any collision
+        if (checkBounds(intake_state.angle, 0, kIntakePositionRangeForStow)) {
+            //we can only move the elevator to the mecanum roller stow position
+            if ((elevator_state.linear < kIntakeLinearPositionForStow) || (elevator_goal < kIntakeLinearPositionForStow)) {
+                elevator_goal = kIntakeLinearPositionForStow;
+            }
+        } else if (checkBounds(intake_state.angle, kIntakePositionRangeForStow, kIntakePositionRangeBeforeIntakeCollision)) {
+            //we cant move the elevator all the way down...
+            if ((elevator_state.linear < kElevatorMinPosBeforeIntakeCollision) || (elevator_goal < kElevatorMinPosBeforeIntakeCollision)) {
+                elevator_goal = kElevatorMinPosBeforeIntakeCollision;
+            }
+        } else {
+            //we can move the elevator everywhere
+        }
 
+        if(intake_state.angle > kIntakePositionRangeBeforeIntakeCollision) {
+            if(intake_goal < kIntakePositionRangeBeforeIntakeCollision) {
+                
             }
         }
 

@@ -72,5 +72,7 @@ public class Constants {
     public static final double kWristIntakeMaxAngleBeforeProtrudeDown = 90.0;
     public static final double kElevatorMinPosBeforeIntakeCollision = 0.2;
     public static final double kIntakePositionRangeBeforeIntakeCollision = 50.0;
+    public static final double kIntakePositionRangeForStow = 5.0;
+    public static final double kIntakeLinearPositionForStow = 0.2;
 
 }
