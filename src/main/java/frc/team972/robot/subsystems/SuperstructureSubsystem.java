@@ -45,7 +45,6 @@ public class SuperstructureSubsystem extends Subsystem {
         double elevator_goal = elevatorUserGoal_;
         double intake_goal = intakeUserGoal_;
 
-
         // ---- COLLISION AVOIDANCE
         //todo: perhaps kElevatorMinPosBeforeIntakeCollision can be calculated dynamically for all the various intake angles?
 
@@ -86,6 +85,7 @@ public class SuperstructureSubsystem extends Subsystem {
                 }
             }
         }
+
 
 
     }

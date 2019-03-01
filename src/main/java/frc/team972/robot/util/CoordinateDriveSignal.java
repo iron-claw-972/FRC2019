@@ -17,6 +17,14 @@ public class CoordinateDriveSignal {
         rotation = rotation + a;
     }
 
+    public void setRotation(double a) {
+        rotation = a;
+    }
+
+    public double getRotation() {
+        return rotation;
+    }
+
     public boolean getFieldOrient() {
         return !noFieldOrient;
     }

@@ -9,6 +9,8 @@ import frc.team972.robot.RobotState;
 import frc.team972.robot.driver_utils.TalonSRXFactory;
 import frc.team972.robot.lib.Pose2d;
 import frc.team972.robot.statemachines.DriveStateMachine;
+import frc.team972.robot.subsystems.controller.DriveMotorVelocityController;
+import frc.team972.robot.subsystems.controller.MecanumAngleLockController;
 import frc.team972.robot.util.CoordinateDriveSignal;
 import frc.team972.robot.util.DriveSignal;
 import frc.team972.robot.util.MecanumHelper;
@@ -29,10 +31,12 @@ public class DriveSubsystem extends Subsystem {
     private boolean mIsBrakeMode;
     private static DriveSubsystem mInstance = null;
 
-    private double left_error_old = 0;
-    private double right_error_old = 0;
-    private double left_b_error_old = 0;
-    private double right_b_error_old = 0;
+    private DriveMotorVelocityController left_c = new DriveMotorVelocityController(Constants.kDriveVelocityPGain, Constants.kDriveVelocityFF, 0);
+    private DriveMotorVelocityController left_b_c = new DriveMotorVelocityController(Constants.kDriveVelocityPGain, Constants.kDriveVelocityFF, 0);
+    private DriveMotorVelocityController right_c = new DriveMotorVelocityController(Constants.kDriveVelocityPGain, Constants.kDriveVelocityFF, 0);
+    private DriveMotorVelocityController right_b_c = new DriveMotorVelocityController(Constants.kDriveVelocityPGain, Constants.kDriveVelocityFF, 0);
+
+    private MecanumAngleLockController angleLockController = new MecanumAngleLockController();
 
     public DriveSubsystem(boolean test_mode) {
         if (!test_mode) {
@@ -88,7 +92,7 @@ public class DriveSubsystem extends Subsystem {
     }
 
     public synchronized void setMecanumDrivePoseDesired(Pose2d pose) {
-        if(pose == null) {
+        if (pose == null) {
             driveStateMachine.requestManual();
         } else {
             driveStateMachine.requestNewPath(pose);
@@ -137,24 +141,19 @@ public class DriveSubsystem extends Subsystem {
             mDriveControlState = DriveControlState.CLOSED_LOOP;
         }
 
+        double driveMagnitude = 5;
+
         DriveSensorReading sensorReading = encoderToRealUnits(readEncodersVelocity());
 
-        double desiredVelocity = 5;
+        double l_p = left_c.update(sensorReading.left, signal.getLeftFront() * driveMagnitude);
+        double l_b_p = left_b_c.update(sensorReading.left_back, signal.getLeftBack() * driveMagnitude);
+        double r_p = right_c.update(sensorReading.right, signal.getRightFront() * driveMagnitude);
+        double r_b_p = right_b_c.update(sensorReading.right_back, signal.getRightBack() * driveMagnitude);
 
-        double left_error = (signal.getLeftFront() * desiredVelocity - sensorReading.left);
-        double right_error = (signal.getRightFront() * desiredVelocity + sensorReading.right);
-        double left_b_error = (signal.getLeftBack() * desiredVelocity - sensorReading.left_back);
-        double right_b_error = (signal.getRightBack() * desiredVelocity + sensorReading.right_back);
-
-        mPeriodicIO.left_front_demand = (signal.getLeftFront() * Constants.kDriveVelocityFF) + left_error * Constants.kDriveVelocityPGain;
-        mPeriodicIO.right_front_demand = (signal.getRightFront() * Constants.kDriveVelocityFF) + right_error * Constants.kDriveVelocityPGain;
-        mPeriodicIO.right_back_demand = (signal.getRightBack() * Constants.kDriveVelocityFF) + right_b_error * Constants.kDriveVelocityPGain;
-        mPeriodicIO.left_back_demand = (signal.getLeftBack() * Constants.kDriveVelocityFF) + left_b_error * Constants.kDriveVelocityPGain;
-
-        left_error_old = left_error;
-        right_error_old = right_error;
-        left_b_error_old = left_b_error;
-        right_b_error_old = right_b_error;
+        mPeriodicIO.left_front_demand = l_p;
+        mPeriodicIO.left_back_demand = l_b_p;
+        mPeriodicIO.right_front_demand = r_p;
+        mPeriodicIO.right_back_demand = r_b_p;
     }
 
     public synchronized void setBrakeMode(boolean on) {
@@ -253,35 +252,17 @@ public class DriveSubsystem extends Subsystem {
             }
         } else if ((mDriveControlState == DriveControlState.CLOSED_LOOP_MECANUM) && (mecanumDriveSignalDesired != null)) {
             double current_angle = 0;
-
             if (mecanumDriveSignalDesired.getFieldOrient()) {
                 current_angle = -ahrs.getAngle();
             }
 
-            if (last_angle == null) {
-                //Zero Last angle on first loop
-                last_angle = current_angle;
-            }
-            double angle_velocity = (current_angle - last_angle);
-            double angle_correction = -angle_velocity * 0.1;
-            angle_correction = MecanumHelper.handleDeadband(angle_correction, 0.01);
-
-            if (current_angle != 0) {
-                mecanumDriveSignalDesired.addRotation(angle_correction);
-            }
+            double rotation_power = angleLockController.update(current_angle, mecanumDriveSignalDesired.getRotation());
+            mecanumDriveSignalDesired.setRotation(rotation_power);
 
             DriveSignal driveSignal = MecanumHelper.cartesianCalculate(mecanumDriveSignalDesired, current_angle);
 
-            //Feed transformed Mecanum values into traditional motor values
-
-            setCloseLoop(driveSignal); // Calculate u's
+            setCloseLoop(driveSignal);
             setMotorsOpenValue();
-
-            if (mecanumDriveSignalDesired.getFieldOrient()) {
-                last_angle = current_angle;
-            } else {
-                last_angle = null;
-            }
         }
     }
 

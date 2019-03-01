@@ -10,6 +10,11 @@ public class Constants {
     public static final int kDriveGamepadPort = 1;
     public static final int kElevatorJoystickPort = 999; //TODO: CHANGE THIS!!!
 
+    public static final double kStickToVelocity = 0.25;
+    public static final double kMecanumRotationK1 = 0.1;
+    public static final double kMecanumRotationK2 = 0.1;
+
+
     // DRIVE MOTOR IDS
     // TODO: Fill with real Talon ID
 
