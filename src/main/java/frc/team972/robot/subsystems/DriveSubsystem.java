@@ -8,6 +8,7 @@ import frc.team972.robot.Constants;
 import frc.team972.robot.RobotState;
 import frc.team972.robot.driver_utils.TalonSRXFactory;
 import frc.team972.robot.lib.Pose2d;
+import frc.team972.robot.lib.Util;
 import frc.team972.robot.statemachines.DriveStateMachine;
 import frc.team972.robot.subsystems.controller.DriveMotorVelocityController;
 import frc.team972.robot.subsystems.controller.MecanumAngleLockController;
@@ -141,14 +142,14 @@ public class DriveSubsystem extends Subsystem {
             mDriveControlState = DriveControlState.CLOSED_LOOP;
         }
 
-        double driveMagnitude = 5;
+        double driveMagnitude = 6.0;
 
         DriveSensorReading sensorReading = encoderToRealUnits(readEncodersVelocity());
 
         double l_p = left_c.update(sensorReading.left, signal.getLeftFront() * driveMagnitude);
         double l_b_p = left_b_c.update(sensorReading.left_back, signal.getLeftBack() * driveMagnitude);
-        double r_p = right_c.update(sensorReading.right, signal.getRightFront() * driveMagnitude);
-        double r_b_p = right_b_c.update(sensorReading.right_back, signal.getRightBack() * driveMagnitude);
+        double r_p = right_c.update(-sensorReading.right, signal.getRightFront() * driveMagnitude);
+        double r_b_p = right_b_c.update(-sensorReading.right_back, signal.getRightBack() * driveMagnitude);
 
         mPeriodicIO.left_front_demand = l_p;
         mPeriodicIO.left_back_demand = l_b_p;
@@ -207,13 +208,25 @@ public class DriveSubsystem extends Subsystem {
             setMotorsOpenValue();
         } else if ((mDriveControlState == DriveControlState.PATH_FOLLOWING)) {
             //path following mode
-            DenseMatrix commanded_full_state = driveStateMachine.update(timestamp); // full state matrix that the robot should be at
 
+            Pose2d current_state = RobotState.getInstance().getLatestFieldToVehicle().getValue();
+            DenseMatrix commanded_full_state = driveStateMachine.update(timestamp); // full state matrix that the robot should be at
 
             //TODO: implement control law to turn desired matrix [position, velocity] state into a desired [velocity] state to converge our goal optimally
             double x_p = 0;
             double y_p = 0;
             double rotate_p = 0;
+
+            if(commanded_full_state != null) {
+                x_p = -(commanded_full_state.get(0,0) - current_state.getTranslation().x()) * 0.1;
+                y_p = (commanded_full_state.get(0,1) - current_state.getTranslation().y()) * 0.1;
+
+                x_p = Util.limit(x_p, 0.25);
+                y_p = Util.limit(y_p, 0.25);
+
+                System.out.println(x_p + " " + y_p);
+                System.out.println(current_state.getTranslation());
+            }
 
             this.setCloseLoopMecanum(
                     MecanumHelper.mecanumDrive(x_p, y_p, rotate_p, false)
@@ -256,7 +269,7 @@ public class DriveSubsystem extends Subsystem {
                 current_angle = -ahrs.getAngle();
             }
 
-            double rotation_power = angleLockController.update(current_angle, mecanumDriveSignalDesired.getRotation());
+            double rotation_power = angleLockController.update(current_angle, mecanumDriveSignalDesired.getRotation() * 25);
             mecanumDriveSignalDesired.setRotation(rotation_power);
 
             DriveSignal driveSignal = MecanumHelper.cartesianCalculate(mecanumDriveSignalDesired, current_angle);
@@ -283,6 +296,7 @@ public class DriveSubsystem extends Subsystem {
     @Override
     public void zeroSensors() {
         ahrs.reset();
+        angleLockController.reset();
         mLeftBack.getSensorCollection().setQuadraturePosition(0, Constants.kLongCANTimeoutMs);
         mRightBack.getSensorCollection().setQuadraturePosition(0, Constants.kLongCANTimeoutMs);
         mLeftFront.getSensorCollection().setQuadraturePosition(0, Constants.kLongCANTimeoutMs);

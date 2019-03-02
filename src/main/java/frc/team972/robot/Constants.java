@@ -10,9 +10,9 @@ public class Constants {
     public static final int kDriveGamepadPort = 1;
     public static final int kElevatorJoystickPort = 999; //TODO: CHANGE THIS!!!
 
-    public static final double kStickToVelocity = 0.25;
-    public static final double kMecanumRotationK1 = 0.1;
-    public static final double kMecanumRotationK2 = 0.1;
+    public static final double kStickToVelocity = 12.5;
+    public static final double kMecanumRotationK1 = 0.035; //0.05
+    public static final double kMecanumRotationK2 = 0.00065;
 
 
     // DRIVE MOTOR IDS
@@ -20,8 +20,8 @@ public class Constants {
 
     public static final double kDriveWheelRadius = 3.0;
     public static final double kDriveTicksPerRev = 4096;
-    public static final double kDriveVelocityFF = 0.0; // dutyCycle per revs
-    public static final double kDriveVelocityPGain = 0.1;
+    public static final double kDriveVelocityFF = 0.125; // dutyCycle per revs
+    public static final double kDriveVelocityPGain = 0.095;
 
     public static final int kLeftFrontId = 1;
     public static final int kLeftBackId = 3;
@@ -40,8 +40,8 @@ public class Constants {
 
     //WRIST MOTOR IDS
     public static final int kWristMotorId = 0;
-    public static final int kWristRollerAMotorId = 1;
-    public static final int kWristRollerBMotorId = 2;
+    public static final int kWristRollerAMotorId = 10;
+    public static final int kWristRollerBMotorId = 11;
 
     //INTAKE MOTOR IDS
     public static final int kIntakeMotorId = 8;

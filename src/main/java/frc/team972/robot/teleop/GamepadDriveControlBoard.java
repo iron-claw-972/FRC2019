@@ -40,6 +40,10 @@ public class GamepadDriveControlBoard {
         return mJoystick.getRawButton(1);
     }
 
+    public boolean getTestButtonPressed() {
+        return mJoystick.getRawButtonPressed(1);
+    }
+
     public boolean getTestButton2() {
         return mJoystick.getRawButton(2);
     }

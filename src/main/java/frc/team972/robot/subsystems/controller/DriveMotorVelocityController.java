@@ -1,5 +1,7 @@
 package frc.team972.robot.subsystems.controller;
 
+import frc.team972.robot.Constants;
+
 public class DriveMotorVelocityController {
 
     private double kP;
@@ -14,8 +16,7 @@ public class DriveMotorVelocityController {
 
     public double update(double current_velocity, double desired_velocity) {
         double velocity_error = (desired_velocity - current_velocity);
-        u = u + velocity_error * kP;
-        double u_ = u + (kF * desired_velocity);
+        double u_ = (kF * desired_velocity) + (velocity_error * kP);
 
         return u_;
     }

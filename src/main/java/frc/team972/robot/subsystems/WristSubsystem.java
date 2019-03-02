@@ -79,16 +79,18 @@ public class WristSubsystem extends Subsystem {
         this.setEncoder(sensor_pos_rad); // Update our sensor count so the wrist controller can read the current sensor output
         this.setHall(false); //cheat
 
+        System.out.println(sensor_pos_rad);
+
         wristController.SetGoal(wrist_goal_pos);
 
         wristController.Update(this);
         u = wristController.getWrist_u();
-        u = u * (1.0 / 12.0);
+        u = -u * (1.0 / 12.0);
         //u = u * -1.0;
 
         mWristTalon.set(ControlMode.PercentOutput, u);
         mWristARollerTalon.set(ControlMode.PercentOutput, wrist_roller_goal);
-        mWristBRollerTalon.set(ControlMode.PercentOutput, wrist_roller_goal);
+        mWristBRollerTalon.set(ControlMode.PercentOutput, -wrist_roller_goal);
     }
 
     @Override

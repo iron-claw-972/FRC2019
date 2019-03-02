@@ -38,6 +38,10 @@ public class ControlBoard {
         return mDriveControlBoard.getTestButton();
     }
 
+    public boolean getTestButtonPressed() {
+        return mDriveControlBoard.getTestButtonPressed();
+    }
+
     public boolean getTestButton2() {
         return mDriveControlBoard.getTestButton2();
     }

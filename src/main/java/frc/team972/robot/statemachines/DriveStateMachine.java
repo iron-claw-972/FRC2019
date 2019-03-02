@@ -24,8 +24,8 @@ public class DriveStateMachine {
     public DriveStateMachine(DriveSubsystem drive) {
         drive_ = drive;
         constraints = new MotionProfileConstraints(0, 0);
-        constraints.max_velocity = 1; // m/s - - - this constrains the direct vector magnitude, not the x/y component velocities
-        constraints.max_acceleration = 1; //m/s/s
+        constraints.max_velocity = 0.1; // m/s - - - this constrains the direct vector magnitude, not the x/y component velocities
+        constraints.max_acceleration = 0.1; //m/s/s
     }
 
     private DriveDesireState currentState = DriveDesireState.MANUAL;
@@ -53,19 +53,20 @@ public class DriveStateMachine {
                 break;
             }
             case PATH_FOLLOWING: {
-                Pose2d current_state = robotState.getLatestFieldToVehicle().getValue();
                 DenseMatrix desired_full_state = new DenseMatrix(2, 3);
 
                 Translation2d start_translation = path_.desiredCoordinatePathStart.getTranslation();
                 Translation2d end_translation = path_.desiredCoordinatePathFinish.getTranslation();
 
                 double path_dist_direct = start_translation.distance(end_translation);
-                MotionProfilePosition desired_mp = motionProfile.Calculate(t);
+                double delta_t = (t * 0.001) - path_.startTime;
+
+                MotionProfilePosition desired_mp = motionProfile.Calculate(delta_t);
 
                 double d_x = end_translation.x() - start_translation.x();
-                double d_x_c = (d_x/path_dist_direct) * desired_mp.position;
+                double d_x_c = (d_x / path_dist_direct) * desired_mp.position;
                 double d_y = end_translation.y() - start_translation.y();
-                double d_y_c = (d_y/path_dist_direct) * desired_mp.position;
+                double d_y_c = (d_y / path_dist_direct) * desired_mp.position;
 
                 double v_x = (d_x / path_dist_direct) * desired_mp.velocity;
                 double v_y = (d_y / path_dist_direct) * desired_mp.velocity;
@@ -91,9 +92,11 @@ public class DriveStateMachine {
     }
 
     public void requestNewPath(Pose2d final_pose) {
-        double timestamp = System.currentTimeMillis();
-        Pose2d current_pose = robotState.getLatestFieldToVehicle().getValue();
-        path_ = new DrivePath(current_pose, final_pose, timestamp);
+        if (path_ == null) {
+            double timestamp = System.currentTimeMillis() * 0.001;
+            Pose2d current_pose = robotState.getLatestFieldToVehicle().getValue();
+            path_ = new DrivePath(current_pose, final_pose, timestamp);
+        }
     }
 
     public void requestManual() {
