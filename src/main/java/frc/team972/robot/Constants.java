@@ -21,6 +21,8 @@ public class Constants {
     public static final double kDriveTicksPerRev = 4096;
     public static final double kDriveVelocityFF = 0.125; // dutyCycle per revs
     public static final double kDriveVelocityPGain = 0.095;
+    public static final double kDriveVoltageCap = 3.0;
+
 
     public static final int kLeftFrontId = 1;
     public static final int kLeftBackId = 3;

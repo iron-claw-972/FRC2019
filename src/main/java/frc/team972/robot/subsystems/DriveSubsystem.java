@@ -10,7 +10,7 @@ import frc.team972.robot.driver_utils.TalonSRXFactory;
 import frc.team972.robot.lib.Pose2d;
 import frc.team972.robot.lib.Util;
 import frc.team972.robot.statemachines.DriveStateMachine;
-import frc.team972.robot.subsystems.controller.DriveMotorVelocityController;
+import frc.team972.robot.subsystems.controller.DriveMotorVelocitySimpleController;
 import frc.team972.robot.subsystems.controller.MecanumAngleLockController;
 import frc.team972.robot.util.CoordinateDriveSignal;
 import frc.team972.robot.util.DriveSignal;
@@ -32,10 +32,10 @@ public class DriveSubsystem extends Subsystem {
     private boolean mIsBrakeMode;
     private static DriveSubsystem mInstance = null;
 
-    private DriveMotorVelocityController left_c = new DriveMotorVelocityController(Constants.kDriveVelocityPGain, Constants.kDriveVelocityFF, 0);
-    private DriveMotorVelocityController left_b_c = new DriveMotorVelocityController(Constants.kDriveVelocityPGain, Constants.kDriveVelocityFF, 0);
-    private DriveMotorVelocityController right_c = new DriveMotorVelocityController(Constants.kDriveVelocityPGain, Constants.kDriveVelocityFF, 0);
-    private DriveMotorVelocityController right_b_c = new DriveMotorVelocityController(Constants.kDriveVelocityPGain, Constants.kDriveVelocityFF, 0);
+    private DriveMotorVelocitySimpleController left_c = new DriveMotorVelocitySimpleController(Constants.kDriveVelocityPGain, Constants.kDriveVelocityFF, 0);
+    private DriveMotorVelocitySimpleController left_b_c = new DriveMotorVelocitySimpleController(Constants.kDriveVelocityPGain, Constants.kDriveVelocityFF, 0);
+    private DriveMotorVelocitySimpleController right_c = new DriveMotorVelocitySimpleController(Constants.kDriveVelocityPGain, Constants.kDriveVelocityFF, 0);
+    private DriveMotorVelocitySimpleController right_b_c = new DriveMotorVelocitySimpleController(Constants.kDriveVelocityPGain, Constants.kDriveVelocityFF, 0);
 
     private MecanumAngleLockController angleLockController = new MecanumAngleLockController();
 
