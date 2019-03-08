@@ -14,7 +14,6 @@ public class Constants {
     public static final double kMecanumRotationK1 = 0.035; //0.05
     public static final double kMecanumRotationK2 = 0.00065;
 
-
     // DRIVE MOTOR IDS
     // TODO: Fill with real Talon ID
 
@@ -40,12 +39,7 @@ public class Constants {
 
     //WRIST MOTOR IDS
     public static final int kWristMotorId = 0;
-    public static final int kWristRollerAMotorId = 10;
-    public static final int kWristRollerBMotorId = 11;
-
-    //INTAKE MOTOR IDS
-    public static final int kIntakeMotorId = 8;
-    public static final int kIntakeRollerMotorId = 9;
+    public static final int kWristRollerMotorId = 10;
 
     public static final int kLongCANTimeoutMs = 100;
 

@@ -19,7 +19,7 @@ public class WristSubsystem extends Subsystem {
     private WristController wristController = new WristController();
 
     private TalonSRX mWristTalon;
-    private VictorSPX mWristARollerTalon, mWristBRollerTalon;
+    private VictorSPX mWristRollerSPX;
 
     private SensorCollection mSensorCollection;
 
@@ -31,16 +31,6 @@ public class WristSubsystem extends Subsystem {
     private double wrist_goal_pos = 0;
     private double wrist_roller_goal = 0;
     private double u = 0;
-
-    /*
-    ShuffleboardTab tab = Shuffleboard.getTab("ss");
-    NetworkTableEntry enc_g = tab.add("enc", 0).getEntry();
-    NetworkTableEntry obs_g = tab.add("obs", 0).getEntry();
-    NetworkTableEntry obsv_g = tab.add("obs_v", 0).getEntry();
-    NetworkTableEntry des_g = tab.add("des", 0).getEntry();
-    NetworkTableEntry des_v_g = tab.add("des_v", 0).getEntry();
-    NetworkTableEntry u_g = tab.add("u", 0).getEntry();
-    */
 
     private WristSubsystem() {
         this(false);
@@ -56,8 +46,7 @@ public class WristSubsystem extends Subsystem {
             mWristTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 100);
             mSensorCollection = mWristTalon.getSensorCollection();
 
-            mWristARollerTalon = new VictorSPX(Constants.kWristRollerAMotorId);
-            mWristBRollerTalon = new VictorSPX(Constants.kWristRollerBMotorId);
+            mWristRollerSPX = new VictorSPX(Constants.kWristRollerMotorId);
 
         } else {
             System.out.println("WristSubsystem created in Test Mode");
@@ -86,11 +75,9 @@ public class WristSubsystem extends Subsystem {
         wristController.Update(this);
         u = wristController.getWrist_u();
         u = -u * (1.0 / 12.0);
-        //u = u * -1.0;
 
         mWristTalon.set(ControlMode.PercentOutput, u);
-        mWristARollerTalon.set(ControlMode.PercentOutput, wrist_roller_goal);
-        mWristBRollerTalon.set(ControlMode.PercentOutput, -wrist_roller_goal);
+        mWristRollerSPX.set(ControlMode.PercentOutput, wrist_roller_goal);
     }
 
     @Override
@@ -102,15 +89,7 @@ public class WristSubsystem extends Subsystem {
     }
 
     public void outputTelemetry() {
-        //System.out.println(u + " " + wrist_goal_pos + " " + this.getEncoder() + " " + wristController.observer_.plant_.y().get(0, 0));
-        /*
-        enc_g.setDouble(getEncoder());
-        obs_g.setDouble(wristController.observer_.plant_.x_.get(0,0));
-        obsv_g.setDouble(wristController.observer_.plant_.x_.get(1,0));
-        des_g.setDouble(wristController.profiled_goal_.position);
-        des_v_g.setDouble(wristController.profiled_goal_.velocity);
-        u_g.setDouble(wristController.getWrist_u());
-        */
+
     }
 
     public void stop() {
