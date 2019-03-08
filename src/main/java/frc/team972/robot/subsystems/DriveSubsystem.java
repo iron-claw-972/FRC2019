@@ -6,10 +6,12 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import frc.team972.robot.Constants;
 import frc.team972.robot.RobotState;
+import frc.team972.robot.controls.MotionProfilePosition;
 import frc.team972.robot.driver_utils.TalonSRXFactory;
 import frc.team972.robot.lib.Pose2d;
 import frc.team972.robot.lib.Util;
 import frc.team972.robot.statemachines.DriveStateMachine;
+import frc.team972.robot.subsystems.controller.DriveMotorController;
 import frc.team972.robot.subsystems.controller.DriveMotorVelocitySimpleController;
 import frc.team972.robot.subsystems.controller.MecanumAngleLockController;
 import frc.team972.robot.util.CoordinateDriveSignal;
@@ -32,10 +34,17 @@ public class DriveSubsystem extends Subsystem {
     private boolean mIsBrakeMode;
     private static DriveSubsystem mInstance = null;
 
+    /*
     private DriveMotorVelocitySimpleController left_c = new DriveMotorVelocitySimpleController(Constants.kDriveVelocityPGain, Constants.kDriveVelocityFF, 0);
     private DriveMotorVelocitySimpleController left_b_c = new DriveMotorVelocitySimpleController(Constants.kDriveVelocityPGain, Constants.kDriveVelocityFF, 0);
     private DriveMotorVelocitySimpleController right_c = new DriveMotorVelocitySimpleController(Constants.kDriveVelocityPGain, Constants.kDriveVelocityFF, 0);
     private DriveMotorVelocitySimpleController right_b_c = new DriveMotorVelocitySimpleController(Constants.kDriveVelocityPGain, Constants.kDriveVelocityFF, 0);
+    */
+
+    private DriveMotorController left_c = new DriveMotorController();
+    private DriveMotorController left_b_c = new DriveMotorController();
+    private DriveMotorController right_c = new DriveMotorController();
+    private DriveMotorController right_b_c = new DriveMotorController();
 
     private MecanumAngleLockController angleLockController = new MecanumAngleLockController();
 
@@ -146,10 +155,17 @@ public class DriveSubsystem extends Subsystem {
 
         DriveSensorReading sensorReading = encoderToRealUnits(readEncodersVelocity());
 
-        double l_p = left_c.update(sensorReading.left, signal.getLeftFront() * driveMagnitude);
-        double l_b_p = left_b_c.update(sensorReading.left_back, signal.getLeftBack() * driveMagnitude);
-        double r_p = right_c.update(-sensorReading.right, signal.getRightFront() * driveMagnitude);
-        double r_b_p = right_b_c.update(-sensorReading.right_back, signal.getRightBack() * driveMagnitude);
+        //set motion goals to current position and desired velocity
+        //(we might have to gain schedule K matrix to [0, velocity gain] incase this trick doesn't work)
+        left_c.SetGoal(new MotionProfilePosition(sensorReading.left,signal.getLeftFront() * driveMagnitude));
+        left_b_c.SetGoal(new MotionProfilePosition(sensorReading.left_back,signal.getLeftBack() * driveMagnitude));
+        right_c.SetGoal(new MotionProfilePosition(sensorReading.right,signal.getRightFront() * driveMagnitude));
+        right_b_c.SetGoal(new MotionProfilePosition(sensorReading.right_back,signal.getRightBack() * driveMagnitude));
+
+        double l_p = left_c.Update(sensorReading.left);
+        double l_b_p = left_b_c.Update(sensorReading.left_back);
+        double r_p = right_c.Update(sensorReading.right);
+        double r_b_p = right_b_c.Update(sensorReading.right_back);
 
         mPeriodicIO.left_front_demand = l_p;
         mPeriodicIO.left_back_demand = l_b_p;
