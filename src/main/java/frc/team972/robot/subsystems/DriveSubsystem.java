@@ -158,10 +158,10 @@ public class DriveSubsystem extends Subsystem {
 
         //set motion goals to current position and desired velocity
         //(we might have to gain schedule K matrix to [0, velocity gain] incase this trick doesn't work)
-        left_c.SetGoal(new MotionProfilePosition(sensorReadingPosition.left,signal.getLeftFront() * driveMagnitude));
-        left_b_c.SetGoal(new MotionProfilePosition(sensorReadingPosition.left_back,signal.getLeftBack() * driveMagnitude));
-        right_c.SetGoal(new MotionProfilePosition(sensorReadingPosition.right,signal.getRightFront() * driveMagnitude));
-        right_b_c.SetGoal(new MotionProfilePosition(sensorReadingPosition.right_back,signal.getRightBack() * driveMagnitude));
+        left_c.SetGoal(new MotionProfilePosition(sensorReadingPosition.left, signal.getLeftFront() * driveMagnitude));
+        left_b_c.SetGoal(new MotionProfilePosition(sensorReadingPosition.left_back, signal.getLeftBack() * driveMagnitude));
+        right_c.SetGoal(new MotionProfilePosition(sensorReadingPosition.right, signal.getRightFront() * driveMagnitude));
+        right_b_c.SetGoal(new MotionProfilePosition(sensorReadingPosition.right_back, signal.getRightBack() * driveMagnitude));
 
         double l_p = left_c.Update(sensorReadingPosition.left);
         double l_b_p = left_b_c.Update(sensorReadingPosition.left_back);
@@ -233,21 +233,22 @@ public class DriveSubsystem extends Subsystem {
             double x_p = 0;
             double y_p = 0;
             double rotate_p = 0;
+            double current_angle = -ahrs.getAngle();
 
-            if(commanded_full_state != null) {
-                x_p = -(commanded_full_state.get(0,0) - current_state.getTranslation().x()) * 0.1;
-                y_p = (commanded_full_state.get(0,1) - current_state.getTranslation().y()) * 0.1;
+            if (commanded_full_state != null) {
+                x_p = -(commanded_full_state.get(0, 0) - current_state.getTranslation().x()) * 0.1;
+                y_p = (commanded_full_state.get(0, 1) - current_state.getTranslation().y()) * 0.1;
+                rotate_p = (commanded_full_state.get(0, 2) - Math.toRadians(current_angle) * 1.0);
 
-                x_p = Util.limit(x_p, 0.25);
-                y_p = Util.limit(y_p, 0.25);
-
-                System.out.println(x_p + " " + y_p);
-                System.out.println(current_state.getTranslation());
+                x_p = Util.limit(x_p, 5.0);
+                y_p = Util.limit(y_p, 5.0);
+                rotate_p = Util.limit(rotate_p, 1.0);
             }
 
-            this.setCloseLoopMecanum(
-                    MecanumHelper.mecanumDrive(x_p, y_p, rotate_p, false)
-            );
+            CoordinateDriveSignal transformDriveSignal = new CoordinateDriveSignal(x_p, y_p, rotate_p, false);
+            DriveSignal driveSignal = MecanumHelper.cartesianCalculate(transformDriveSignal, current_angle);
+
+            this.setCloseLoop(driveSignal);
             setMotorsOpenValue();
         } else if ((mDriveControlState == DriveControlState.OPEN_LOOP_MECANUM) && (mecanumDriveSignalDesired != null)) {
             double current_angle = 0;
