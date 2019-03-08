@@ -1,7 +1,6 @@
 package frc.team972.robot.subsystems.controller;
 
 import frc.team972.robot.Constants;
-import jeigen.DenseMatrix;
 
 import static frc.team972.robot.Constants.kStickToVelocity;
 

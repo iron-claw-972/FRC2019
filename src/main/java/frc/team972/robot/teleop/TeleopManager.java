@@ -1,6 +1,5 @@
 package frc.team972.robot.teleop;
 
-import edu.wpi.first.wpilibj.Joystick;
 import frc.team972.robot.lib.Pose2d;
 import frc.team972.robot.lib.Rotation2d;
 import frc.team972.robot.subsystems.*;
@@ -12,7 +11,6 @@ public class TeleopManager {
 
     private DriveSubsystem mDrive = DriveSubsystem.getInstance();
     private ElevatorSubsystem mElevator = ElevatorSubsystem.getInstance();
-    private ExampleSubsystem mExample = ExampleSubsystem.getInstance();
     private WristSubsystem mWrist = WristSubsystem.getInstance();
 
     private ControlBoard controlBoard = ControlBoard.getInstance();
@@ -25,9 +23,8 @@ public class TeleopManager {
     }
 
     public void update() {
-
         if(controlBoard.getTestButton()) {
-            mDrive.setMecanumDrivePoseDesired(new Pose2d(0,0, Rotation2d.fromDegrees(0))); //go to origin
+            mDrive.setMecanumDrivePoseDesired(new Pose2d(0,0, Rotation2d.fromDegrees(0)));
         } else {
             mDrive.setMecanumDrivePoseDesired(null);
             mDrive.setCloseLoopMecanum(

@@ -24,8 +24,8 @@ public class DriveStateMachine {
     public DriveStateMachine(DriveSubsystem drive) {
         drive_ = drive;
         constraints = new MotionProfileConstraints(0, 0);
-        constraints.max_velocity = 0.1; // m/s - - - this constrains the direct vector magnitude, not the x/y component velocities
-        constraints.max_acceleration = 0.1; //m/s/s
+        constraints.max_velocity = 6.0;
+        constraints.max_acceleration = 6.0;
     }
 
     private DriveDesireState currentState = DriveDesireState.MANUAL;
@@ -45,7 +45,7 @@ public class DriveStateMachine {
                 double path_dist_direct = start_translation.distance(path_.desiredCoordinatePathFinish.getTranslation());
 
                 MotionProfilePosition goal = new MotionProfilePosition(path_dist_direct, 0);
-                MotionProfilePosition start = new MotionProfilePosition(0, 0); //TODO: calculate actual real robot position at that current moment, rather than assume robot is stationary0
+                MotionProfilePosition start = new MotionProfilePosition(0, 0); //TODO: calculate actual real robot position at that current moment, rather than assume robot is stationary
 
                 motionProfile = new TrapezodialMotionProfile(constraints, goal, start);
 
@@ -71,7 +71,7 @@ public class DriveStateMachine {
                 double v_x = (d_x / path_dist_direct) * desired_mp.velocity;
                 double v_y = (d_y / path_dist_direct) * desired_mp.velocity;
 
-                Pose2d desired_position = new Pose2d(d_x_c, d_y_c, Rotation2d.fromRadians(0));
+                Pose2d desired_position = new Pose2d(d_x_c + start_translation.x(), d_y_c + start_translation.y(), Rotation2d.fromRadians(0));
                 Pose2d desired_velocity = new Pose2d(v_x, v_y, Rotation2d.fromRadians(0));
 
                 desired_full_state.set(0, 0, desired_position.getTranslation().x());
