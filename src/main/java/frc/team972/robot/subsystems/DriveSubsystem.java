@@ -151,21 +151,22 @@ public class DriveSubsystem extends Subsystem {
             mDriveControlState = DriveControlState.CLOSED_LOOP;
         }
 
-        double driveMagnitude = 6.0;
+        double driveMagnitude = Constants.kDriveVelocityCap;
 
-        DriveSensorReading sensorReading = encoderToRealUnits(readEncodersVelocity());
+        DriveSensorReading sensorReadingPosition = encoderToRealUnits(readEncodersPosition());
+        DriveSensorReading sensorReadingVelocity = encoderToRealUnits(readEncodersVelocity());
 
         //set motion goals to current position and desired velocity
         //(we might have to gain schedule K matrix to [0, velocity gain] incase this trick doesn't work)
-        left_c.SetGoal(new MotionProfilePosition(sensorReading.left,signal.getLeftFront() * driveMagnitude));
-        left_b_c.SetGoal(new MotionProfilePosition(sensorReading.left_back,signal.getLeftBack() * driveMagnitude));
-        right_c.SetGoal(new MotionProfilePosition(sensorReading.right,signal.getRightFront() * driveMagnitude));
-        right_b_c.SetGoal(new MotionProfilePosition(sensorReading.right_back,signal.getRightBack() * driveMagnitude));
+        left_c.SetGoal(new MotionProfilePosition(sensorReadingPosition.left,signal.getLeftFront() * driveMagnitude));
+        left_b_c.SetGoal(new MotionProfilePosition(sensorReadingPosition.left_back,signal.getLeftBack() * driveMagnitude));
+        right_c.SetGoal(new MotionProfilePosition(sensorReadingPosition.right,signal.getRightFront() * driveMagnitude));
+        right_b_c.SetGoal(new MotionProfilePosition(sensorReadingPosition.right_back,signal.getRightBack() * driveMagnitude));
 
-        double l_p = left_c.Update(sensorReading.left);
-        double l_b_p = left_b_c.Update(sensorReading.left_back);
-        double r_p = right_c.Update(sensorReading.right);
-        double r_b_p = right_b_c.Update(sensorReading.right_back);
+        double l_p = left_c.Update(sensorReadingPosition.left);
+        double l_b_p = left_b_c.Update(sensorReadingPosition.left_back);
+        double r_p = right_c.Update(sensorReadingPosition.right);
+        double r_b_p = right_b_c.Update(sensorReadingPosition.right_back);
 
         mPeriodicIO.left_front_demand = l_p;
         mPeriodicIO.left_back_demand = l_b_p;

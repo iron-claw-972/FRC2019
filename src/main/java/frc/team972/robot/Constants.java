@@ -18,11 +18,13 @@ public class Constants {
     // TODO: Fill with real Talon ID
 
     public static final double kDriveWheelRadius = 3.0;
+    public static final double kDriveVoltageCap = 3.0;
+    public static final double kDriveVelocityCap = 6.0;
     public static final double kDriveTicksPerRev = 4096;
+
+    // FOR OLD VELOCITY CONTROLLERS. HAS BEEN REPLACED BY FULL-STATE LQR CONTROLLERS
     public static final double kDriveVelocityFF = 0.125; // dutyCycle per revs
     public static final double kDriveVelocityPGain = 0.095;
-    public static final double kDriveVoltageCap = 3.0;
-
 
     public static final int kLeftFrontId = 1;
     public static final int kLeftBackId = 3;
