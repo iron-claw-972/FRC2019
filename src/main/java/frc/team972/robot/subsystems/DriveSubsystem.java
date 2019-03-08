@@ -232,17 +232,29 @@ public class DriveSubsystem extends Subsystem {
             //TODO: implement control law to turn desired matrix [position, velocity] state into a desired [velocity] state to converge our goal optimally
             double x_p = 0;
             double y_p = 0;
+            double x_v = 0;
+            double y_v = 0;
             double rotate_p = 0;
             double current_angle = -ahrs.getAngle();
 
+            /*
+            We simply use a P controller on the position terms to create a velocity error term that gets fed to the motor speed controllers
+            We then add in our actual desired velocity terms that is generated via the motion profile.
+            If we have robust velocity tracking, then the Velocity ≈ 0
+            Rotation is just sent to the angle lock PD control system. We ignore angle velocity because we really dont care about that (unless we need it)
+             */
             if (commanded_full_state != null) {
                 x_p = -(commanded_full_state.get(0, 0) - current_state.getTranslation().x()) * 0.1;
                 y_p = (commanded_full_state.get(0, 1) - current_state.getTranslation().y()) * 0.1;
-                rotate_p = (commanded_full_state.get(0, 2) - Math.toRadians(current_angle) * 1.0);
 
-                x_p = Util.limit(x_p, 5.0);
-                y_p = Util.limit(y_p, 5.0);
-                rotate_p = Util.limit(rotate_p, 1.0);
+                x_v = -commanded_full_state.get(1, 0);
+                y_v = commanded_full_state.get(1, 1);
+
+                angleLockController.setDesiredAngle(Math.toDegrees(commanded_full_state.get(0, 2)));
+                rotate_p = angleLockController.update(current_angle, 0);
+
+                x_p = Util.limit(x_p + x_v, 5.0);
+                y_p = Util.limit(y_p + y_v, 5.0);
             }
 
             CoordinateDriveSignal transformDriveSignal = new CoordinateDriveSignal(x_p, y_p, rotate_p, false);

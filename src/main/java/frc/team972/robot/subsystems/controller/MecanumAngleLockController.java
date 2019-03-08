@@ -16,6 +16,10 @@ public class MecanumAngleLockController {
         let_go = false;
     }
 
+    public void setDesiredAngle(double desired_angle) {
+        this.desired_angle = desired_angle;
+    }
+
     public double update(double current_angle, double stick_rotation) {
         double current_velocity = (current_angle - last_angle) / Constants.dt;
 
