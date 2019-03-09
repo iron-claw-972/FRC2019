@@ -1,6 +1,7 @@
 package frc.team972.robot.subsystems.controller;
 
 import frc.team972.robot.Constants;
+import frc.team972.robot.controls.ControlsMathUtil;
 
 import static frc.team972.robot.Constants.kStickToVelocity;
 
@@ -38,7 +39,8 @@ public class MecanumAngleLockController {
         double angular_p_error = desired_angle - current_angle;
         double angular_v_error = desired_angular_velocity - current_velocity;
 
-        double u = (angular_p_error * Constants.kMecanumRotationK1) + (angular_v_error * Constants.kMecanumRotationK2);
+        double u = ControlsMathUtil.Cap(angular_p_error * Constants.kMecanumRotationK1, -2, 2) + (angular_v_error * Constants.kMecanumRotationK2);
+        u = u * Constants.kMecanumRotationK3;
 
         last_angle = current_angle;
 

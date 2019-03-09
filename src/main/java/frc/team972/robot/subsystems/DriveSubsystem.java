@@ -160,13 +160,13 @@ public class DriveSubsystem extends Subsystem {
         //(we might have to gain schedule K matrix to [0, velocity gain] incase this trick doesn't work)
         left_c.SetGoal(new MotionProfilePosition(sensorReadingPosition.left, signal.getLeftFront() * driveMagnitude));
         left_b_c.SetGoal(new MotionProfilePosition(sensorReadingPosition.left_back, signal.getLeftBack() * driveMagnitude));
-        right_c.SetGoal(new MotionProfilePosition(sensorReadingPosition.right, signal.getRightFront() * driveMagnitude));
-        right_b_c.SetGoal(new MotionProfilePosition(sensorReadingPosition.right_back, signal.getRightBack() * driveMagnitude));
+        right_c.SetGoal(new MotionProfilePosition(-sensorReadingPosition.right, signal.getRightFront() * driveMagnitude));
+        right_b_c.SetGoal(new MotionProfilePosition(-sensorReadingPosition.right_back, signal.getRightBack() * driveMagnitude));
 
         double l_p = left_c.Update(sensorReadingPosition.left);
         double l_b_p = left_b_c.Update(sensorReadingPosition.left_back);
-        double r_p = right_c.Update(sensorReadingPosition.right);
-        double r_b_p = right_b_c.Update(sensorReadingPosition.right_back);
+        double r_p = right_c.Update(-sensorReadingPosition.right);
+        double r_b_p = right_b_c.Update(-sensorReadingPosition.right_back);
 
         mPeriodicIO.left_front_demand = l_p;
         mPeriodicIO.left_back_demand = l_b_p;
@@ -332,6 +332,11 @@ public class DriveSubsystem extends Subsystem {
         mLeftFront.getSensorCollection().setQuadraturePosition(0, Constants.kLongCANTimeoutMs);
         mRightFront.getSensorCollection().setQuadraturePosition(0, Constants.kLongCANTimeoutMs);
         last_angle = null;
+
+        left_c = new DriveMotorController();
+        left_b_c = new DriveMotorController();
+        right_c = new DriveMotorController();
+        right_b_c = new DriveMotorController();
     }
 
     public DriveSensorReading readEncodersPosition() {
