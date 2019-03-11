@@ -55,7 +55,7 @@ public class ElevatorController {
         if (outputs_enabled) {
             profiled_goal_ = profile.Calculate(Constants.dt);
         } else {
-            profiled_goal_ = profile.Calculate(0.0); //deded robot
+            profiled_goal_ = profile.Calculate(0.0);
         }
 
         return profiled_goal_;
@@ -82,7 +82,7 @@ public class ElevatorController {
         }
 
         if (hall_calibration.is_calibrated() && !was_calibrated) {
-            observer_.plant_.x_.set(0, 0, observer_.plant_.x_.get(0, 0) + hall_calibration.offset);
+            observer_.plant_.x_.set(0,0, observer_.plant_.x_.get(0,0) + hall_calibration.offset);
             profiled_goal_ = new MotionProfilePosition(observer_.plant_.x_.get(0, 0), observer_.plant_.x_.get(1, 0));
         }
 
@@ -97,34 +97,13 @@ public class ElevatorController {
 
         elevator_u = controller_.Update(observer_.plant_.x_, controller_.r_).get(0, 0); //yay!
 
-        /*
         if (!hall_calibration.is_calibrated()) {
             elevator_u = Constants.kCalibrationVoltage;
-        } else if (elevatorSubsystem.encoder_fault_detected_) {
-            elevator_u = 2.0;
-        }
-        */
-
-        if(r.get(0,0) < 0.005) {
-            elevator_u = 0.0;
+        } else if (Math.abs(profiled_goal_.position) <= 0.01) {
+            elevator_u = 0;
         }
 
         elevator_u = ControlsMathUtil.Cap(elevator_u, -Constants.kElevatorVoltageCap, Constants.kElevatorVoltageCap);
-
-        /* // ---- ENCODER FAULT DETECTION REMOVED TEMPORARILY
-        if (elevatorSubsystem.old_pos_ == elevatorSubsystem.getEncoder() &&
-                Math.abs(elevator_u) >= Constants.kEncoderFaultMinVoltage) {
-            elevatorSubsystem.num_encoder_fault_ticks_++;
-            if (elevatorSubsystem.num_encoder_fault_ticks_ > Constants.kEncoderFaultTicksAllowed) {
-                elevatorSubsystem.encoder_fault_detected_ = true;
-            }
-        } else if (elevatorSubsystem.old_pos_ != elevatorSubsystem.getEncoder()) {
-            elevatorSubsystem.num_encoder_fault_ticks_ = 0;
-            elevatorSubsystem.encoder_fault_detected_ = false;
-        }
-
-        elevatorSubsystem.old_pos_ = elevatorSubsystem.getEncoder();
-        */
 
         DenseMatrix elevator_u_mat = new DenseMatrix(1, 1);
         elevator_u_mat.set(0, 0, elevator_u);

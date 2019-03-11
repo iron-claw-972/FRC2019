@@ -72,7 +72,6 @@ public class WristController {
         HallCalibration hall_calibration = wristSubsystem.getHall_calibration_();
         boolean was_calibrated = hall_calibration.is_calibrated();
 
-        //TODO: add velocity component to the observer matrix [pos, vel] so simple 1x2 matrix needed
         DenseMatrix y = new DenseMatrix(1, 1);
         y.set(0, 0, hall_calibration.Update(wristSubsystem.getEncoder(), wristSubsystem.getHall()));
 
