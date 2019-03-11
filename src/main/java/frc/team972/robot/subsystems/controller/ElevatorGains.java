@@ -31,7 +31,7 @@ public class ElevatorGains {
     }
 
     public static DenseMatrix K() {
-        return new DenseMatrix("11.0 3.9 0.0 ;");
+        return new DenseMatrix("11.0 2.5 0.0 ;");
     }
 
     public static DenseMatrix Kff() {
@@ -39,7 +39,7 @@ public class ElevatorGains {
     }
 
     public static DenseMatrix L() {
-        return new DenseMatrix("1.560830238448166 ;0.5 ;0.0 ;");
+        return new DenseMatrix("1.560830238448166 ;1.5 ;0.0 ;");
     }
 }
 

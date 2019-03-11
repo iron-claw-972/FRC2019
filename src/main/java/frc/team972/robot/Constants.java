@@ -11,8 +11,8 @@ public class Constants {
     public static final int kElevatorJoystickPort = 999; //TODO: CHANGE THIS!!!
 
     public static final double kStickToVelocity = 18.5;
-    public static final double kMecanumRotationK1 = 0.0075; //0.05
-    public static final double kMecanumRotationK2 = 0.0008;
+    public static final double kMecanumRotationK1 = 0.00075; //0.0W5
+    public static final double kMecanumRotationK2 = 0.00008;
     public static final double kMecanumRotationK3 = 1.05;
 
 
@@ -54,7 +54,7 @@ public class Constants {
     public static final double kEncoderFaultMinVoltage = 1.0;
     public static final double kCalibrationVoltage = -0.5; // Calibrate downwards
 
-    public static final MotionProfileConstraints kElevatorConstraints = new MotionProfileConstraints(6.0, 4.0);
+    public static final MotionProfileConstraints kElevatorConstraints = new MotionProfileConstraints(3.0, 4.0);
     public static final double kElevatorMaxHeight = 2.0;
     public static final double kElevatorVoltageCap = 8.0;
     public static final int kElevatorEncoderCountPerRev = 1024;
