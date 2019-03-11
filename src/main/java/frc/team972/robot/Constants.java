@@ -38,13 +38,13 @@ public class Constants {
     public static final int kHatchIntakePistonChannelBId = 0;
 
     //ELEVATOR MOTOR IDS
-    public static final int kElevatorMotorId = 999;
-    public static final int kElevatorSlaveAMotorId = 999;
-    public static final int kElevatorSlaveBMotorId = 999;
-    public static final int kElevatorSlaveCMotorId = 999;
+    public static final int kElevatorMotorId = 5;
+    public static final int kElevatorSlaveAMotorId = 6;
+    public static final int kElevatorSlaveBMotorId = 7;
+    public static final int kElevatorSlaveCMotorId = 8;
 
     //WRIST MOTOR IDS
-    public static final int kWristMotorId = 0;
+    public static final int kWristMotorId = 9;
     public static final int kWristRollerMotorId = 10;
 
     public static final int kLongCANTimeoutMs = 100;
@@ -54,30 +54,17 @@ public class Constants {
     public static final double kEncoderFaultMinVoltage = 1.0;
     public static final double kCalibrationVoltage = -0.5; // Calibrate downwards
 
-    public static final MotionProfileConstraints kElevatorConstraints = new MotionProfileConstraints(3.0, 3.0);
+    public static final MotionProfileConstraints kElevatorConstraints = new MotionProfileConstraints(6.0, 4.0);
     public static final double kElevatorMaxHeight = 2.0;
-    public static final double kElevatorVoltageCap = 3.0;
+    public static final double kElevatorVoltageCap = 8.0;
     public static final int kElevatorEncoderCountPerRev = 1024;
     public static final double kElevatorHallEffectPosition = 0.0;
     public static final double kElevatorSpoolDiameter = 1.5 * 0.0254;
 
     public static final MotionProfileConstraints kWristConstraints = new MotionProfileConstraints(6.0, 6.0);
     public static final double kWristMaxAngle = Math.PI;
-    public static final double kWristVoltageCap = 8.0;
+    public static final double kWristVoltageCap = 3.0;
     public static final double kWristHallEffectPosition = Math.toRadians(0);
     public static final int kWristEncoderCountPerRev = 1024;
-
-    public static final MotionProfileConstraints kIntakeConstraints = new MotionProfileConstraints(3.0, 3.0);
-    public static final double kIntakeMaxAngle = Math.PI;
-    public static final double kIntakeVoltageCap = 6.0;
-    public static final double kIntakeHallEffectPosition = Math.toRadians(0);
-    public static final int kIntakeEncoderCountPerRev = 1024;
-
-    //  ======= Collision Avoidance
-    public static final double kWristIntakeMaxAngleBeforeProtrudeDown = 90.0;
-    public static final double kElevatorMinPosBeforeIntakeCollision = 0.2;
-    public static final double kIntakePositionRangeBeforeIntakeCollision = 50.0;
-    public static final double kIntakePositionRangeForStow = 5.0;
-    public static final double kIntakeLinearPositionForStow = 0.2;
 
 }

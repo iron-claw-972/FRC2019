@@ -97,10 +97,16 @@ public class ElevatorController {
 
         elevator_u = controller_.Update(observer_.plant_.x_, controller_.r_).get(0, 0); //yay!
 
+        /*
         if (!hall_calibration.is_calibrated()) {
             elevator_u = Constants.kCalibrationVoltage;
         } else if (elevatorSubsystem.encoder_fault_detected_) {
             elevator_u = 2.0;
+        }
+        */
+
+        if(r.get(0,0) < 0.005) {
+            elevator_u = 0.0;
         }
 
         elevator_u = ControlsMathUtil.Cap(elevator_u, -Constants.kElevatorVoltageCap, Constants.kElevatorVoltageCap);
@@ -119,8 +125,6 @@ public class ElevatorController {
 
         elevatorSubsystem.old_pos_ = elevatorSubsystem.getEncoder();
         */
-
-        elevator_u = ControlsMathUtil.Cap(elevator_u, -Constants.kElevatorVoltageCap, Constants.kElevatorVoltageCap); //Cap... again?
 
         DenseMatrix elevator_u_mat = new DenseMatrix(1, 1);
         elevator_u_mat.set(0, 0, elevator_u);

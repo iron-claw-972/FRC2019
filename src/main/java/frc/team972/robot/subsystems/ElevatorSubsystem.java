@@ -32,6 +32,7 @@ public class ElevatorSubsystem extends Subsystem {
     private double encoder_value;
     private boolean hall_status;
     private double elevator_goal_pos = 0;
+    private double u = 0;
 
     public ElevatorSubsystem() {
         this(false);
@@ -61,18 +62,20 @@ public class ElevatorSubsystem extends Subsystem {
     public void fastPeriodic() {
         outputs_enabled_ = RobotState.getInstance().outputs_enabled;
 
-        double sensor_pos_native_units = mSensorCollection.getQuadraturePosition();
+        double sensor_pos_native_units = -mSensorCollection.getQuadraturePosition();
         double sensor_pos_rad = (sensor_pos_native_units / Constants.kElevatorEncoderCountPerRev) * Math.PI * 2.0 * (1.0 / 4.0);
         double sensor_pos_linear = sensor_pos_rad * Constants.kElevatorSpoolDiameter;
 
-        this.setEncoder(sensor_pos_linear);
+        //System.out.println(sensor_pos_rad + " " + elevatorController.observer_.plant_.y());
+
+        this.setEncoder(sensor_pos_linear); // Update our sensor count so the wrist controller can read the current sensor output
         this.setHall(false); //cheat
 
         elevatorController.SetGoal(elevator_goal_pos);
 
         elevatorController.Update(this);
-        double u = elevatorController.getElevator_u();
-        u = u * (1.0/Constants.kElevatorVoltageCap);
+        u = elevatorController.getElevator_u();
+        u = u * (1.0 / 12.0);
 
         mElevatorTalon.set(ControlMode.PercentOutput, u);
         mElevatorSlaveAVictor.set(ControlMode.PercentOutput, u);
@@ -89,12 +92,21 @@ public class ElevatorSubsystem extends Subsystem {
     }
 
     public void outputTelemetry() {
+        double sensor_pos_native_units = -mSensorCollection.getQuadraturePosition();
+        double sensor_pos_rad = (sensor_pos_native_units / Constants.kElevatorEncoderCountPerRev) * Math.PI * 2.0 * (1.0 / 4.0);
+        double sensor_pos_linear = sensor_pos_rad * Constants.kElevatorSpoolDiameter;
+
+        System.out.println(sensor_pos_linear + " " + elevatorController.observer_.plant_.y().get(0,0));
+        System.out.println("r=" + elevatorController.controller_.r_.get(0,0));
     }
 
     public void stop() {
     }
 
     public void zeroSensors() {
+        if (mElevatorTalon != null) {
+            mElevatorTalon.getSensorCollection().setQuadraturePosition(0, 100);
+        }
     }
 
     public static ElevatorSubsystem getInstance() {

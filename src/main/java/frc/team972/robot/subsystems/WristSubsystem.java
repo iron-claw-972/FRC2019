@@ -68,8 +68,6 @@ public class WristSubsystem extends Subsystem {
         this.setEncoder(sensor_pos_rad); // Update our sensor count so the wrist controller can read the current sensor output
         this.setHall(false); //cheat
 
-        System.out.println(sensor_pos_rad);
-
         wristController.SetGoal(wrist_goal_pos);
 
         wristController.Update(this);

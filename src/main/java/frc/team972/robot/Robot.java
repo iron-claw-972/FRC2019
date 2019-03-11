@@ -14,7 +14,7 @@ public class Robot extends TimedRobot {
 	private Looper mLooper = new Looper();
 
 	private final SubsystemManager mSubsystemManager = new SubsystemManager(
-			Arrays.asList(DriveSubsystem.getInstance(), RobotStateEstimator.getInstance()
+			Arrays.asList(DriveSubsystem.getInstance(), RobotStateEstimator.getInstance(), WristSubsystem.getInstance(), ElevatorSubsystem.getInstance()
 	));
 
 	private RobotState robotState = RobotState.getInstance();
@@ -43,6 +43,8 @@ public class Robot extends TimedRobot {
 		robotState.outputs_enabled = true;
 		DriveSubsystem.getInstance().zeroSensors();
 		RobotStateEstimator.getInstance().reset();
+		WristSubsystem.getInstance().zeroSensors();
+		ElevatorSubsystem.getInstance().zeroSensors();
 	}
 
 	@Override
