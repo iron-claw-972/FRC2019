@@ -5,9 +5,6 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.team972.robot.Constants;
 import frc.team972.robot.RobotState;
 import frc.team972.robot.controls.HallCalibration;
@@ -24,10 +21,6 @@ public class ElevatorSubsystem extends Subsystem {
 
     private HallCalibration hall_calibration_ = new HallCalibration(Constants.kElevatorHallEffectPosition);
     private boolean outputs_enabled_;
-
-    public boolean encoder_fault_detected_;
-    public double old_pos_;
-    public int num_encoder_fault_ticks_ = 0;
 
     private double encoder_value;
     private boolean hall_status;
@@ -69,9 +62,7 @@ public class ElevatorSubsystem extends Subsystem {
         double sensor_pos_rad = (sensor_pos_native_units / Constants.kElevatorEncoderCountPerRev) * Math.PI * 2.0 * (1.0 / 4.0);
         double sensor_pos_linear = sensor_pos_rad * Constants.kElevatorSpoolDiameter;
 
-        //System.out.println(sensor_pos_rad + " " + elevatorController.observer_.plant_.y());
-
-        this.setEncoder(sensor_pos_linear); // Update our sensor count so the wrist controller can read the current sensor output
+        this.setEncoder(sensor_pos_linear);
         this.setHall(false); //cheat
 
         elevatorController.SetGoal(elevator_goal_pos);
