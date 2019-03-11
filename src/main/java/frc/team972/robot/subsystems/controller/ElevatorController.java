@@ -14,12 +14,16 @@ public class ElevatorController {
         this.plant_ = plant_;
         this.controller_ = controller_;
         this.observer_ = observer_;
+
+        SetWeights(false);
     }
 
     public ElevatorController() {
         plant_ = new StateSpacePlant(1, 3, 1);
         controller_ = new StateSpaceController(1, 3, 1);
         observer_ = new StateSpaceObserver(1, 3, 1);
+
+        SetWeights(false);
     }
 
     public double getElevator_u() {
@@ -75,7 +79,7 @@ public class ElevatorController {
         y.set(0, 0, hall_calibration.Update(elevatorSubsystem.getEncoder(), elevatorSubsystem.getHall()));
 
         //Gain Schedule
-        SetWeights(false);
+        //SetWeights(false); -- Take out now to be efficient
 
         if (!elevatorSubsystem.isOutputs_enabled_()) {
             profiled_goal_ = new MotionProfilePosition(observer_.plant_.x_.get(0, 0), observer_.plant_.x_.get(1, 0));

@@ -29,7 +29,6 @@ public class ElevatorSubsystem extends Subsystem {
 
     public ElevatorSubsystem() {
         this(false);
-        elevatorController.SetWeights(false);
 
         hall_calibration_.is_calibrated = true;
         hall_calibration_.offset = 0;

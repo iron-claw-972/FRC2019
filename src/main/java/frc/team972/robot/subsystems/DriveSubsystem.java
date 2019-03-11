@@ -217,6 +217,7 @@ public class DriveSubsystem extends Subsystem {
     @Override
     public synchronized void fastPeriodic(double timestamp) {
         if (RobotState.getInstance().outputs_enabled == false) {
+            setCloseLoop(new DriveSignal(0,0,0,0)); // Keep the Full state controllers update
             setOpenLoop(new DriveSignal(0, 0, 0, 0));
             return;
         }
@@ -332,11 +333,6 @@ public class DriveSubsystem extends Subsystem {
         mLeftFront.getSensorCollection().setQuadraturePosition(0, Constants.kLongCANTimeoutMs);
         mRightFront.getSensorCollection().setQuadraturePosition(0, Constants.kLongCANTimeoutMs);
         last_angle = null;
-
-        left_c = new DriveMotorController();
-        left_b_c = new DriveMotorController();
-        right_c = new DriveMotorController();
-        right_b_c = new DriveMotorController();
     }
 
     public DriveSensorReading readEncodersPosition() {

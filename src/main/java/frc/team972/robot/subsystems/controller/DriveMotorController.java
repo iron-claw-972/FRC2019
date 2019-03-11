@@ -17,6 +17,8 @@ public class DriveMotorController {
         plant_ = new StateSpacePlant(1, 3, 1);
         controller_ = new StateSpaceController(1, 3, 1);
         observer_ = new StateSpaceObserver(1, 3, 1);
+
+        SetWeights();
     }
 
     public double getMotor_u() {
@@ -52,8 +54,6 @@ public class DriveMotorController {
         DenseMatrix y = new DenseMatrix(1, 1);
         y.set(0, 0, motor_encoder_radian_value);
 
-        SetWeights();
-
         DenseMatrix r = new DenseMatrix(3, 1);
         r.set(0, 0, unprofiled_goal_.position);
         r.set(1, 0, unprofiled_goal_.velocity);
@@ -69,6 +69,8 @@ public class DriveMotorController {
 
         if (!RobotState.getInstance().outputs_enabled) {
             motor_u = 0.0;
+        } else {
+            SetGoal(new MotionProfilePosition(motor_encoder_radian_value, 0));
         }
 
         return motor_u;

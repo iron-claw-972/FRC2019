@@ -14,12 +14,16 @@ public class WristController {
         this.plant_ = plant_;
         this.controller_ = controller_;
         this.observer_ = observer_;
+
+        SetWeights();
     }
 
     public WristController() {
         plant_ = new StateSpacePlant(1, 3, 1);
         controller_ = new StateSpaceController(1, 3, 1);
         observer_ = new StateSpaceObserver(1, 3, 1);
+
+        SetWeights();
     }
 
     public double getWrist_u() {
@@ -28,8 +32,8 @@ public class WristController {
 
     private double wrist_u = 0.0;
 
-    public MotionProfilePosition unprofiled_goal_ = new MotionProfilePosition(0 ,0);
-    public MotionProfilePosition profiled_goal_ = new MotionProfilePosition(0 ,0);
+    public MotionProfilePosition unprofiled_goal_ = new MotionProfilePosition(0, 0);
+    public MotionProfilePosition profiled_goal_ = new MotionProfilePosition(0, 0);
 
     public void SetWeights() {
         plant_.A_ = ControlsMathUtil.CloneMatrix(WristGains.A());
@@ -41,7 +45,7 @@ public class WristController {
         controller_.Kff_ = ControlsMathUtil.CloneMatrix(WristGains.Kff());
         controller_.A_ = ControlsMathUtil.CloneMatrix(WristGains.A());
 
-        observer_.L_ =  ControlsMathUtil.CloneMatrix(WristGains.L());
+        observer_.L_ = ControlsMathUtil.CloneMatrix(WristGains.L());
 
         observer_.plant_.A_ = ControlsMathUtil.CloneMatrix(WristGains.A());
         observer_.plant_.B_ = ControlsMathUtil.CloneMatrix(WristGains.B());
@@ -76,14 +80,14 @@ public class WristController {
         y.set(0, 0, hall_calibration.Update(wristSubsystem.getEncoder(), wristSubsystem.getHall()));
 
         //Gain Schedule
-        SetWeights();
+        //SetWeights();
 
         if (!wristSubsystem.isOutputs_enabled_()) {
             profiled_goal_ = new MotionProfilePosition(observer_.plant_.x_.get(0, 0), observer_.plant_.x_.get(1, 0));
         }
 
         if (hall_calibration.is_calibrated() && !was_calibrated) {
-            observer_.plant_.x_.set(0,0, observer_.plant_.x_.get(0,0) + hall_calibration.offset);
+            observer_.plant_.x_.set(0, 0, observer_.plant_.x_.get(0, 0) + hall_calibration.offset);
             profiled_goal_ = new MotionProfilePosition(observer_.plant_.x_.get(0, 0), observer_.plant_.x_.get(1, 0));
         }
 
