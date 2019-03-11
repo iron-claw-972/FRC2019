@@ -15,12 +15,28 @@ public class Looper implements ILooper {
     private final List<Loop> loops_;
     private final Object taskRunningLock_ = new Object();
     private double timestamp_ = 0;
+    private static int loops_failed_time = 0;
 
     private final CrashTrackingRunnable runnable_ = new CrashTrackingRunnable() {
         @Override
         public void runCrashTracked() {
             synchronized (taskRunningLock_) {
                 if (running_) {
+                    Thread warnerThread = new Thread() {
+                        public void run() {
+                            try {
+                                while (running_) {
+                                    Thread.sleep(5000);
+                                    System.out.println("[Observer Thread]: Threads Times Overrun Count = " + loops_failed_time);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+                    warnerThread.setPriority(Thread.MIN_PRIORITY);
+                    warnerThread.start();
+
                     //SPAWN NEW THREAD
                     for (Loop loop : loops_) {
                         Thread thread = new Thread() {
@@ -33,7 +49,7 @@ public class Looper implements ILooper {
                                         long dt_ = timestamp_ - now;
                                         long remain_time = (long) (Constants.dt * 1000) - dt_;
                                         if (remain_time < 0) {
-                                            //System.out.println("MAJOR WARNING, RT LOOP CAN NOT KEEP UP!!! " + currentThread().getName());
+                                            Looper.loops_failed_time++;
                                         } else {
                                             Thread.sleep(remain_time);
                                         }
