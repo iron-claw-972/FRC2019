@@ -32,27 +32,11 @@ public class SuperstructureSubsystem extends Subsystem {
 
     }
 
-    public boolean checkTol(double a, double b, double tol) {
-        if (Math.abs(a - b) <= tol) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public static SuperstructureSubsystem getInstance() {
         if (mInstance == null) {
             mInstance = new SuperstructureSubsystem();
         }
         return mInstance;
-    }
-
-    public boolean checkBounds(double num, double low, double high) {
-        if ((num >= low) && (num <= high)) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
 }
