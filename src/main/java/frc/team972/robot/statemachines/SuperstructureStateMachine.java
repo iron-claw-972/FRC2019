@@ -95,19 +95,19 @@ public class SuperstructureStateMachine {
             case READY_HATCH_LEVEL_1: {
                 setElevator(kElevatorLevelOneH);
                 setWrist(kWristReadyFlatAngle);
-                handleBallOuttake();
+                handleHatchOuttake();
                 break;
             }
             case READY_HATCH_LEVEL_2: {
                 setElevator(kElevatorLevelTwoH);
                 setWrist(kWristReadyFlatAngle);
-                handleBallOuttake();
+                handleHatchOuttake();
                 break;
             }
             case READY_HATCH_LEVEL_3: {
                 setElevator(kElevatorLevelThreeH);
                 setWrist(kWristReadyFlatAngle);
-                handleBallOuttake();
+                handleHatchOuttake();
                 break;
             }
         }
@@ -167,7 +167,7 @@ public class SuperstructureStateMachine {
     }
 
     public boolean checkRequestOuttake() {
-        return false;
+        return ControlBoard.getInstance().getOuttake();
     }
 
     //Check if the outtake button was just let go
