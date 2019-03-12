@@ -114,7 +114,7 @@ public class SuperstructureStateMachine {
     }
 
     public void handleBallIntake() {
-        if (checkRollerJammed()) {
+        if (checkRollerJammed() || finishRequestBallIntake()) {
             setRoller(0.0);
             currentState = SuperstructureState.READY_WRIST_RAISE;
         } else {
@@ -128,7 +128,7 @@ public class SuperstructureStateMachine {
             setRoller(kRollerOuttakePower);
         } else if (finishRequestOuttake()) {
             setRoller(0.0);
-            currentState = SuperstructureState.READY_WRIST_FLAT;
+            currentState = SuperstructureState.READY_WRIST_RAISE;
         } else {
             setWrist(kWristReadyOuttakeBallAngle);
         }
@@ -139,7 +139,7 @@ public class SuperstructureStateMachine {
             setWrist(kWristReadyFlatAngle);
             setHatch(false);
         } else if(finishRequestOuttake()) {
-            currentState = SuperstructureState.READY_WRIST_FLAT;
+            currentState = SuperstructureState.READY_WRIST_RAISE;
         } else {
             setWrist(kWristReadyFlatAngle);
         }
@@ -173,6 +173,10 @@ public class SuperstructureStateMachine {
     //Check if the outtake button was just let go
     public boolean finishRequestOuttake() {
         return ControlBoard.getInstance().getOuttakeReleased();
+    }
+
+    public boolean finishRequestBallIntake() {
+        return ControlBoard.getInstance().getBallIntakeReleased();
     }
 
     public boolean checkHatchIntakeRequested() {

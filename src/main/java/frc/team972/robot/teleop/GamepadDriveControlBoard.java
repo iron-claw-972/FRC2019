@@ -40,6 +40,8 @@ public class GamepadDriveControlBoard {
     public boolean getIntakeHatch() { return mJoystick.getRawButton(-1); }
     public boolean getOuttake() { return mJoystick.getRawButton(-1); }
     public boolean getOuttakeReleased() { return mJoystick.getRawButtonReleased(-1); }
+    public boolean getBallIntakeReleased() { return mJoystick.getRawButtonReleased(-1); }
+
 
 
     public boolean getLevelOne() { return mJoystick.getRawButton(-1); }

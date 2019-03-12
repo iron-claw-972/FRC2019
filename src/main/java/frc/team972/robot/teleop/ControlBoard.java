@@ -37,6 +37,8 @@ public class ControlBoard {
     public boolean getIntakeHatch() { return mDriveControlBoard.getIntakeHatch(); }
     public boolean getOuttake() { return mDriveControlBoard.getOuttake(); }
     public boolean getOuttakeReleased() { return mDriveControlBoard.getOuttakeReleased(); }
+    public boolean getBallIntakeReleased() { return mDriveControlBoard.getBallIntakeReleased(); }
+
 
 
     public boolean getLevelOne() { return mDriveControlBoard.getLevelOne(); }
