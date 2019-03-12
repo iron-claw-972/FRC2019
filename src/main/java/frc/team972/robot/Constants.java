@@ -54,7 +54,7 @@ public class Constants {
     public static final double kEncoderFaultMinVoltage = 1.0;
     public static final double kCalibrationVoltage = -0.5; // Calibrate downwards
 
-    public static final MotionProfileConstraints kElevatorConstraints = new MotionProfileConstraints(3.0, 4.0);
+    public static final MotionProfileConstraints kElevatorConstraints = new MotionProfileConstraints(5.0, 3.5);
     public static final double kElevatorMaxHeight = 2.0;
     public static final double kElevatorVoltageCap = 8.0;
     public static final int kElevatorEncoderCountPerRev = 1024;

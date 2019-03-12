@@ -35,11 +35,11 @@ public class ElevatorGains {
     }
 
     public static DenseMatrix K() {
-        return new DenseMatrix("9.000000000000018 1.608017811015691 1.0 ;");
+        return new DenseMatrix("9.000000000000018 1.9 1.0 ;");
     }
 
     public static DenseMatrix Kff() {
-        return new DenseMatrix("0.0 6.402402264002981 0.0 ;");
+        return new DenseMatrix("0.0 4.0 0.0 ;");
     }
 
     public static DenseMatrix L() {
