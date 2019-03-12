@@ -33,13 +33,15 @@ public class ControlBoard {
     }
 
 
-    public boolean getIntakeBall() { return false; }
-    public boolean getIntakeHatch() { return false; }
-    public boolean getOuttake() { return false; }
+    public boolean getIntakeBall() { return mDriveControlBoard.getIntakeBall(); }
+    public boolean getIntakeHatch() { return mDriveControlBoard.getIntakeHatch(); }
+    public boolean getOuttake() { return mDriveControlBoard.getOuttake(); }
+    public boolean getOuttakeReleased() { return mDriveControlBoard.getOuttakeReleased(); }
 
-    public boolean getLevelOne() { return false; }
-    public boolean getLevelTwo() { return false; }
-    public boolean getLevelThree() { return false; }
+
+    public boolean getLevelOne() { return mDriveControlBoard.getLevelOne(); }
+    public boolean getLevelTwo() { return mDriveControlBoard.getLevelTwo(); }
+    public boolean getLevelThree() { return mDriveControlBoard.getLevelThree(); }
 
 
 }

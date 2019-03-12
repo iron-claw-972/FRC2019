@@ -66,6 +66,5 @@ public class TeleopManager {
                 mSuperstructure.setState(SuperstructureState.READY_HATCH_LEVEL_3);
             }
         }
-
     }
 }

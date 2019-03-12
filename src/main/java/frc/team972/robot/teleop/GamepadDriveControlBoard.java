@@ -36,17 +36,15 @@ public class GamepadDriveControlBoard {
         return -mJoystick.getRawAxis(4);
     }
 
-    public boolean getTestButton() {
-        return mJoystick.getRawButton(1);
-    }
+    public boolean getIntakeBall() { return mJoystick.getRawAxis(-1) > 0.25; }
+    public boolean getIntakeHatch() { return mJoystick.getRawButton(-1); }
+    public boolean getOuttake() { return mJoystick.getRawButton(-1); }
+    public boolean getOuttakeReleased() { return mJoystick.getRawButtonReleased(-1); }
 
-    public boolean getTestButtonPressed() {
-        return mJoystick.getRawButtonPressed(1);
-    }
 
-    public boolean getTestButton2() {
-        return mJoystick.getRawButton(2);
-    }
+    public boolean getLevelOne() { return mJoystick.getRawButton(-1); }
+    public boolean getLevelTwo() { return mJoystick.getRawButton(-1); }
+    public boolean getLevelThree() { return mJoystick.getRawButton(-1); }
 
 
     public boolean getNoFieldOrient() {

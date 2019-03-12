@@ -7,13 +7,24 @@ public class SuperstructureSubsystem extends Subsystem {
 
     WristSubsystem wrist_ = WristSubsystem.getInstance();
     ElevatorSubsystem elevator_ = ElevatorSubsystem.getInstance();
-    private static SuperstructureSubsystem mInstance = new SuperstructureSubsystem();
 
+    private static SuperstructureSubsystem mInstance = new SuperstructureSubsystem();
     private SuperstructureStateMachine stateMachine = new SuperstructureStateMachine();
 
-    @Override
-    public void fastPeriodic() {
+    public double elevator_des = 0;
+    public double wrist_des = 0;
+    public double roller_des = 0;
+    public boolean hatch_des = false;
 
+    @Override
+    public void slowPeriodic() {
+        stateMachine.update();
+
+        elevator_.setElevator_goal_pos(elevator_des);
+        wrist_.setWrist_goal_pos(wrist_des);
+        wrist_.setRoller(roller_des);
+
+        //todo: pneumatic hatch
     }
 
     @Override
@@ -28,7 +39,10 @@ public class SuperstructureSubsystem extends Subsystem {
 
     @Override
     public void stop() {
-
+        elevator_des = 0;
+        wrist_des = 0;
+        roller_des = 0;
+        hatch_des = false;
     }
 
     public SuperstructureState getState() {

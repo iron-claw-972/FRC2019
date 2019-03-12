@@ -106,6 +106,10 @@ public class WristSubsystem extends Subsystem {
         return mInstance;
     }
 
+    public double getRollerCurrent() {
+        return 0;
+    }
+
     public void setRoller(double power) {
         wrist_roller_goal = power;
     }

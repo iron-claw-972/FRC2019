@@ -4,6 +4,7 @@ import frc.team972.robot.Constants;
 import frc.team972.robot.subsystems.ElevatorSubsystem;
 import frc.team972.robot.subsystems.SuperstructureSubsystem;
 import frc.team972.robot.subsystems.WristSubsystem;
+import frc.team972.robot.teleop.ControlBoard;
 
 public class SuperstructureStateMachine {
 
@@ -30,6 +31,7 @@ public class SuperstructureStateMachine {
     public static final double kRollerOuttakePower = -0.5;
 
     public SuperstructureState currentState = SuperstructureState.READY_WRIST_RAISE;
+    SuperstructureSubsystem superstructureSubsystem = SuperstructureSubsystem.getInstance();
 
     public void update() {
         switch (currentState) {
@@ -145,18 +147,19 @@ public class SuperstructureStateMachine {
 
     public void setWrist(double wrist_angle) {
         wrist_angle = wrist_angle - kWristStartOffset;
+        superstructureSubsystem.wrist_des = wrist_angle;
     }
 
     public void setElevator(double elevator_pos) {
-
+        superstructureSubsystem.elevator_des = elevator_pos;
     }
 
     public void setRoller(double roller_power) {
-
+        superstructureSubsystem.roller_des = roller_power;
     }
 
     public void setHatch(boolean mode) {
-
+        superstructureSubsystem.hatch_des = mode;
     }
 
     public boolean checkRollerJammed() {
@@ -169,11 +172,12 @@ public class SuperstructureStateMachine {
 
     //Check if the outtake button was just let go
     public boolean finishRequestOuttake() {
-        return false;
+        return ControlBoard.getInstance().getOuttakeReleased();
     }
 
     public boolean checkHatchIntakeRequested() {
-        return false;
+        //Essentially, check if the hatch intake button is not being pressed
+        return !ControlBoard.getInstance().getIntakeHatch();
     }
 
 }
