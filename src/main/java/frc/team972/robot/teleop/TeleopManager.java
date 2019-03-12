@@ -3,6 +3,7 @@ package frc.team972.robot.teleop;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.team972.robot.lib.Pose2d;
 import frc.team972.robot.lib.Rotation2d;
+import frc.team972.robot.statemachines.SuperstructureState;
 import frc.team972.robot.subsystems.*;
 
 import frc.team972.robot.util.MecanumHelper;
@@ -11,11 +12,9 @@ public class TeleopManager {
     private static TeleopManager mInstance = null;
 
     private DriveSubsystem mDrive = DriveSubsystem.getInstance();
-    private ElevatorSubsystem mElevator = ElevatorSubsystem.getInstance();
-    private WristSubsystem mWrist = WristSubsystem.getInstance();
+    private SuperstructureSubsystem mSuperstructure = SuperstructureSubsystem.getInstance();
 
     private ControlBoard controlBoard = ControlBoard.getInstance();
-    Joystick ghettoStick = new Joystick(1);
 
     public static TeleopManager getInstance() {
         if (mInstance == null) {
@@ -31,26 +30,42 @@ public class TeleopManager {
                 MecanumHelper.mecanumDrive(-controlBoard.getTranslateX(), controlBoard.getTranslateY(), controlBoard.getRotate(), controlBoard.getNoFieldOrient())
         );
 
-        //mWrist.setWrist_goal_pos(Math.toRadians(0));
-
-
-
-        if(controlBoard.getTestButton2()) {
-            mElevator.setElevator_goal_pos(1.3);
-        } else {
-            mElevator.setElevator_goal_pos(0.0);
+        SuperstructureState superstructureState = mSuperstructure.getState();
+        if (controlBoard.getIntakeBall()) {
+            mSuperstructure.setState(SuperstructureState.INTAKE_BALL_WRIST_FLAT);
+        } else if (controlBoard.getIntakeHatch()) {
+            mSuperstructure.setState(SuperstructureState.PREPARE_HATCH_INTAKE);
+        } else if (controlBoard.getLevelOne()) {
+            if (superstructureState == SuperstructureState.READY_WRIST_RAISE) {
+                mSuperstructure.setState(SuperstructureState.READY_BALL_LEVEL_1);
+            } else if (superstructureState == SuperstructureState.READY_WRIST_LIP) {
+                mSuperstructure.setState(SuperstructureState.READY_HATCH_LEVEL_1);
+            } else if ((superstructureState == SuperstructureState.READY_BALL_LEVEL_2) || (superstructureState == SuperstructureState.READY_BALL_LEVEL_3)) {
+                mSuperstructure.setState(SuperstructureState.READY_BALL_LEVEL_1);
+            } else if ((superstructureState == SuperstructureState.READY_HATCH_LEVEL_2) || (superstructureState == SuperstructureState.READY_HATCH_LEVEL_3)) {
+                mSuperstructure.setState(SuperstructureState.READY_HATCH_LEVEL_1);
+            }
+        } else if (controlBoard.getLevelTwo()) {
+            if (superstructureState == SuperstructureState.READY_WRIST_RAISE) {
+                mSuperstructure.setState(SuperstructureState.READY_BALL_LEVEL_2);
+            } else if (superstructureState == SuperstructureState.READY_WRIST_LIP) {
+                mSuperstructure.setState(SuperstructureState.READY_HATCH_LEVEL_2);
+            } else if ((superstructureState == SuperstructureState.READY_BALL_LEVEL_1) || (superstructureState == SuperstructureState.READY_BALL_LEVEL_3)) {
+                mSuperstructure.setState(SuperstructureState.READY_BALL_LEVEL_2);
+            } else if ((superstructureState == SuperstructureState.READY_HATCH_LEVEL_1) || (superstructureState == SuperstructureState.READY_HATCH_LEVEL_3)) {
+                mSuperstructure.setState(SuperstructureState.READY_HATCH_LEVEL_2);
+            }
+        } else if (controlBoard.getLevelThree()) {
+            if (superstructureState == SuperstructureState.READY_WRIST_RAISE) {
+                mSuperstructure.setState(SuperstructureState.READY_BALL_LEVEL_3);
+            } else if (superstructureState == SuperstructureState.READY_WRIST_LIP) {
+                mSuperstructure.setState(SuperstructureState.READY_HATCH_LEVEL_3);
+            } else if ((superstructureState == SuperstructureState.READY_BALL_LEVEL_1) || (superstructureState == SuperstructureState.READY_BALL_LEVEL_2)) {
+                mSuperstructure.setState(SuperstructureState.READY_BALL_LEVEL_3);
+            } else if ((superstructureState == SuperstructureState.READY_HATCH_LEVEL_1) || (superstructureState == SuperstructureState.READY_HATCH_LEVEL_2)) {
+                mSuperstructure.setState(SuperstructureState.READY_HATCH_LEVEL_3);
+            }
         }
-
-        if(controlBoard.getTestButton()) {
-            mWrist.setWrist_goal_pos(Math.toRadians(177-22));
-        } else {
-            mWrist.setWrist_goal_pos(Math.toRadians(90-22.0));
-        }
-        double roller_power = ghettoStick.getRawAxis(3) - ghettoStick.getRawAxis(2);
-        mWrist.setRoller(-roller_power);
-
-
-
 
     }
 }

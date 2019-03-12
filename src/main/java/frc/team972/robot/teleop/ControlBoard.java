@@ -32,20 +32,14 @@ public class ControlBoard {
         return mDriveControlBoard.getNoFieldOrient();
     }
 
-    public boolean getTestButton() {
-        return mDriveControlBoard.getTestButton();
-    }
 
-    public boolean getTestButtonPressed() {
-        return mDriveControlBoard.getTestButtonPressed();
-    }
+    public boolean getIntakeBall() { return false; }
+    public boolean getIntakeHatch() { return false; }
+    public boolean getOuttake() { return false; }
 
-    public boolean getTestButton2() {
-        return mDriveControlBoard.getTestButton2();
-    }
+    public boolean getLevelOne() { return false; }
+    public boolean getLevelTwo() { return false; }
+    public boolean getLevelThree() { return false; }
 
-    public double getExampleJoystickValue() {
-        return 0.254;
-    }
 
 }

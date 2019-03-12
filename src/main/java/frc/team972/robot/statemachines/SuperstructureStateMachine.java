@@ -29,8 +29,7 @@ public class SuperstructureStateMachine {
     public static final double kRollerIntakePower = 0.5;
     public static final double kRollerOuttakePower = -0.5;
 
-    private SuperstructureState currentState = SuperstructureState.READY_WRIST_RAISE;
-
+    public SuperstructureState currentState = SuperstructureState.READY_WRIST_RAISE;
 
     public void update() {
         switch (currentState) {
@@ -85,6 +84,7 @@ public class SuperstructureStateMachine {
                 setWrist(kElevatorReadyFlat);
                 if(checkHatchIntakeRequested()) {
                     setHatch(true);
+                    currentState = SuperstructureState.READY_WRIST_LIP;
                 } else {
                     setHatch(false);
                 }
