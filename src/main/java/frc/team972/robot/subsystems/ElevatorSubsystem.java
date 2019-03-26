@@ -43,6 +43,13 @@ public class ElevatorSubsystem extends Subsystem {
             mElevatorSlaveAVictor = new VictorSPX(Constants.kElevatorSlaveAMotorId);
             mElevatorSlaveBVictor = new VictorSPX(Constants.kElevatorSlaveBMotorId);
             mElevatorSlaveCVictor = new VictorSPX(Constants.kElevatorSlaveCMotorId);
+
+            mElevatorSlaveAVictor.set(ControlMode.Follower, Constants.kElevatorMotorId);
+            mElevatorSlaveBVictor.set(ControlMode.Follower, Constants.kElevatorMotorId);
+            mElevatorSlaveCVictor.set(ControlMode.Follower, Constants.kElevatorMotorId);
+
+            mElevatorSlaveBVictor.setInverted(true);
+            mElevatorSlaveCVictor.setInverted(true);
         } else {
             System.out.println("ElevatorSubsystem created in Test Mode");
         }
@@ -71,9 +78,10 @@ public class ElevatorSubsystem extends Subsystem {
         u = u * (1.0 / 12.0);
 
         mElevatorTalon.set(ControlMode.PercentOutput, -u);
-        mElevatorSlaveAVictor.set(ControlMode.PercentOutput, -u);
-        mElevatorSlaveBVictor.set(ControlMode.PercentOutput, u);
-        mElevatorSlaveCVictor.set(ControlMode.PercentOutput, u);
+
+        //mElevatorSlaveAVictor.set(ControlMode.PercentOutput, -u);
+        //mElevatorSlaveBVictor.set(ControlMode.PercentOutput, u);
+        //mElevatorSlaveCVictor.set(ControlMode.PercentOutput, u);
     }
 
     @Override

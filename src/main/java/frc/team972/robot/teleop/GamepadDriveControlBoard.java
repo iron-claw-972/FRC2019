@@ -46,6 +46,7 @@ public class GamepadDriveControlBoard {
     }
 
 
+    public boolean getIntakeStow() { return mJoystick.getRawAxis(2) > 0.5; }
     public boolean getIntakeBall() { return mJoystick.getRawButton(6); }
     public boolean getIntakeHatch() { return mJoystick.getRawAxis(3) > 0.25; }
     public boolean getOuttake() { return mJoystick.getRawButton(5); }

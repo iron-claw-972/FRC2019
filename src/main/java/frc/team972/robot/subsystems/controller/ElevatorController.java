@@ -86,7 +86,7 @@ public class ElevatorController {
         }
 
         if (hall_calibration.is_calibrated() && !was_calibrated) {
-            observer_.plant_.x_.set(0,0, observer_.plant_.x_.get(0,0) + hall_calibration.offset);
+            observer_.plant_.x_.set(0, 0, observer_.plant_.x_.get(0, 0) + hall_calibration.offset);
             profiled_goal_ = new MotionProfilePosition(observer_.plant_.x_.get(0, 0), observer_.plant_.x_.get(1, 0));
         }
 
@@ -103,11 +103,13 @@ public class ElevatorController {
 
         if (!hall_calibration.is_calibrated()) {
             elevator_u = Constants.kCalibrationVoltage;
-        } else if ((Math.abs(observer_.plant_.y().get(0,0)) <= 0.08) && (profiled_goal_.velocity < 0)) {
+        } else if ((Math.abs(observer_.plant_.y().get(0, 0)) <= 0.08) && (profiled_goal_.velocity < 0)) {
             //*** If elevator is at bottom (essentially) and the elevator velocity is trying to take it downwards still, then we are there already.
             profiled_goal_ = new MotionProfilePosition(observer_.plant_.x_.get(0, 0), 0.0);
-            elevator_u = -0.1;
-        } else if((profiled_goal_.velocity != 0)) {
+            elevator_u = 0.0;
+        } else if ((Math.abs(observer_.plant_.y().get(0, 0)) <= 0.05) && (profiled_goal_.velocity == 0)) {
+            elevator_u = -0.05;
+        } else if ((profiled_goal_.velocity != 0)) {
             elevator_u = elevator_u + 0.5;
         }
 

@@ -47,6 +47,12 @@ public class SuperstructureStateMachine {
                 setHatch(false);
                 break;
             }
+            case STOW_WRIST: {
+                setWrist(20);
+                setElevator(kElevatorReadyFlat);
+                setHatch(false);
+                break;
+            }
             case READY_WRIST_FLAT: {
                 setWrist(kWristReadyFlatAngle);
                 setElevator(kElevatorReadyFlat);

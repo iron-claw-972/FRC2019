@@ -41,7 +41,7 @@ public class WristGains {
     }
 
     public static DenseMatrix L() {
-        return new DenseMatrix("0.1 ; 0.25 ; 0.0 ;");
+        return new DenseMatrix("0.5 ; 1.25 ; 0.0 ;");
     }
 }
 

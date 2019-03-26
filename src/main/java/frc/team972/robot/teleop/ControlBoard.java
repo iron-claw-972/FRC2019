@@ -1,7 +1,5 @@
 package frc.team972.robot.teleop;
 
-import edu.wpi.first.wpilibj.Joystick;
-
 public class ControlBoard {
     private static ControlBoard mInstance = null;
 
@@ -42,6 +40,7 @@ public class ControlBoard {
         return mDriveControlBoard.getB();
     }
 
+    public boolean getIntakeStow() { return mDriveControlBoard.getIntakeStow(); }
     public boolean getIntakeBall() { return mDriveControlBoard.getIntakeBall(); }
     public boolean getIntakeBallLip() { return mDriveControlBoard.getIntakeBallLip(); }
 

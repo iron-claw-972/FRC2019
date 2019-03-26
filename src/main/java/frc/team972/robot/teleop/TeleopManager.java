@@ -35,7 +35,9 @@ public class TeleopManager {
         );
 
         SuperstructureState superstructureState = mSuperstructure.getState();
-        if (controlBoard.getIntakeBall()) {
+        if (controlBoard.getIntakeStow()) {
+            mSuperstructure.setState(SuperstructureState.STOW_WRIST);
+        } else if (controlBoard.getIntakeBall()) {
             mSuperstructure.setState(SuperstructureState.INTAKE_BALL_WRIST_FLAT);
         } else if (controlBoard.getIntakeHatch()) {
             mSuperstructure.setState(SuperstructureState.PREPARE_HATCH_INTAKE);
