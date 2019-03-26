@@ -1,5 +1,7 @@
 package frc.team972.robot.teleop;
 
+import edu.wpi.first.wpilibj.Joystick;
+
 public class ControlBoard {
     private static ControlBoard mInstance = null;
 
@@ -32,13 +34,21 @@ public class ControlBoard {
         return mDriveControlBoard.getNoFieldOrient();
     }
 
+    public boolean getA() {
+        return mDriveControlBoard.getA();
+    }
+
+    public boolean getB() {
+        return mDriveControlBoard.getB();
+    }
 
     public boolean getIntakeBall() { return mDriveControlBoard.getIntakeBall(); }
+    public boolean getIntakeBallLip() { return mDriveControlBoard.getIntakeBallLip(); }
+
     public boolean getIntakeHatch() { return mDriveControlBoard.getIntakeHatch(); }
     public boolean getOuttake() { return mDriveControlBoard.getOuttake(); }
     public boolean getOuttakeReleased() { return mDriveControlBoard.getOuttakeReleased(); }
     public boolean getBallIntakeReleased() { return mDriveControlBoard.getBallIntakeReleased(); }
-
 
 
     public boolean getLevelOne() { return mDriveControlBoard.getLevelOne(); }

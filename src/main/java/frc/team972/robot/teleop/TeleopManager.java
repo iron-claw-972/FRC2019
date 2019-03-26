@@ -1,5 +1,6 @@
 package frc.team972.robot.teleop;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.team972.robot.lib.Pose2d;
 import frc.team972.robot.lib.Rotation2d;
@@ -10,6 +11,9 @@ import frc.team972.robot.util.MecanumHelper;
 
 public class TeleopManager {
     private static TeleopManager mInstance = null;
+
+    DoubleSolenoid climbA = new DoubleSolenoid(40, 0, 1);
+    DoubleSolenoid climbB = new DoubleSolenoid(40, 6, 7);
 
     private DriveSubsystem mDrive = DriveSubsystem.getInstance();
     private SuperstructureSubsystem mSuperstructure = SuperstructureSubsystem.getInstance();
@@ -27,7 +31,7 @@ public class TeleopManager {
 
         mDrive.setMecanumDrivePoseDesired(null);
         mDrive.setCloseLoopMecanum(
-                MecanumHelper.mecanumDrive(-controlBoard.getTranslateX(), controlBoard.getTranslateY(), controlBoard.getRotate(), controlBoard.getNoFieldOrient())
+                MecanumHelper.mecanumDrive(-controlBoard.getTranslateX(), controlBoard.getTranslateY(), controlBoard.getRotate(), controlBoard.getA())
         );
 
         SuperstructureState superstructureState = mSuperstructure.getState();
@@ -35,6 +39,8 @@ public class TeleopManager {
             mSuperstructure.setState(SuperstructureState.INTAKE_BALL_WRIST_FLAT);
         } else if (controlBoard.getIntakeHatch()) {
             mSuperstructure.setState(SuperstructureState.PREPARE_HATCH_INTAKE);
+        } else if (controlBoard.getIntakeBallLip()) {
+            mSuperstructure.setState(SuperstructureState.INTAKE_BALL_WRIST_LIP);
         } else if (controlBoard.getLevelOne()) {
             if (superstructureState == SuperstructureState.READY_WRIST_RAISE) {
                 mSuperstructure.setState(SuperstructureState.READY_BALL_LEVEL_1);
@@ -66,5 +72,14 @@ public class TeleopManager {
                 mSuperstructure.setState(SuperstructureState.READY_HATCH_LEVEL_3);
             }
         }
+
+        /*
+        if(+) {
+            climbA.set(DoubleSolenoid.Value.kForward);
+        } else {
+            climbA.set(DoubleSolenoid.Value.kReverse);
+        }
+        */
+
     }
 }

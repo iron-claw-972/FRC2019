@@ -1,5 +1,7 @@
 package frc.team972.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.team972.robot.loops.Looper;
@@ -12,18 +14,22 @@ public class Robot extends TimedRobot {
 
 	private TeleopManager teleopManager = TeleopManager.getInstance();
 	private Looper mLooper = new Looper();
+	Compressor compressor = new Compressor(40);
+
 
 	private final SubsystemManager mSubsystemManager = new SubsystemManager(
-			Arrays.asList(DriveSubsystem.getInstance(), RobotStateEstimator.getInstance(), WristSubsystem.getInstance(), ElevatorSubsystem.getInstance()
+			Arrays.asList(SuperstructureSubsystem.getInstance(), DriveSubsystem.getInstance(), RobotStateEstimator.getInstance(), WristSubsystem.getInstance(), ElevatorSubsystem.getInstance(), HatchIntakeSubsystem.getInstance()
 	));
 
 	private RobotState robotState = RobotState.getInstance();
 
 	@Override
 	public void robotInit() {
+		compressor.start();
 		mSubsystemManager.registerLoops(mLooper); // This loop runs FOREVER!
 		mLooper.start();
 		Shuffleboard.startRecording();
+		CameraServer.getInstance().startAutomaticCapture();
 	}
 
 	@Override
@@ -36,15 +42,21 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		robotState.outputs_enabled = true;
+		DriveSubsystem.getInstance().zeroSensors();
+		RobotStateEstimator.getInstance().reset();
+		WristSubsystem.getInstance().zeroSensors();
+		ElevatorSubsystem.getInstance().zeroSensors();
+	}
+
+	public void autonomousPeriodic() {
+		teleopManager.update();
+		mSubsystemManager.slowPeriodic();
+		mSubsystemManager.outputToSmartDashboard();
 	}
 
 	@Override
 	public void teleopInit() {
 		robotState.outputs_enabled = true;
-		DriveSubsystem.getInstance().zeroSensors();
-		RobotStateEstimator.getInstance().reset();
-		WristSubsystem.getInstance().zeroSensors();
-		ElevatorSubsystem.getInstance().zeroSensors();
 	}
 
 	@Override

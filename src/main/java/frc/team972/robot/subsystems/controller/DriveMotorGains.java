@@ -41,6 +41,3 @@ public class DriveMotorGains {
         return new DenseMatrix("1.5772600453283918 ;1.090891131153636 ;0.0 ;");
     }
 }
-
-
-

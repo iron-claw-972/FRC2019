@@ -102,8 +102,10 @@ public class WristController {
 
         wrist_u = controller_.Update(observer_.plant_.x_, controller_.r_).get(0, 0);
 
+        //System.out.println(observer_.plant_.x_);
+
         if (!hall_calibration.is_calibrated()) {
-            wrist_u = Constants.kCalibrationVoltage;
+            //wrist_u = Constants.kCalibrationVoltage;
         } else if (Math.abs(profiled_goal_.position) <= 0.01) {
             //wrist_u = 0.0;
             //Ignore for now.
@@ -118,6 +120,8 @@ public class WristController {
         if (!wristSubsystem.isOutputs_enabled_()) {
             wrist_u = 0.0;
         }
+
+        //System.out.println(wrist_u);
 
         return wrist_u;
     }

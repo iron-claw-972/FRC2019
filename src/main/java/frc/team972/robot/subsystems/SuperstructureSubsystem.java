@@ -9,7 +9,7 @@ public class SuperstructureSubsystem extends Subsystem {
     ElevatorSubsystem elevator_ = ElevatorSubsystem.getInstance();
 
     private static SuperstructureSubsystem mInstance = new SuperstructureSubsystem();
-    private SuperstructureStateMachine stateMachine = new SuperstructureStateMachine();
+    private SuperstructureStateMachine stateMachine = new SuperstructureStateMachine(this);
 
     public double elevator_des = 0;
     public double wrist_des = 0;
@@ -23,6 +23,12 @@ public class SuperstructureSubsystem extends Subsystem {
         elevator_.setElevator_goal_pos(elevator_des);
         wrist_.setWrist_goal_pos(wrist_des);
         wrist_.setRoller(roller_des);
+
+        if(hatch_des) {
+            HatchIntakeSubsystem.getInstance().setIntakeEject();
+        } else {
+            HatchIntakeSubsystem.getInstance().setIntakeReady();
+        }
 
         //todo: pneumatic hatch
     }

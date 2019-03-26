@@ -9,11 +9,11 @@ import jeigen.DenseMatrix;
 public class ElevatorGains {
 
     public static DenseMatrix A() {
-        return new DenseMatrix("1.0 0.006936444461149615 0.00088176178054063 ;0.0 0.4573353524946653 0.1561913729823607 ;0.0 0.0 1.0 ;");
+        return new DenseMatrix("1.0 0.00756484819598747 0.0007008927252543203 ;0.0 0.5561296890612022 0.12775608953033304 ;0.0 0.0 1.0 ;");
     }
 
     public static DenseMatrix Q() {
-        return new DenseMatrix("0.0 0.0 5.773257551509884e-06 ;0.0 0.0 -0.0008501498907233547 ;5.773257551509884e-06 -0.0008501498907233547 0.024419288254708838 ;");
+        return new DenseMatrix("0.0 0.0 2.4608909062816955e-06 ;0.0 0.0 -0.00043248251127062467 ;2.4608909062816955e-06 -0.00043248251127062467 0.014801292056027713 ;");
     }
 
     public static DenseMatrix C() {
@@ -21,7 +21,7 @@ public class ElevatorGains {
     }
 
     public static DenseMatrix B() {
-        return new DenseMatrix("0.00088176178054063 ;0.1561913729823607 ;0.0 ;");
+        return new DenseMatrix("0.0007008927252543203 ;0.12775608953033304 ;0.0 ;");
     }
 
     double dt() { return 0.01; }
@@ -31,21 +31,24 @@ public class ElevatorGains {
     }
 
     public static DenseMatrix R() {
-        return new DenseMatrix("0.001 ;");
+        return new DenseMatrix("0.0001 ;");
     }
 
     public static DenseMatrix K() {
-        return new DenseMatrix("9.000000000000018 1.9 1.0 ;");
+        return new DenseMatrix("12.1666666666667345 2.0 1.0 ;");
     }
 
     public static DenseMatrix Kff() {
-        return new DenseMatrix("0.0 4.0 0.0 ;");
+        return new DenseMatrix("0.0 1 0.0 ;");
     }
 
     public static DenseMatrix L() {
-        return new DenseMatrix("0.25086821528185516 ;0.01724394190780159 ;0.058917131499979895 ;");
+        return new DenseMatrix("0.5 ;2.0290459426272194 ; 0.0 ;");
     }
 }
+
+
+
 
 
 

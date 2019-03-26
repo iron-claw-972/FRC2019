@@ -70,8 +70,8 @@ public class ElevatorSubsystem extends Subsystem {
         u = elevatorController.getElevator_u();
         u = u * (1.0 / 12.0);
 
-        mElevatorTalon.set(ControlMode.PercentOutput, u);
-        mElevatorSlaveAVictor.set(ControlMode.PercentOutput, u);
+        mElevatorTalon.set(ControlMode.PercentOutput, -u);
+        mElevatorSlaveAVictor.set(ControlMode.PercentOutput, -u);
         mElevatorSlaveBVictor.set(ControlMode.PercentOutput, u);
         mElevatorSlaveCVictor.set(ControlMode.PercentOutput, u);
     }
@@ -90,7 +90,7 @@ public class ElevatorSubsystem extends Subsystem {
         double sensor_pos_rad = (sensor_pos_native_units / Constants.kElevatorEncoderCountPerRev) * Math.PI * 2.0 * (1.0 / 4.0);
         double sensor_pos_linear = sensor_pos_rad * Constants.kElevatorSpoolDiameter;
 
-        System.out.println(sensor_pos_linear);
+        //System.out.println(sensor_pos_linear);
         //System.out.println(sensor_pos_linear + " " + elevatorController.controller_.r_.get(0,0));
         //System.out.println("r=" + elevatorController.controller_.r_.get(0,0));
         //System.out.println(u);

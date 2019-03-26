@@ -103,10 +103,12 @@ public class ElevatorController {
 
         if (!hall_calibration.is_calibrated()) {
             elevator_u = Constants.kCalibrationVoltage;
-        } else if ((Math.abs(observer_.plant_.y().get(0,0)) <= 0.01) && (profiled_goal_.velocity < 0)) {
+        } else if ((Math.abs(observer_.plant_.y().get(0,0)) <= 0.08) && (profiled_goal_.velocity < 0)) {
             //*** If elevator is at bottom (essentially) and the elevator velocity is trying to take it downwards still, then we are there already.
             profiled_goal_ = new MotionProfilePosition(observer_.plant_.x_.get(0, 0), 0.0);
-            elevator_u = 0;
+            elevator_u = -0.1;
+        } else if((profiled_goal_.velocity != 0)) {
+            elevator_u = elevator_u + 0.5;
         }
 
         elevator_u = ControlsMathUtil.Cap(elevator_u, -Constants.kElevatorVoltageCap, Constants.kElevatorVoltageCap);

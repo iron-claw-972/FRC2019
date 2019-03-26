@@ -9,36 +9,42 @@ import frc.team972.robot.teleop.ControlBoard;
 public class SuperstructureStateMachine {
 
     public static final double kWristStartOffset = 22.0;
-    public static final double kWristReadyRaiseAngle = 90 + 25.0;
+    public static final double kWristReadyRaiseAngle = 90;
     public static final double kWristReadyOuttakeBallAngle = 90 + 25.0;
     public static final double kWristReadyOuttakeFlatAngle = 150;
     public static final double kWristReadyFlatAngle = 179.0;
 
 
     public static final double kElevatorReadyFlat = 0.0;
-    public static final double kElevatorReadyLip = 0.0;
-    public static final double kElevatorLevelOne = 0.0;
-    public static final double kElevatorLevelTwo = 0.0;
-    public static final double kElevatorLevelThree = 0.0;
+    public static final double kElevatorReadyLip = 0.2;
+    public static final double kElevatorLevelOne = 0.825;
+    public static final double kElevatorLevelTwo = 1.5;
+    public static final double kElevatorLevelThree = 1.9;
 
-    public static final double kElevatorHatch = 0.0;
-    public static final double kElevatorLevelOneH = 0.0;
-    public static final double kElevatorLevelTwoH = 0.0;
-    public static final double kElevatorLevelThreeH = 0.0;
+    public static final double kElevatorHatch = 0.15;
+    public static final double kElevatorLevelOneH = 0.15;
+    public static final double kElevatorLevelTwoH = 0.22;
+    public static final double kElevatorLevelThreeH = 1.6;
 
 
-    public static final double kRollerIntakePower = 0.5;
-    public static final double kRollerOuttakePower = -0.5;
+    public static final double kRollerIntakePower = -0.7;
+    public static final double kRollerOuttakePower = 0.9;
 
     public SuperstructureState currentState = SuperstructureState.READY_WRIST_RAISE;
-    SuperstructureSubsystem superstructureSubsystem = SuperstructureSubsystem.getInstance();
+    SuperstructureSubsystem superstructureSubsystem;
+
+    public SuperstructureStateMachine(SuperstructureSubsystem superstructureSubsystem) {
+        this.superstructureSubsystem = superstructureSubsystem;
+    }
 
     public void update() {
+        //System.out.println(currentState);
         switch (currentState) {
             // - - - Ready States
             case READY_WRIST_RAISE: {
                 setWrist(kWristReadyRaiseAngle);
                 setElevator(kElevatorReadyFlat);
+                setHatch(false);
                 break;
             }
             case READY_WRIST_FLAT: {
@@ -54,7 +60,7 @@ public class SuperstructureStateMachine {
             // - - - Intaking States
             case INTAKE_BALL_WRIST_FLAT: {
                 setWrist(kWristReadyFlatAngle);
-                setElevator(kElevatorReadyFlat);
+                setElevator(kElevatorReadyFlat-0.01);
                 handleBallIntake();
                 break;
             }
@@ -85,8 +91,8 @@ public class SuperstructureStateMachine {
                 setElevator(kElevatorHatch);
                 setWrist(kElevatorReadyFlat);
                 if(checkHatchIntakeRequested()) {
-                    setHatch(true);
                     currentState = SuperstructureState.READY_WRIST_LIP;
+                    setHatch(true);
                 } else {
                     setHatch(false);
                 }
@@ -114,6 +120,7 @@ public class SuperstructureStateMachine {
     }
 
     public void handleBallIntake() {
+        setHatch(true);
         if (checkRollerJammed() || finishRequestBallIntake()) {
             setRoller(0.0);
             currentState = SuperstructureState.READY_WRIST_RAISE;
@@ -147,15 +154,16 @@ public class SuperstructureStateMachine {
 
     public void setWrist(double wrist_angle) {
         wrist_angle = wrist_angle - kWristStartOffset;
-        superstructureSubsystem.wrist_des = wrist_angle;
+        superstructureSubsystem.wrist_des = Math.toRadians(wrist_angle);
     }
 
     public void setElevator(double elevator_pos) {
+        //System.out.println(elevator_pos);
         superstructureSubsystem.elevator_des = elevator_pos;
     }
 
     public void setRoller(double roller_power) {
-        superstructureSubsystem.roller_des = roller_power;
+        superstructureSubsystem.roller_des = roller_power - 0.075;
     }
 
     public void setHatch(boolean mode) {

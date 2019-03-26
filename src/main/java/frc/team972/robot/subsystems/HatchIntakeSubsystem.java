@@ -11,13 +11,14 @@ public class HatchIntakeSubsystem extends Subsystem {
     private boolean desiredSolenoidState = false;
 
     public HatchIntakeSubsystem() {
-        mIntakeSolenoid = new DoubleSolenoid(Constants.kHatchIntakePistonChannelAId, Constants.kHatchIntakePistonChannelBId);
+        mIntakeSolenoid = new DoubleSolenoid(40, Constants.kHatchIntakePistonChannelAId, Constants.kHatchIntakePistonChannelBId);
     }
 
     public void writeToLog() {
     }
 
     public void slowPeriodic() {
+        //System.out.println(desiredSolenoidState);
         if(desiredSolenoidState) { // if true, we wish to set solenoid to the open position to eject
             mIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
         } else { // if false, we want to retract the solenoid to retract our piston and prepare for another intake
@@ -43,7 +44,7 @@ public class HatchIntakeSubsystem extends Subsystem {
         desiredSolenoidState = false;
     }
 
-    public void setInstanceEject() {
+    public void setIntakeEject() {
         desiredSolenoidState = true;
     }
 
