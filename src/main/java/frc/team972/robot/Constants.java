@@ -62,7 +62,7 @@ public class Constants {
 
     public static final MotionProfileConstraints kWristConstraints = new MotionProfileConstraints(6.0, 6.0);
     public static final double kWristMaxAngle = Math.PI;
-    public static final double kWristVoltageCap = 4.0;
+    public static final double kWristVoltageCap = 5.0;
     public static final double kWristHallEffectPosition = Math.toRadians(0);
     public static final int kWristEncoderCountPerRev = 1024;
 

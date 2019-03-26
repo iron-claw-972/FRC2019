@@ -32,10 +32,11 @@ public class ControlBoard {
         return mDriveControlBoard.getNoFieldOrient();
     }
 
+    public int getPOV() { return mDriveControlBoard.getPOV(); }
+
     public boolean getA() {
         return mDriveControlBoard.getA();
     }
-
     public boolean getB() {
         return mDriveControlBoard.getB();
     }

@@ -21,6 +21,10 @@ public class GamepadDriveControlBoard {
         mJoystick = new Joystick(Constants.kDriveGamepadPort);
     }
 
+    public int getPOV() {
+        return stickDrive.getPOV();
+    }
+
     public double getTranslateY() {
         //Up and Down on the Left Joystick
         return -stickDrive.getRawAxis(1);
@@ -51,7 +55,7 @@ public class GamepadDriveControlBoard {
     public boolean getIntakeHatch() { return mJoystick.getRawAxis(3) > 0.25; }
     public boolean getOuttake() { return mJoystick.getRawButton(5); }
     public boolean getOuttakeReleased() { return mJoystick.getRawButtonReleased(5); }
-    public boolean getBallIntakeReleased() { return mJoystick.getRawButtonReleased(6); }
+    public boolean getBallIntakeReleased() { return mJoystick.getRawButtonReleased(6) || mJoystick.getRawButtonReleased(3); }
 
     public boolean getIntakeBallLip() { return mJoystick.getRawButton(3); }
 

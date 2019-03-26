@@ -30,9 +30,14 @@ public class TeleopManager {
     public void update() {
 
         mDrive.setMecanumDrivePoseDesired(null);
-        mDrive.setCloseLoopMecanum(
-                MecanumHelper.mecanumDrive(-controlBoard.getTranslateX(), controlBoard.getTranslateY(), controlBoard.getRotate(), controlBoard.getA())
-        );
+        if(controlBoard.getPOV() == 0) {
+            mDrive.setCloseLoopMecanum(
+                    MecanumHelper.mecanumDrive(-controlBoard.getTranslateX(), controlBoard.getTranslateY(), controlBoard.getRotate(), controlBoard.getA())
+            );
+        } else if(controlBoard.getPOV() == 1) {
+            //Initiate right cargo system
+            mDrive.setMecanumDrivePoseDesired(new Pose2d(0, 0, Rotation2d.fromDegrees(90)));
+        }
 
         SuperstructureState superstructureState = mSuperstructure.getState();
         if (controlBoard.getIntakeStow()) {
