@@ -8,7 +8,7 @@ import frc.team972.robot.teleop.ControlBoard;
 
 public class SuperstructureStateMachine {
 
-    public static final double kWristStartOffset = 22.0;
+    public static final double kWristStartOffset = 19.0;
     public static final double kWristReadyRaiseAngle = 90;
     public static final double kWristReadyOuttakeBallAngle = 90 + 25.0;
     public static final double kWristReadyOuttakeFlatAngle = 150;
@@ -16,19 +16,20 @@ public class SuperstructureStateMachine {
 
 
     public static final double kElevatorReadyFlat = 0.0;
-    public static final double kElevatorReadyLip = 0.2;
-    public static final double kElevatorLevelOne = 0.825;
-    public static final double kElevatorLevelTwo = 1.5;
-    public static final double kElevatorLevelThree = 1.9;
+    public static final double kElevatorReadyLip = 0.25;
+    public static final double kElevatorReadyHatch = 0.3;
+    public static final double kElevatorLevelOne = 0.805;
+    public static final double kElevatorLevelTwo = 1.6;
+    public static final double kElevatorLevelThree = 2.0;
 
-    public static final double kElevatorHatch = 0.15;
-    public static final double kElevatorLevelOneH = 0.15;
+    public static final double kElevatorHatch = 0.20;
+    public static final double kElevatorLevelOneH = 0.21;
     public static final double kElevatorLevelTwoH = 0.22;
     public static final double kElevatorLevelThreeH = 1.6;
 
 
-    public static final double kRollerIntakePower = -0.7;
-    public static final double kRollerOuttakePower = 0.9;
+    public static final double kRollerIntakePower = -1.0;
+    public static final double kRollerOuttakePower = 1.0;
 
     public SuperstructureState currentState = SuperstructureState.READY_WRIST_RAISE;
     SuperstructureSubsystem superstructureSubsystem;
@@ -44,11 +45,12 @@ public class SuperstructureStateMachine {
             case READY_WRIST_RAISE: {
                 setWrist(kWristReadyRaiseAngle);
                 setElevator(kElevatorReadyFlat);
-                setHatch(false);
+                setHatch(true);
+                setRoller(0.0);
                 break;
             }
             case STOW_WRIST: {
-                setWrist(20);
+                setWrist(45);
                 setElevator(kElevatorReadyFlat);
                 setHatch(false);
                 break;
@@ -61,6 +63,11 @@ public class SuperstructureStateMachine {
             case READY_WRIST_LIP: {
                 setWrist(kWristReadyFlatAngle);
                 setElevator(kElevatorReadyLip);
+                break;
+            }
+            case READY_WRIST_LIP_HATCH: {
+                setWrist(kWristReadyFlatAngle);
+                setElevator(kElevatorReadyHatch);
                 break;
             }
             // - - - Intaking States
@@ -97,7 +104,7 @@ public class SuperstructureStateMachine {
                 setElevator(kElevatorHatch);
                 setWrist(kElevatorReadyFlat);
                 if(checkHatchIntakeRequested()) {
-                    currentState = SuperstructureState.READY_WRIST_LIP;
+                    currentState = SuperstructureState.READY_WRIST_LIP_HATCH;
                     setHatch(true);
                 } else {
                     setHatch(false);
@@ -159,7 +166,7 @@ public class SuperstructureStateMachine {
     }
 
     public void setWrist(double wrist_angle) {
-        wrist_angle = wrist_angle - kWristStartOffset;
+        //wrist_angle = wrist_angle - kWristStartOffset;
         superstructureSubsystem.wrist_des = Math.toRadians(wrist_angle);
     }
 
@@ -169,7 +176,7 @@ public class SuperstructureStateMachine {
     }
 
     public void setRoller(double roller_power) {
-        superstructureSubsystem.roller_des = roller_power - 0.075;
+        superstructureSubsystem.roller_des = roller_power - 0.1;
     }
 
     public void setHatch(boolean mode) {

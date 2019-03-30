@@ -107,8 +107,9 @@ public class ElevatorController {
             //*** If elevator is at bottom (essentially) and the elevator velocity is trying to take it downwards still, then we are there already.
             profiled_goal_ = new MotionProfilePosition(observer_.plant_.x_.get(0, 0), 0.0);
             elevator_u = 0.0;
-        } else if ((Math.abs(observer_.plant_.y().get(0, 0)) <= 0.05) && (profiled_goal_.velocity == 0)) {
-            elevator_u = -0.05;
+        } else if ((Math.abs(observer_.plant_.y().get(0, 0)) <= 0.01) && (profiled_goal_.velocity == 0)) {
+            elevator_u = -0.01;
+            elevatorSubsystem.setEncoder(0); // fake zero
         } else if ((profiled_goal_.velocity != 0)) {
             elevator_u = elevator_u + 0.5;
         }

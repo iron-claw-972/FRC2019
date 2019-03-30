@@ -43,13 +43,6 @@ public class ElevatorSubsystem extends Subsystem {
             mElevatorSlaveAVictor = new VictorSPX(Constants.kElevatorSlaveAMotorId);
             mElevatorSlaveBVictor = new VictorSPX(Constants.kElevatorSlaveBMotorId);
             mElevatorSlaveCVictor = new VictorSPX(Constants.kElevatorSlaveCMotorId);
-
-            mElevatorSlaveAVictor.set(ControlMode.Follower, Constants.kElevatorMotorId);
-            mElevatorSlaveBVictor.set(ControlMode.Follower, Constants.kElevatorMotorId);
-            mElevatorSlaveCVictor.set(ControlMode.Follower, Constants.kElevatorMotorId);
-
-            mElevatorSlaveBVictor.setInverted(true);
-            mElevatorSlaveCVictor.setInverted(true);
         } else {
             System.out.println("ElevatorSubsystem created in Test Mode");
         }
@@ -75,13 +68,12 @@ public class ElevatorSubsystem extends Subsystem {
 
         elevatorController.Update(this);
         u = elevatorController.getElevator_u();
-        u = u * (1.0 / 12.0);
+        u = -u * (1.0 / 12.0);
 
-        mElevatorTalon.set(ControlMode.PercentOutput, -u);
-
-        //mElevatorSlaveAVictor.set(ControlMode.PercentOutput, -u);
-        //mElevatorSlaveBVictor.set(ControlMode.PercentOutput, u);
-        //mElevatorSlaveCVictor.set(ControlMode.PercentOutput, u);
+        mElevatorTalon.set(ControlMode.PercentOutput, u);
+        mElevatorSlaveAVictor.set(ControlMode.PercentOutput, -u);
+        mElevatorSlaveBVictor.set(ControlMode.PercentOutput, -u);
+        mElevatorSlaveCVictor.set(ControlMode.PercentOutput, u);
     }
 
     @Override
@@ -93,7 +85,6 @@ public class ElevatorSubsystem extends Subsystem {
     }
 
     public void outputTelemetry() {
-
         double sensor_pos_native_units = -mSensorCollection.getQuadraturePosition();
         double sensor_pos_rad = (sensor_pos_native_units / Constants.kElevatorEncoderCountPerRev) * Math.PI * 2.0 * (1.0 / 4.0);
         double sensor_pos_linear = sensor_pos_rad * Constants.kElevatorSpoolDiameter;

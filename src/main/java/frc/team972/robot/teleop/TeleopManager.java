@@ -12,8 +12,8 @@ import frc.team972.robot.util.MecanumHelper;
 public class TeleopManager {
     private static TeleopManager mInstance = null;
 
-    DoubleSolenoid climbA = new DoubleSolenoid(40, 0, 1);
-    DoubleSolenoid climbB = new DoubleSolenoid(40, 6, 7);
+    //DoubleSolenoid climbA = new DoubleSolenoid(40, 0, 1);
+    //DoubleSolenoid climbB = new DoubleSolenoid(40, 6, 7);
 
     private DriveSubsystem mDrive = DriveSubsystem.getInstance();
     private SuperstructureSubsystem mSuperstructure = SuperstructureSubsystem.getInstance();
@@ -29,14 +29,15 @@ public class TeleopManager {
 
     public void update() {
 
-        mDrive.setMecanumDrivePoseDesired(null);
-        if(controlBoard.getPOV() == 0) {
+        if(controlBoard.getPOV() == -1) {
+            mDrive.setMecanumDrivePoseDesired(null);
             mDrive.setCloseLoopMecanum(
                     MecanumHelper.mecanumDrive(-controlBoard.getTranslateX(), controlBoard.getTranslateY(), controlBoard.getRotate(), controlBoard.getA())
             );
-        } else if(controlBoard.getPOV() == 1) {
-            //Initiate right cargo system
-            mDrive.setMecanumDrivePoseDesired(new Pose2d(0, 0, Rotation2d.fromDegrees(90)));
+
+        } else if(controlBoard.getPOV() == 270) {
+            //Initiate left cargo system
+            mDrive.setMecanumDrivePoseDesired(new Pose2d(0, 170, Rotation2d.fromDegrees(90)));
         }
 
         SuperstructureState superstructureState = mSuperstructure.getState();
@@ -51,7 +52,7 @@ public class TeleopManager {
         } else if (controlBoard.getLevelOne()) {
             if (superstructureState == SuperstructureState.READY_WRIST_RAISE) {
                 mSuperstructure.setState(SuperstructureState.READY_BALL_LEVEL_1);
-            } else if (superstructureState == SuperstructureState.READY_WRIST_LIP) {
+            } else if (superstructureState == SuperstructureState.READY_WRIST_LIP_HATCH) {
                 mSuperstructure.setState(SuperstructureState.READY_HATCH_LEVEL_1);
             } else if ((superstructureState == SuperstructureState.READY_BALL_LEVEL_2) || (superstructureState == SuperstructureState.READY_BALL_LEVEL_3)) {
                 mSuperstructure.setState(SuperstructureState.READY_BALL_LEVEL_1);
@@ -61,7 +62,7 @@ public class TeleopManager {
         } else if (controlBoard.getLevelTwo()) {
             if (superstructureState == SuperstructureState.READY_WRIST_RAISE) {
                 mSuperstructure.setState(SuperstructureState.READY_BALL_LEVEL_2);
-            } else if (superstructureState == SuperstructureState.READY_WRIST_LIP) {
+            } else if (superstructureState == SuperstructureState.READY_WRIST_LIP_HATCH) {
                 mSuperstructure.setState(SuperstructureState.READY_HATCH_LEVEL_2);
             } else if ((superstructureState == SuperstructureState.READY_BALL_LEVEL_1) || (superstructureState == SuperstructureState.READY_BALL_LEVEL_3)) {
                 mSuperstructure.setState(SuperstructureState.READY_BALL_LEVEL_2);
@@ -71,7 +72,7 @@ public class TeleopManager {
         } else if (controlBoard.getLevelThree()) {
             if (superstructureState == SuperstructureState.READY_WRIST_RAISE) {
                 mSuperstructure.setState(SuperstructureState.READY_BALL_LEVEL_3);
-            } else if (superstructureState == SuperstructureState.READY_WRIST_LIP) {
+            } else if (superstructureState == SuperstructureState.READY_WRIST_LIP_HATCH) {
                 mSuperstructure.setState(SuperstructureState.READY_HATCH_LEVEL_3);
             } else if ((superstructureState == SuperstructureState.READY_BALL_LEVEL_1) || (superstructureState == SuperstructureState.READY_BALL_LEVEL_2)) {
                 mSuperstructure.setState(SuperstructureState.READY_BALL_LEVEL_3);

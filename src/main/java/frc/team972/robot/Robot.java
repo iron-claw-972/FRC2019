@@ -14,7 +14,7 @@ public class Robot extends TimedRobot {
 
 	private TeleopManager teleopManager = TeleopManager.getInstance();
 	private Looper mLooper = new Looper();
-	Compressor compressor = new Compressor(40);
+	//Compressor compressor = new Compressor(40);
 
 
 	private final SubsystemManager mSubsystemManager = new SubsystemManager(
@@ -25,7 +25,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
-		compressor.start();
+		//compressor.start();
 		mSubsystemManager.registerLoops(mLooper); // This loop runs FOREVER!
 		mLooper.start();
 		Shuffleboard.startRecording();

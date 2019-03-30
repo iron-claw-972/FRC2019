@@ -2,6 +2,7 @@ package frc.team972.robot.subsystems.controller;
 
 import frc.team972.robot.Constants;
 import frc.team972.robot.controls.*;
+import frc.team972.robot.statemachines.SuperstructureStateMachine;
 import frc.team972.robot.subsystems.WristSubsystem;
 import jeigen.DenseMatrix;
 
@@ -106,9 +107,18 @@ public class WristController {
 
         if (!hall_calibration.is_calibrated()) {
             //wrist_u = Constants.kCalibrationVoltage;
-        } else if (Math.abs(profiled_goal_.position) <= 0.01) {
-            //wrist_u = 0.0;
-            //Ignore for now.
+        } else if(observer_.plant_.y().get(0,0) > Math.toRadians(SuperstructureStateMachine.kWristReadyFlatAngle - 1.0)) {
+            if(Math.abs(profiled_goal_.velocity) <= 0.05) {
+                wrist_u = 0.0;
+            }
+        } else if(observer_.plant_.y().get(0,0) > Math.toRadians(SuperstructureStateMachine.kWristReadyFlatAngle - 1.0)) {
+            if(Math.abs(profiled_goal_.velocity) <= 0.05) {
+                wrist_u = 0.0;
+            }
+        }
+
+        if(profiled_goal_.velocity > 0.05) {
+            wrist_u = wrist_u * 0.9;
         }
 
         wrist_u = ControlsMathUtil.Cap(wrist_u, -Constants.kWristVoltageCap, Constants.kWristVoltageCap);

@@ -1,6 +1,7 @@
 package frc.team972.robot;
 
 import frc.team972.robot.controls.MotionProfileConstraints;
+import frc.team972.robot.statemachines.SuperstructureStateMachine;
 
 public class Constants {
 
@@ -9,9 +10,9 @@ public class Constants {
     // CONTROLLER PORT IDS
     public static final int kDriveGamepadPort = 1;
 
-    public static final double kStickToVelocity = 18.5;
-    public static final double kMecanumRotationK1 = 0.00075;
-    public static final double kMecanumRotationK2 = 0.00008;
+    public static final double kStickToVelocity = 40;
+    public static final double kMecanumRotationK1 = 0.00125;
+    public static final double kMecanumRotationK2 = 0.000125;
     public static final double kMecanumRotationK3 = 1.05;
 
 
@@ -38,9 +39,9 @@ public class Constants {
 
     //ELEVATOR MOTOR IDS
     public static final int kElevatorMotorId = 8;
-    public static final int kElevatorSlaveAMotorId = 5;
-    public static final int kElevatorSlaveBMotorId = 6;
-    public static final int kElevatorSlaveCMotorId = 7;
+    public static final int kElevatorSlaveAMotorId = 6;
+    public static final int kElevatorSlaveBMotorId = 7;
+    public static final int kElevatorSlaveCMotorId = 5;
 
     //WRIST MOTOR IDS
     public static final int kWristMotorId = 9;
@@ -60,10 +61,10 @@ public class Constants {
     public static final double kElevatorHallEffectPosition = 0.0;
     public static final double kElevatorSpoolDiameter = 1.5 * 0.0254;
 
-    public static final MotionProfileConstraints kWristConstraints = new MotionProfileConstraints(6.0, 6.0);
+    public static final MotionProfileConstraints kWristConstraints = new MotionProfileConstraints(3.0, 4.0);
     public static final double kWristMaxAngle = Math.PI;
-    public static final double kWristVoltageCap = 5.0;
-    public static final double kWristHallEffectPosition = Math.toRadians(0);
+    public static final double kWristVoltageCap = 4.0;
+    public static final double kWristHallEffectPosition = Math.toRadians(SuperstructureStateMachine.kWristStartOffset);
     public static final int kWristEncoderCountPerRev = 1024;
 
 }

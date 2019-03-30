@@ -87,7 +87,12 @@ public class WristSubsystem extends Subsystem {
     }
 
     public void outputTelemetry() {
+        //System.out.println(Math.toDegrees(wristController.observer_.plant_.y().get(0,0)));
 
+        //System.out.println(sensor_pos_linear);
+        //System.out.println(sensor_pos_linear + " " + elevatorController.controller_.r_.get(0,0));
+        //System.out.println("r=" + elevatorController.controller_.r_.get(0,0));
+        //System.out.println(u);
     }
 
     public void stop() {

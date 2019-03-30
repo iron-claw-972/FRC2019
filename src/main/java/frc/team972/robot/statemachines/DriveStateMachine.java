@@ -24,8 +24,8 @@ public class DriveStateMachine {
     public DriveStateMachine(DriveSubsystem drive) {
         drive_ = drive;
         constraints = new MotionProfileConstraints(0, 0);
-        constraints.max_velocity = 6.0;
-        constraints.max_acceleration = 6.0;
+        constraints.max_velocity = 50.0;
+        constraints.max_acceleration = 50.0;
     }
 
     private DriveDesireState currentState = DriveDesireState.MANUAL;

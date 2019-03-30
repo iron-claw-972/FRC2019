@@ -94,7 +94,7 @@ public class DriveSubsystem extends Subsystem {
         */
 
         talon.setSensorPhase(true);
-        talon.enableVoltageCompensation(true);
+        talon.enableVoltageCompensation(false);
         talon.configVoltageCompSaturation(12.0, Constants.kLongCANTimeoutMs);
         talon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, Constants.kLongCANTimeoutMs);
         talon.configVelocityMeasurementWindow(1, Constants.kLongCANTimeoutMs);
@@ -252,10 +252,10 @@ public class DriveSubsystem extends Subsystem {
                 y_v = commanded_full_state.get(1, 1);
 
                 angleLockController.setDesiredAngle(Math.toDegrees(commanded_full_state.get(0, 2)));
-                rotate_p = angleLockController.update(current_angle, 0);
+                rotate_p = angleLockController.update(current_angle, 0) * 10;
 
-                x_p = Util.limit(x_p + x_v, 5.0);
-                y_p = Util.limit(y_p + y_v, 5.0);
+                //x_p = Util.limit(x_p + x_v, 5.0);
+                //y_p = Util.limit(y_p + y_v, 5.0);
             }
 
             CoordinateDriveSignal transformDriveSignal = new CoordinateDriveSignal(x_p, y_p, rotate_p, false);
