@@ -18,12 +18,12 @@ public class SuperstructureStateMachine {
     public static final double kElevatorReadyFlat = 0.0;
     public static final double kElevatorReadyLip = 0.25;
     public static final double kElevatorReadyHatch = 0.3;
-    public static final double kElevatorLevelOne = 0.805;
-    public static final double kElevatorLevelTwo = 1.6;
+    public static final double kElevatorLevelOne = 0.7;
+    public static final double kElevatorLevelTwo = 1.3;
     public static final double kElevatorLevelThree = 2.0;
 
-    public static final double kElevatorHatch = 0.20;
-    public static final double kElevatorLevelOneH = 0.21;
+    public static final double kElevatorHatch = 0.154; // be same as level one H
+    public static final double kElevatorLevelOneH = 0.154;
     public static final double kElevatorLevelTwoH = 0.22;
     public static final double kElevatorLevelThreeH = 1.6;
 

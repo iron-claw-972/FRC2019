@@ -217,7 +217,7 @@ public class DriveSubsystem extends Subsystem {
     @Override
     public synchronized void fastPeriodic(double timestamp) {
         if (RobotState.getInstance().outputs_enabled == false) {
-            setCloseLoop(new DriveSignal(0,0,0,0)); // Keep the Full state controllers update
+            setCloseLoop(new DriveSignal(0, 0, 0, 0)); // Keep the Full state controllers update
             setOpenLoop(new DriveSignal(0, 0, 0, 0));
             return;
         }
@@ -295,13 +295,13 @@ public class DriveSubsystem extends Subsystem {
                 last_angle = null;
             }
         } else if ((mDriveControlState == DriveControlState.CLOSED_LOOP_MECANUM) && (mecanumDriveSignalDesired != null)) {
-            double current_angle = 0;
-            if (mecanumDriveSignalDesired.getFieldOrient()) {
-                current_angle = -ahrs.getAngle();
-            }
-
+            double current_angle = -ahrs.getAngle();
             double rotation_power = angleLockController.update(current_angle, mecanumDriveSignalDesired.getRotation() * 25);
             mecanumDriveSignalDesired.setRotation(rotation_power);
+
+            if (mecanumDriveSignalDesired.getFieldOrient() == false) {
+                current_angle = 0;
+            }
 
             DriveSignal driveSignal = MecanumHelper.cartesianCalculate(mecanumDriveSignalDesired, current_angle);
 
