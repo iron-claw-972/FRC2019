@@ -2,10 +2,6 @@ package frc.team972.robot.subsystems.controller;
 
 import jeigen.DenseMatrix;
 
-import jeigen.DenseMatrix;
-
-import jeigen.DenseMatrix;
-
 public class ElevatorGains {
 
     public static DenseMatrix A() {
