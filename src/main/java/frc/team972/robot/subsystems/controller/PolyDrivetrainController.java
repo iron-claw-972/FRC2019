@@ -8,9 +8,6 @@ import frc.team972.robot.lib.Util;
 import jeigen.DenseMatrix;
 
 public class PolyDrivetrainController {
-    public StateSpacePlant plant_;
-    public StateSpaceController controller_;
-    public StateSpaceObserver observer_;
 
     private double ttrust_ = 1.1;
     int counter_ = 0;
@@ -22,41 +19,78 @@ public class PolyDrivetrainController {
     double goal_left_velocity_ = 0.0;
     double goal_right_velocity_ = 0.0;
 
-    DenseMatrix R_ = new DenseMatrix(2, 1);
-    DenseMatrix U_ = new DenseMatrix(2, 1);
+    public DenseMatrix R_ = new DenseMatrix(2, 1);
+    public DenseMatrix U_ = new DenseMatrix(2, 1);
 
-    public PolyDrivetrainController(StateSpacePlant plant_, StateSpaceController controller_, StateSpaceObserver observer_) {
-        this.plant_ = plant_;
-        this.controller_ = controller_;
-        this.observer_ = observer_;
+    DenseMatrix A = new DenseMatrix(2, 2);
+    DenseMatrix A_inv = new DenseMatrix(2, 2);
+    DenseMatrix B = new DenseMatrix(2, 2);
+    DenseMatrix C = new DenseMatrix(2, 2);
+    DenseMatrix D = new DenseMatrix(2, 2);
+    DenseMatrix U_max = new DenseMatrix(2, 1);
+    DenseMatrix U_min = new DenseMatrix(2, 1);
 
-        SetWeights();
-    }
+    DenseMatrix K = new DenseMatrix(2, 2);
+    DenseMatrix L = new DenseMatrix(2, 2);
+
+
+    DenseMatrix x_hat = new DenseMatrix(2, 1);
 
     public PolyDrivetrainController() {
-        plant_ = new StateSpacePlant(2, 2, 2);
-        controller_ = new StateSpaceController(2, 2, 2);
-        observer_ = new StateSpaceObserver(2, 2, 2);
-
         SetWeights();
     }
 
     public void SetWeights() {
+        PolyDrivetrainGains.MakeVelocityDrivetrainLowLowPlantCoefficients(C, D, U_max, U_min, A, A_inv, B);
+        PolyDrivetrainGains.MakeVelocityDrivetrainLowLowControllerCoefficients(K);
+        PolyDrivetrainGains.MakeVelocityDrivetrainLowLowObserverCoefficients(L);
+    }
 
+    public void SetGoal(double wheel, double throttle, boolean quickturn) {
+        // Apply a sin function that's scaled to make it feel better.
+        double wheel_non_linearity = 0.5;
+        double quickturn_wheel_multiplier = 2;
+
+        double angular_range = Math.PI / 2.0 * wheel_non_linearity;
+
+        wheel_ = Math.sin(angular_range * wheel) / Math.sin(angular_range);
+        wheel_ = Math.sin(angular_range * wheel_) / Math.sin(angular_range);
+        wheel_ = 2.0 * wheel - wheel_;
+
+        if (!quickturn) {
+            wheel_ *= quickturn_wheel_multiplier;
+        }
+
+        final double kThrottleDeadband = 0.05;
+        if (Math.abs(throttle) < kThrottleDeadband) {
+            throttle_ = 0;
+        } else {
+            throttle_ = Math.copySign(
+                    (Math.abs(throttle) - kThrottleDeadband) / (1.0 - kThrottleDeadband),
+                    throttle);
+        }
     }
 
     private double FilterVelocity(double throttle) {
-        DenseMatrix FF = (plant_.B_.t().mmul(plant_.B_)).recpr().mmul(plant_.B_.t());
+        DenseMatrix FF = B.inv().mmul(DenseMatrix.eye(2).sub(A));
 
         DenseMatrix FF_sum = FF.sumOverRows();
-        double min_FF_sum = FF_sum.minOverCols().get(0,0);
-        double min_K_sum = controller_.K_.col((int)min_FF_sum).sum().get(0,0);
+        int min_FF_sum_index = 0;
+        double min_FF_sum = 999999999;
+        for (int i = 0; i < FF_sum.cols; i++) {
+            double val = FF_sum.get(0, i);
+            if (val < min_FF_sum) {
+                min_FF_sum = val;
+                min_FF_sum_index = i;
+            }
+        }
+        double min_K_sum = K.col(min_FF_sum_index).sum().get(0, 0);
 
         double adjusted_ff_voltage =
                 Util.limit(throttle * 12.0, -12.0, 12.0);
 
         return (adjusted_ff_voltage +
-                ttrust_ * min_K_sum * (observer_.plant_.y().get(0, 0) + observer_.plant_.y().get(1, 0)) /
+                ttrust_ * min_K_sum * (x_hat.get(0, 0) + x_hat.get(1, 0)) /
                         2.0) /
                 (ttrust_ * min_K_sum + min_FF_sum);
     }
@@ -76,7 +110,7 @@ public class PolyDrivetrainController {
 
         counter_++;
 
-        DenseMatrix FF = (plant_.B_.t().mmul(plant_.B_)).recpr().mmul(plant_.B_.t());
+        DenseMatrix FF = B.inv().mmul(DenseMatrix.eye(2).sub(A));
 
         double fvel = FilterVelocity(throttle_);
         double sign_svel = wheel_ * ((fvel > 0.0) ? 1.0 : -1.0);
@@ -111,12 +145,13 @@ public class PolyDrivetrainController {
              */
         }
 
-        DenseMatrix FF_volts = FF.mul(R_);
-        DenseMatrix U_ideal = (controller_.K_.mul(R_.sub(observer_.plant_.y()))).add(FF_volts);
+        DenseMatrix FF_volts = FF.mmul(R_);
+        DenseMatrix U_ideal = (K.mmul(R_.sub(x_hat))).add(FF_volts);
 
         for (int i = 0; i < 2; i++) {
-            U_.set(0, i, Util.limit(U_.get(0, i), -12, 12));
+            U_.set(i, 0, Util.limit(U_ideal.get(i, 0), -12, 12));
         }
+
 
         /*
             if (dt_config_.loop_type == LoopType::OPEN_LOOP) {
