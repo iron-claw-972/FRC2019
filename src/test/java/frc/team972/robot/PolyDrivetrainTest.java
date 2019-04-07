@@ -22,15 +22,16 @@ public class PolyDrivetrainTest {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
         for(int t=0; t<2000; t++) {
-            DenseMatrix u = new DenseMatrix("0.5; 0.5");
+            DenseMatrix u = new DenseMatrix("0.5; 0.3");
             if(t>1000) {
                 u = new DenseMatrix("0; 0");
             }
 
             plant.Update(u);
             DenseMatrix sensor_input =  new DenseMatrix(3,1);
-            sensor_input.set(0,0, plant.x_.get(0, 0));
-            sensor_input.set(1,0, plant.x_.get(2, 0));
+            sensor_input.set(0,0, plant.x_.get(0, 0)); //left drivetrain velocity
+            sensor_input.set(1,0, plant.x_.get(2, 0)); //right drivetrain velocity
+            sensor_input.set(2, 0, plant.y().get(2, 0)); //angular velocity
 
             polyDrivetrain.kf_.Update(u, sensor_input);
 
