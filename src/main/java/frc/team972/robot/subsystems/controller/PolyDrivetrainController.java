@@ -9,6 +9,8 @@ import jeigen.DenseMatrix;
 
 public class PolyDrivetrainController {
 
+    public StateSpaceObserver kf_ = new StateSpaceObserver(2, 7, 3);
+
     private double ttrust_ = 1.1;
     int counter_ = 0;
 
@@ -44,6 +46,8 @@ public class PolyDrivetrainController {
         PolyDrivetrainGains.MakeVelocityDrivetrainLowLowPlantCoefficients(C, D, U_max, U_min, A, A_inv, B);
         PolyDrivetrainGains.MakeVelocityDrivetrainLowLowControllerCoefficients(K);
         PolyDrivetrainGains.MakeVelocityDrivetrainLowLowObserverCoefficients(L);
+        KFDrivetrainGains.MakeKFDrivetrainLowLowPlantCoefficients(kf_.plant_.C_, kf_.plant_.D_, kf_.plant_.A_, kf_.plant_.B_);
+        KFDrivetrainGains.MakeKFDrivetrainLowLowObserverCoefficients(kf_.L_);
     }
 
     public void SetGoal(double wheel, double throttle, boolean quickturn) {
@@ -101,12 +105,9 @@ public class PolyDrivetrainController {
     }
 
     public void Update() {
-        /*
-          if (dt_config_.loop_type == LoopType::CLOSED_LOOP) {
-            loop_->mutable_X_hat()(0, 0) = kf_->X_hat()(1, 0);
-            loop_->mutable_X_hat()(1, 0) = kf_->X_hat()(3, 0);
-          }
-         */
+        //feed x_hat from drivetrain kf
+        x_hat.set(0,0, kf_.plant_.x_.get(1, 0));
+        x_hat.set(1,0, kf_.plant_.x_.get(3, 0));
 
         counter_++;
 
@@ -126,10 +127,6 @@ public class PolyDrivetrainController {
         goal_left_velocity_ = left_velocity;
         goal_right_velocity_ = right_velocity;
 
-        /*
-            // Integrate velocity to get the position.
-            // This position is used to get integral control.
-         */
         R_.set(0, 0, left_velocity);
         R_.set(1, 0, right_velocity);
 
