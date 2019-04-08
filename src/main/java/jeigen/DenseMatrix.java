@@ -563,6 +563,31 @@ public class DenseMatrix {
         return result;
     }
 
+    public double squaredNorm() {
+        double sum = 0;
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                sum = sum + Math.pow(get(r, c), 2);
+            }
+        }
+        return sum;
+    }
+
+    public DenseMatrix normalized() {
+        DenseMatrix result = new DenseMatrix(rows, cols);
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                result.set(r, c, get(r, c));
+            }
+        }
+        double z = squaredNorm();
+        if(z > 0) {
+            return result.div(Math.sqrt(z));
+        } else {
+            return result;
+        }
+    }
+
     /**
      * returns transpose
      */

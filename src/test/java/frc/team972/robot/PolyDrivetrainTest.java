@@ -59,9 +59,8 @@ public class PolyDrivetrainTest {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         DenseMatrix u = new DenseMatrix("0.0; 0.0");
 
-        for (int t = 0; t < 1; t++) {
-
-            polyDrivetrain.SetGoal(0.1, 0.8, false);
+        for (int t = 0; t < 2000; t++) {
+            polyDrivetrain.SetGoal(0.5*(double)t/2000.0, 0.8, false);
 
             plant.Update(u);
             DenseMatrix sensor_input = new DenseMatrix(3, 1);
@@ -76,16 +75,18 @@ public class PolyDrivetrainTest {
 
             dataset.addValue(plant.x_.get(1, 0), "plant_l_velocity", Integer.toString(t));
             dataset.addValue(plant.x_.get(3, 0), "plant_r_velocity", Integer.toString(t));
-            dataset.addValue(plant.y().get(2, 0), "angular_velocity", Integer.toString(t));
-
-            dataset.addValue(polyDrivetrain.U_.get(0, 0), "u_left", Integer.toString(t));
-            dataset.addValue(polyDrivetrain.U_.get(1, 0), "u_right", Integer.toString(t));
 
             dataset.addValue(polyDrivetrain.goal_left_velocity_, "l_velocity_goal", Integer.toString(t));
             dataset.addValue(polyDrivetrain.goal_right_velocity_, "r_velocity_goal", Integer.toString(t));
+
+            /*
+            dataset.addValue(plant.y().get(2, 0), "angular_velocity", Integer.toString(t));
+            dataset.addValue(polyDrivetrain.U_.get(0, 0), "u_left", Integer.toString(t));
+            dataset.addValue(polyDrivetrain.U_.get(1, 0), "u_right", Integer.toString(t));
+            */
         }
 
-        /*
+
         Graphing graphing = new Graphing("state_space", "polydrivetrain", dataset);
         graphing.display();
         try {
@@ -93,7 +94,6 @@ public class PolyDrivetrainTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        */
     }
 
 }

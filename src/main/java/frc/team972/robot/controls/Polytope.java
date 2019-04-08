@@ -26,27 +26,15 @@ public class Polytope {
         vertices = vertices_;
     }
 
-    //H polytope
-    /*
-    public Polytope(DenseMatrix H_, DenseMatrix k_) {
-        H = H_;
-        k = k_;
-        vertices = CalculateVertices(H_, k_);
-    }*/
-
-    /*
-    private DenseMatrix CalculateVertices(DenseMatrix H_, DenseMatrix k_) {
-        int number_of_dimensions = H.cols;
-        DenseMatrix matrix = new DenseMatrix(k.rows, number_of_dimensions + 1);
+    public boolean IsInside(DenseMatrix point) {
         for (int i = 0; i < k.rows; ++i) {
-            matrix.set(i, 0, k.get(i, 0));
-            for (int j = 0; j < number_of_dimensions; ++j) {
-                matrix.set(i, j + 1, -H.get(i, j));
+            double ev = (H.row(i).mmul(point).get(0, 0));
+            if (ev > k.get(i, 0)) {
+                return false;
             }
         }
-
+        return true;
     }
-    */
 
     public static DenseMatrix ShiftPoints(DenseMatrix vertices, DenseMatrix offset) {
         DenseMatrix ans = ControlsMathUtil.CloneMatrix(vertices);

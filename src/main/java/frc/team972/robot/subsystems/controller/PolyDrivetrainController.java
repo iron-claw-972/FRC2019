@@ -143,6 +143,7 @@ public class PolyDrivetrainController {
                     (K.add(FF).inv()).mmul(Polytope.ShiftPoints(U_Poly.vertices, K.mmul(x_hat)))
             );
 
+            R_ = CoerceGoal.DoCoerceGoal(R_poly_hv, equality_k, equality_w, R_);
         }
 
         DenseMatrix FF_volts = FF.mmul(R_);
@@ -152,13 +153,12 @@ public class PolyDrivetrainController {
             U_.set(i, 0, Util.limit(U_ideal.get(i, 0), -12, 12));
         }
 
-
         /*
+            //if we want to open_loop then just feed the observer estimate back into itself
             if (dt_config_.loop_type == LoopType::OPEN_LOOP) {
               loop_->mutable_X_hat() =
                   loop_->plant().A() * loop_->X_hat() + loop_->plant().B() * loop_->U();
             }
          */
-
     }
 }
