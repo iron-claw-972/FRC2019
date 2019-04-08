@@ -59,15 +59,9 @@ public class PolyDrivetrainTest {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         DenseMatrix u = new DenseMatrix("0.0; 0.0");
 
-        for (int t = 0; t < 2000; t++) {
-            if (t > 1500) {
-                polyDrivetrain.SetGoal(0.1, 0.8, false);
-            } else if (t > 1000) {
-                polyDrivetrain.SetGoal(0.1, 0.5, false);
-            } else {
-                polyDrivetrain.SetGoal(0.0, 0.5, false);
-            }
+        for (int t = 0; t < 1; t++) {
 
+            polyDrivetrain.SetGoal(0.1, 0.8, false);
 
             plant.Update(u);
             DenseMatrix sensor_input = new DenseMatrix(3, 1);
@@ -77,7 +71,7 @@ public class PolyDrivetrainTest {
 
             polyDrivetrain.kf_.Update(u, sensor_input);
             polyDrivetrain.Update();
-            System.out.println("[" + polyDrivetrain.U_.get(0, 0) + " " + polyDrivetrain.U_.get(1, 0) + "]");
+            //System.out.println("[" + polyDrivetrain.U_.get(0, 0) + " " + polyDrivetrain.U_.get(1, 0) + "]");
             u = ControlsMathUtil.CloneMatrix(polyDrivetrain.U_);
 
             dataset.addValue(plant.x_.get(1, 0), "plant_l_velocity", Integer.toString(t));
@@ -91,6 +85,7 @@ public class PolyDrivetrainTest {
             dataset.addValue(polyDrivetrain.goal_right_velocity_, "r_velocity_goal", Integer.toString(t));
         }
 
+        /*
         Graphing graphing = new Graphing("state_space", "polydrivetrain", dataset);
         graphing.display();
         try {
@@ -98,6 +93,7 @@ public class PolyDrivetrainTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        */
     }
 
 }

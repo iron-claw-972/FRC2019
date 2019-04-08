@@ -1,9 +1,6 @@
 package frc.team972.robot.subsystems.controller;
 
-import frc.team972.robot.controls.ControlsMathUtil;
-import frc.team972.robot.controls.StateSpaceController;
-import frc.team972.robot.controls.StateSpaceObserver;
-import frc.team972.robot.controls.StateSpacePlant;
+import frc.team972.robot.controls.*;
 import frc.team972.robot.lib.Util;
 import jeigen.DenseMatrix;
 
@@ -18,8 +15,8 @@ public class PolyDrivetrainController {
     double wheel_ = 0.0;
     boolean quickturn_ = false;
 
-    double goal_left_velocity_ = 0.0;
-    double goal_right_velocity_ = 0.0;
+    public double goal_left_velocity_ = 0.0;
+    public double goal_right_velocity_ = 0.0;
 
     public DenseMatrix R_ = new DenseMatrix(2, 1);
     public DenseMatrix U_ = new DenseMatrix(2, 1);
@@ -35,8 +32,11 @@ public class PolyDrivetrainController {
     DenseMatrix K = new DenseMatrix(2, 2);
     DenseMatrix L = new DenseMatrix(2, 2);
 
-
     DenseMatrix x_hat = new DenseMatrix(2, 1);
+
+    Polytope U_Poly = new Polytope(new DenseMatrix("1 0; -1 0; 0 1; 0 -1"),
+            new DenseMatrix("12; 12; 12; 12"),
+            new DenseMatrix("12 12 -12 -12; -12 12 12 -12"));
 
     public PolyDrivetrainController() {
         SetWeights();
@@ -137,9 +137,12 @@ public class PolyDrivetrainController {
             equality_k.set(0, 1, -(1 - sign_svel));
             double equality_w = 0.0;
 
-            /*
-            do crazy polytope stuff in order to constraint R via constraining U
-             */
+            Polytope R_poly_hv = new Polytope(
+                    U_Poly.H.mmul(K.add(FF)),
+                    U_Poly.k.add(U_Poly.H.mmul(K.mmul(x_hat))),
+                    (K.add(FF).inv()).mmul(Polytope.ShiftPoints(U_Poly.vertices, K.mmul(x_hat)))
+            );
+
         }
 
         DenseMatrix FF_volts = FF.mmul(R_);
