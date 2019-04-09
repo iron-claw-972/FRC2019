@@ -140,7 +140,7 @@ public class PolyDrivetrainController {
             Polytope R_poly_hv = new Polytope(
                     U_Poly.H.mmul(K.add(FF)),
                     U_Poly.k.add(U_Poly.H.mmul(K.mmul(x_hat))),
-                    (K.add(FF).inv()).mmul(Polytope.ShiftPoints(U_Poly.vertices, K.mmul(x_hat)))
+                    (K.add(FF)).inv().mmul(Polytope.ShiftPoints(U_Poly.vertices, K.mmul(x_hat)))
             );
 
             R_ = CoerceGoal.DoCoerceGoal(R_poly_hv, equality_k, equality_w, R_);

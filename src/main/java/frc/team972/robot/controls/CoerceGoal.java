@@ -16,10 +16,10 @@ public class CoerceGoal {
         if (region.IsInside(R)) {
             return R;
         }
-        DenseMatrix parallel_vector = K.t().normalized();
-        DenseMatrix perpendicular_vector = new DenseMatrix(2, 1);
-        perpendicular_vector.set(0, 0, perpendicular_vector.get(1, 0));
-        perpendicular_vector.set(1, 0, -perpendicular_vector.get(0, 0));
+        DenseMatrix perpendicular_vector = K.t().normalized();
+        DenseMatrix parallel_vector  = new DenseMatrix(2, 1);
+        parallel_vector.set(0, 0, perpendicular_vector.get(1, 0));
+        parallel_vector.set(1, 0, -perpendicular_vector.get(0, 0));
 
         DenseMatrix projectedh = region.H.mmul(parallel_vector);
         DenseMatrix projectedk = region.k.sub(region.H.mmul(perpendicular_vector.mul(w)));
@@ -41,11 +41,11 @@ public class CoerceGoal {
         if (max_boundary > min_boundary) {
             double min_distance_sqr = 0;
             DenseMatrix closest_point = null;
-            for (int i = 0; i < vertices.rows; i++) {
+            for (int i = 0; i < vertices.cols; i++) {
                 DenseMatrix point;
                 point = (parallel_vector.mul(vertices.get(0, i))).add(perpendicular_vector.mul(w));
                 double length = (R.sub(point)).squaredNorm();
-                if (i == 0 || length < min_distance_sqr) {
+                if ((i==0) || (length < min_distance_sqr)) {
                     closest_point = point;
                     min_distance_sqr = length;
                 }
@@ -55,9 +55,9 @@ public class CoerceGoal {
             DenseMatrix region_vertices = region.vertices;
             double min_distance = 99999999;
             int closest_i = 0;
-            for (int i = 0; i < region_vertices.cols; i++) {
+            for (int i = 0; i < region_vertices.rows; i++) {
                 double length = Math.abs(perpendicular_vector.t().mmul(region_vertices.col(i)).get(0, 0));
-                if (i == 0 || length < min_distance) {
+                if ((i == 0) || (length < min_distance)) {
                     closest_i = i;
                     min_distance = length;
                 }
