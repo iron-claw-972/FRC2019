@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2019.1.1"
+    id "edu.wpi.first.GradleRIO" version "2019.4.1" // 2019.1.1 if using the test robot(or just update the firmware on the second bot)
 }
 
 def ROBOT_MAIN_CLASS = "frc.team972.robot.Main"
