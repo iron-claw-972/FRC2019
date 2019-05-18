@@ -32,7 +32,8 @@ public class TeleopManager {
         if(controlBoard.getPOV() == -1) {
             mDrive.setMecanumDrivePoseDesired(null);
             mDrive.setCloseLoopMecanum(
-                    MecanumHelper.mecanumDrive(-controlBoard.getTranslateX(), controlBoard.getTranslateY(), controlBoard.getRotate(), controlBoard.getA())
+                    //MecanumHelper.mecanumDrive(-controlBoard.getTranslateX(), controlBoard.getTranslateY(), controlBoard.getRotate(), controlBoard.getA())
+                    MecanumHelper.mecanumDrive(0, controlBoard.getTranslateY(), controlBoard.getRotate(), true)
             );
 
         } else if(controlBoard.getPOV() == 270) {
